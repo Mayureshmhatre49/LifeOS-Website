@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell -Command 'Add-Type -AssemblyName WindowsBase; $zip = [System.IO.Packaging.Package]::Open\\('\\\\''__TRACKED_VAR__/__TRACKED_VAR__'\\\\'', [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read\\); $part = $zip.GetPart\\([Uri]'\\\\''/word/document.xml'\\\\''\\); $reader = [System.IO.StreamReader]::new\\($part.GetStream\\(\\)\\); $xml = $reader.ReadToEnd\\(\\); $reader.Close\\(\\); $zip.Close\\(\\); $xml')",
+      "Bash(powershell -Command '$input | ForEach-Object { $_ -replace '\\\\''<[^>]+>'\\\\'', '\\\\'''\\\\'' }')",
+      "Bash(grep -v '^$')",
+      "Bash(where node *)",
+      "Bash(powershell -Command \"Get-Command node,python,python3,dotnet,java -ErrorAction SilentlyContinue | Select-Object Name,Source\")",
+      "Bash(powershell -Command ' *)",
+      "Bash(powershell -Command \"Get-Command node,npm,npx,pnpm,bun,git,dotnet -ErrorAction SilentlyContinue | Select-Object Name,Source\")",
+      "Bash(powershell -Command \"Get-Command winget,choco,scoop -ErrorAction SilentlyContinue | Select-Object Name,Source\")",
+      "Bash(winget install *)",
+      "Bash(export PATH=\"$PATH:/c/Program Files/nodejs\")",
+      "Bash(npm --version)",
+      "Bash(npx create-next-app@latest web --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --no-turbopack)",
+      "Bash(npm install *)"
+    ]
+  }
+}
