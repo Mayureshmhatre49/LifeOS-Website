@@ -1,0 +1,68 @@
+import { Category } from '@/types'
+
+export const CATEGORIES: Category[] = [
+  {
+    id: 'shopping',
+    label: 'Shopping Help',
+    icon: '🛍️',
+    description: 'Best products for your budget',
+    starterPrompt: 'Help me choose the best ',
+    color: 'bg-violet-50 text-violet-700 border-violet-200 hover:bg-violet-100',
+  },
+  {
+    id: 'compare',
+    label: 'Compare Options',
+    icon: '⚖️',
+    description: 'Side-by-side comparisons',
+    starterPrompt: 'Compare these two options for me: ',
+    color: 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100',
+  },
+  {
+    id: 'emi',
+    label: 'EMI Calculator',
+    icon: '🧮',
+    description: 'Loan & EMI calculations',
+    starterPrompt: 'Calculate EMI for a ₹',
+    color: 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100',
+  },
+  {
+    id: 'planning',
+    label: 'Daily Planning',
+    icon: '📅',
+    description: 'Plan your day & priorities',
+    starterPrompt: 'Help me plan my day. I need to: ',
+    color: 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100',
+  },
+  {
+    id: 'scam',
+    label: 'Scam Check',
+    icon: '🔍',
+    description: 'Check suspicious messages',
+    starterPrompt: 'Is this message a scam? Here it is: ',
+    color: 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100',
+  },
+  {
+    id: 'explain',
+    label: 'Explain Anything',
+    icon: '💡',
+    description: 'Simplify complex things',
+    starterPrompt: 'Explain this to me simply: ',
+    color: 'bg-yellow-50 text-yellow-700 border-yellow-200 hover:bg-yellow-100',
+  },
+  {
+    id: 'money',
+    label: 'Money Help',
+    icon: '💰',
+    description: 'Budget, savings & finance',
+    starterPrompt: 'Help me with my finances: ',
+    color: 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100',
+  },
+  {
+    id: 'decide',
+    label: 'Quick Decision',
+    icon: '⚡',
+    description: 'Make better decisions fast',
+    starterPrompt: 'Help me decide between: ',
+    color: 'bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100',
+  },
+]

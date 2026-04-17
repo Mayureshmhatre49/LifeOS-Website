@@ -4,9 +4,7 @@ export const AI_CONFIG = {
     anthropic: 'claude-sonnet-4-6',
     openai: 'gpt-4o',
   },
-  systemPrompt: `You are Life OS, a personal AI assistant that helps people with everyday life decisions.
-You help with: shopping decisions, quick calculations, planning, comparisons, explaining bills or documents,
-and any daily life question. Be concise, practical, and friendly. Always prioritize the user's wellbeing.`,
-  maxOutputTokens: 1024,
+  maxOutputTokens: 1500,
   temperature: 0.7,
+  maxMessagesInContext: 20,
 } as const

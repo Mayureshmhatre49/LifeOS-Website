@@ -1,33 +1,25 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from 'next'
+import { Geist, Geist_Mono } from 'next/font/google'
+import { SessionProvider } from 'next-auth/react'
+import { auth } from '@/auth'
+import './globals.css'
+import { generatePageMeta } from '@/lib/seo/metadata'
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
+const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] })
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+export const metadata: Metadata = generatePageMeta()
 
-export const metadata: Metadata = {
-  title: "Life OS — Your Personal AI Assistant",
-  description: "AI-powered help for everyday decisions, planning, money guidance, and more.",
-};
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const session = await auth()
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
+      <body className="h-full antialiased">
+        <SessionProvider session={session}>
+          {children}
+        </SessionProvider>
+      </body>
     </html>
-  );
+  )
 }
