@@ -13,7 +13,13 @@
       "Bash(export PATH=\"$PATH:/c/Program Files/nodejs\")",
       "Bash(npm --version)",
       "Bash(npx create-next-app@latest web --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --no-turbopack)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(node -e \"const ai = require\\('ai'\\); console.log\\(Object.keys\\(ai\\).filter\\(k => k.includes\\('Text'\\) || k.includes\\('Stream'\\) || k.includes\\('chat'\\) || k.includes\\('Chat'\\)\\).join\\(', '\\)\\)\")",
+      "Bash(node -e \"const ai = require\\('ai'\\); const r = ai.streamText\\({model: null}\\); console.log\\(Object.keys\\(r || {}\\).join\\(', '\\)\\)\")",
+      "Bash(node -e \"const ai = require\\('ai'\\); const keys = Object.getOwnPropertyNames\\(ai.streamText.prototype || {}\\); console.log\\(JSON.stringify\\(Object.keys\\(ai\\)\\)\\)\")",
+      "Bash(node -e \"const r = require\\('@ai-sdk/react'\\); console.log\\(Object.keys\\(r\\).join\\(', '\\)\\)\")",
+      "Bash(node -e ' *)"
     ]
   }
 }

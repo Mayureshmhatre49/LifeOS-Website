@@ -1,4 +1,4 @@
-import { streamText } from 'ai'
+import { streamText, createUIMessageStreamResponse, convertToModelMessages } from 'ai'
 import { NextRequest } from 'next/server'
 import { getAIModel } from '@/lib/ai/provider'
 import { chatRequestSchema } from '@/lib/validators/chat'
@@ -20,14 +20,20 @@ export async function POST(req: NextRequest) {
 
     const model = getAIModel()
 
+    const modelMessages = await convertToModelMessages(
+      parsed.data.messages as Parameters<typeof convertToModelMessages>[0]
+    )
+
     const result = streamText({
       model,
       system: AI_CONFIG.systemPrompt,
-      messages: parsed.data.messages,
-      maxTokens: AI_CONFIG.maxTokens,
+      messages: modelMessages,
+      maxOutputTokens: AI_CONFIG.maxOutputTokens,
     })
 
-    return result.toDataStreamResponse()
+    return createUIMessageStreamResponse({
+      stream: result.toUIMessageStream(),
+    })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Internal server error'
     return new Response(JSON.stringify({ error: message }), {

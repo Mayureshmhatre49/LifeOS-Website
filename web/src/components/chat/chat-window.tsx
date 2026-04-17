@@ -1,7 +1,7 @@
 'use client'
 
-import { useChat } from 'ai/react'
-import { useEffect, useRef } from 'react'
+import { useChat } from '@ai-sdk/react'
+import { useState, useEffect, useRef, FormEvent } from 'react'
 import { ChatMessage } from './chat-message'
 import { ChatInput } from './chat-input'
 
@@ -13,18 +13,20 @@ const SUGGESTIONS = [
 ]
 
 export function ChatWindow() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
-    api: '/api/chat',
-  })
-
+  const { messages, sendMessage, status } = useChat()
+  const [input, setInput] = useState('')
+  const isLoading = status === 'submitted' || status === 'streaming'
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  const handleSuggestion = (text: string) => {
-    handleInputChange({ target: { value: text } } as React.ChangeEvent<HTMLInputElement>)
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault()
+    if (!input.trim() || isLoading) return
+    sendMessage({ text: input.trim() })
+    setInput('')
   }
 
   return (
@@ -44,7 +46,7 @@ export function ChatWindow() {
               {SUGGESTIONS.map((s) => (
                 <button
                   key={s}
-                  onClick={() => handleSuggestion(s)}
+                  onClick={() => setInput(s)}
                   className="text-left text-xs p-3 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors text-gray-600 dark:text-gray-400"
                 >
                   {s}
@@ -55,7 +57,7 @@ export function ChatWindow() {
         )}
 
         {messages.map((m) => (
-          <ChatMessage key={m.id} role={m.role as 'user' | 'assistant'} content={m.content} />
+          <ChatMessage key={m.id} message={m} />
         ))}
 
         {isLoading && (
@@ -79,7 +81,7 @@ export function ChatWindow() {
       <div className="border-t border-gray-200 dark:border-gray-700 p-4">
         <ChatInput
           value={input}
-          onChange={(v) => handleInputChange({ target: { value: v } } as React.ChangeEvent<HTMLInputElement>)}
+          onChange={setInput}
           onSubmit={handleSubmit}
           isLoading={isLoading}
         />
