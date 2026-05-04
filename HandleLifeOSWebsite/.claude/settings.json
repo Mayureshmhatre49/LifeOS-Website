@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -I http://localhost:8000/)",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' -X POST http://localhost:8000/waitlist -d 'email=test__TRACKED_VAR__@test.com&_hp_website=' -H 'X-CSRF-TOKEN: skip')",
+      "Skill(update-config)",
+      "Skill(update-config:*)"
+    ]
+  }
+}
