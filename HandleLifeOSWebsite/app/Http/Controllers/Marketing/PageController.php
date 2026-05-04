@@ -3,104 +3,116 @@
 namespace App\Http\Controllers\Marketing;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
     public function home()
     {
         return view('pages.home', [
-            'title' => 'AI for Everyday Life | Personal Organization & Decision Support',
-            'description' => 'HandleLife OS helps you reduce stress, make better decisions, and handle life with clarity. The foundational layer for your digital life.'
+            'title'       => 'AI for Everyday Life — Personal Life Operating System',
+            'description' => 'Reduce mental load, make smarter decisions, and handle daily life with AI. Privacy-first personal life OS for individuals and families. Join 50,000+ on the waitlist.',
+            'keywords'    => 'AI life assistant, personal AI, mental load app, life operating system, household management software, decision making AI, family coordination, personal organizer AI, daily planner AI, privacy first AI',
         ]);
     }
 
     public function features()
     {
         return view('pages.features', [
-            'title' => 'AI Capabilities & Features',
-            'description' => 'Explore the core features of HandleLife OS, from daily planning to financial clarity and security.'
+            'title'       => 'Features & AI Capabilities',
+            'description' => 'Daily planning, financial clarity, scam protection, family coordination, and more. Explore every capability of HandleLife OS — built to handle real life.',
+            'keywords'    => 'AI features, daily planner AI, financial AI, scam detection AI, contract analyzer, smart routines, family sync, household AI, productivity capabilities',
         ]);
     }
 
     public function pricing()
     {
         return view('pages.pricing', [
-            'title' => 'Simple, Transparent Pricing',
-            'description' => 'Choose the plan that fits your life. No hidden fees, no credit card required to start.'
+            'title'       => 'Pricing & Plans',
+            'description' => 'Free forever to start. Plus, Family Hub, and Enterprise plans available in 10+ currencies and 190+ countries. No credit card required. Cancel anytime.',
+            'keywords'    => 'HandleLife OS pricing, AI life assistant pricing, family AI plan, personal AI plan, free AI assistant, subscription plans, monthly pricing, yearly pricing',
         ]);
     }
 
     public function families()
     {
         return view('pages.families', [
-            'title' => 'AI for Families | Shared Coordination & Mental Load Support',
-            'description' => 'End the mental load. Shared household coordination and family sync for modern families.'
+            'title'       => 'AI for Families — Shared Coordination',
+            'description' => 'End the mental load. HandleLife OS coordinates schedules, chores, eldercare, childcare, and shopping for the whole household. Built for every family.',
+            'keywords'    => 'family AI, household management app, shared family planner, mental load app, family coordination software, eldercare app, childcare planner, family sync',
         ]);
     }
 
     public function security()
     {
         return view('pages.security', [
-            'title' => 'Privacy & Security First',
-            'description' => 'Zero-knowledge architecture and AES-256 encryption. Your data stays yours — always.'
+            'title'       => 'Privacy & Security — Zero-Knowledge AI',
+            'description' => 'AES-256 encryption. Zero-knowledge architecture. GDPR, CCPA, PDPA compliant. Your personal data never trains models. Your life stays yours — forever.',
+            'keywords'    => 'private AI, zero knowledge AI, encrypted AI assistant, GDPR AI, secure personal AI, AES-256, no tracking AI, data privacy first',
         ]);
     }
 
     public function enterprise()
     {
         return view('pages.enterprise', [
-            'title' => 'Enterprise Partnerships',
-            'description' => 'Bring HandleLife OS to your organization. Scalable, secure, and built for real-world impact.'
+            'title'       => 'Enterprise & Partnerships',
+            'description' => 'Bring HandleLife OS to your employees, customers, or members. Enterprise-grade security, SSO, dedicated support, and global rollout in 190+ countries.',
+            'keywords'    => 'enterprise AI, employee wellbeing AI, B2B AI partnerships, white label AI, SSO AI assistant, corporate productivity AI',
         ]);
     }
 
     public function about()
     {
         return view('pages.about', [
-            'title' => 'Our Mission & Story',
-            'description' => 'Learn why we built HandleLife OS and how we\'re helping people handle life better.'
+            'title'       => 'Our Mission & Story',
+            'description' => 'We built HandleLife OS to give every person — anywhere in the world — calm, clarity, and control. Learn the philosophy behind the personal life OS.',
+            'keywords'    => 'HandleLife OS mission, AI philosophy, ethical AI, human-centered AI, founder story, why HandleLife',
         ]);
     }
 
     public function contact()
     {
         return view('pages.contact', [
-            'title' => 'Get in Touch',
-            'description' => 'Have questions or feedback? We\'d love to hear from you.'
+            'title'       => 'Contact Us',
+            'description' => 'Reach the HandleLife OS team for partnerships, demos, sales, support, or general questions. Global support across North America, Europe, India, MEA, APAC.',
+            'keywords'    => 'contact HandleLife OS, AI assistant support, partnership inquiry, demo request, sales contact',
         ]);
     }
 
     public function waitlist()
     {
         return view('pages.waitlist', [
-            'title' => 'Join the Early Access Waitlist',
-            'description' => 'Get early access to HandleLife OS and start handling your life with more clarity.'
+            'title'       => 'Join the Early Access Waitlist',
+            'description' => 'Be among the first 50,000+ to try HandleLife OS. Free early access, no credit card. Built for individuals, families, students, caregivers, and everyone in between.',
+            'keywords'    => 'AI waitlist, early access AI, HandleLife OS signup, beta AI assistant, free AI signup',
         ]);
     }
 
     public function roadmap()
     {
         return view('pages.roadmap', [
-            'title' => 'Implementation Roadmap | 10 Phases of HandleLife OS',
-            'description' => 'Track our progress as we build the world\'s most capable personal AI operating system.'
+            'title'       => 'Product Roadmap — 10 Phases',
+            'description' => 'Track HandleLife OS as we build the world\'s most capable personal life AI. 10 phases: from Core Assistant to global Memory Engine. Always shipping in public.',
+            'keywords'    => 'HandleLife OS roadmap, AI product roadmap, AI release timeline, public roadmap, AI phases',
         ]);
     }
 
     public function privacy()
     {
         return view('pages.privacy', [
-            'title' => 'Privacy Policy | Your Data, Your Control',
-            'description' => 'Our commitment to your privacy. Learn how HandleLife OS protects your personal data with zero-knowledge architecture.'
+            'title'       => 'Privacy Policy',
+            'description' => 'How HandleLife OS collects, uses, and protects your personal data. GDPR, CCPA, PDPA compliant. Your data is never sold. Zero-knowledge architecture by default.',
+            'keywords'    => 'HandleLife OS privacy policy, GDPR compliance, data protection, personal data rights',
+            'robots'      => 'index, follow, max-snippet:0',
         ]);
     }
 
     public function terms()
     {
         return view('pages.terms', [
-            'title' => 'Terms of Service | HandleLife OS',
-            'description' => 'The terms and conditions for using HandleLife OS. Clear, fair, and designed for human understanding.'
+            'title'       => 'Terms of Service',
+            'description' => 'The terms governing your use of HandleLife OS. Clear, fair, written for human understanding — not legalese. Read before signing up for early access.',
+            'keywords'    => 'HandleLife OS terms, terms of service, terms and conditions, user agreement',
+            'robots'      => 'index, follow, max-snippet:0',
         ]);
     }
-
 }
