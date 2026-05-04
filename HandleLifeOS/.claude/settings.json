@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/LifeOS/**)",
+      "Bash(ls *.docx)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(python3 -c ' *)",
+      "Bash(python3.exe -c \"print\\('hi'\\)\")",
+      "Bash(py -3 -c \"print\\('hi'\\)\")",
+      "Bash(node -e \"console.log\\('node ok'\\)\")",
+      "Bash(node -e ' *)",
+      "Bash(npm install *)",
+      "Bash(npm list *)",
+      "Bash(node scripts/create-user.mjs)",
+      "Bash(xargs ls *)",
+      "Bash(awk '{print $NF}')",
+      "Bash(cmd /c \"npx tsc --noEmit 2>&1\")"
+    ],
+    "additionalDirectories": [
+      "c:\\LifeOS\\web\\src\\lib"
+    ]
+  }
+}

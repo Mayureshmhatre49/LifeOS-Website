@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <!-- Maskable: full bleed bg, content in the inner 80% safe area -->
+  <rect width="512" height="512" fill="url(#g)"/>
+  <text x="256" y="320" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-weight="800" font-size="220" text-anchor="middle" fill="#ffffff" letter-spacing="-10">L</text>
+</svg>

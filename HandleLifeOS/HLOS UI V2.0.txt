@@ -1,0 +1,308 @@
+```markdown
+You are Claude Code acting as a senior product engineer + world-class UI architect.
+
+Your task is to redesign and upgrade the existing **Life OS / HandleLifeOS** application into **Version 2**, a premium global-grade AI operating system for everyday life.
+
+IMPORTANT: This is NOT a simple dashboard redesign.
+
+This product should feel like:
+
+- Apple simplicity
+- Google usefulness
+- ChatGPT intelligence
+- Notion organization
+- Headspace calmness
+- WhatsApp daily habit utility
+
+---------------------------------------------------
+## EXISTING STACK (DO NOT BREAK)
+---------------------------------------------------
+
+Use the existing codebase and remain fully compatible.
+
+Tech stack from latest project docs:
+
+- Next.js 16 App Router
+- TypeScript
+- Tailwind CSS v4
+- AI SDK v6
+- NextAuth v5
+- Supabase
+- Existing voice features via Web Speech API
+- Existing chat API route
+- Existing auth flow
+- Existing planner / money / protection modules
+
+Reference: :contentReference[oaicite:0]{index=0}
+
+---------------------------------------------------
+## GOAL
+---------------------------------------------------
+
+Transform current UI into a world-class “Life Companion OS”.
+
+Current UI feels like a SaaS dashboard.
+
+New UI must feel like:
+
+"My second brain for life."
+
+---------------------------------------------------
+## CORE PRODUCT EXPERIENCE
+---------------------------------------------------
+
+When user opens app:
+
+Instead of generic chatbot page, show a personalized intelligent home.
+
+---------------------------------------------------
+## NEW HOME SCREEN (DESKTOP + MOBILE)
+---------------------------------------------------
+
+Top greeting:
+
+Good Morning, {UserName} ☀️
+
+Subtext examples:
+- You have 4 priorities today
+- ₹38,500 due this week
+- 2 pending decisions
+- Focus score improving
+- Family reminder tomorrow
+
+Then primary CTA:
+
+[🎤 Speak] [⌨️ Type] [📷 Upload] [➕ Add Task]
+
+---------------------------------------------------
+## DYNAMIC AI FEED (MAIN CENTER)
+---------------------------------------------------
+
+Scrollable intelligent cards:
+
+- Save ₹12,000 this month with these actions
+- You delayed 2 important tasks
+- Suggested 45 min deep work block
+- Scam alert trending in your city
+- Family task due tomorrow
+- Best investment move this week
+
+Cards must be modern, elegant, animated.
+
+---------------------------------------------------
+## PRIMARY MODULE GRID
+---------------------------------------------------
+
+Below feed show premium cards:
+
+1. My Day
+Tasks, calendar, routines
+
+2. Money
+Bills, EMI, savings, budget
+
+3. Family
+Shared tasks, reminders, events
+
+4. Decisions
+Compare choices, recommendations
+
+5. Growth
+Habits, learning, focus
+
+6. Vault
+Docs, memory, notes
+
+---------------------------------------------------
+## NAVIGATION REDESIGN
+---------------------------------------------------
+
+### Desktop:
+
+Replace bulky sidebar with slim premium left rail.
+
+Icons only + tooltips:
+
+🏠 Home
+💬 Chat
+📅 Planner
+💰 Money
+👨‍👩‍👦 Family
+🧠 Vault
+🛡 Protection
+⚙ Settings
+
+### Mobile:
+
+Bottom nav:
+
+Home | Chat | Plan | Vault | Profile
+
+---------------------------------------------------
+## CHAT EXPERIENCE V2
+---------------------------------------------------
+
+Create premium conversational UI.
+
+Examples quick prompts:
+
+- Plan my week
+- Should I buy this phone?
+- Help me reduce stress
+- Compare schools nearby
+- Where to invest ₹10 lakh?
+- Organize family tasks
+
+Input bar sticky bottom.
+
+Support:
+- text
+- voice mic (reuse existing STT)
+- upload attachment
+
+---------------------------------------------------
+## DESIGN SYSTEM
+---------------------------------------------------
+
+Use Tailwind v4.
+
+Visual style:
+
+- Background: soft warm neutral gradient
+- Primary color: deep indigo
+- Accent: emerald
+- Warning: coral
+- Radius: 24px
+- Soft shadows
+- Glassmorphism subtle
+- Premium spacing
+- Micro animations
+- Skeleton loaders
+
+Typography:
+
+- Inter / system fonts
+- Large headings
+- Spacious layout
+
+---------------------------------------------------
+## UX RULES
+---------------------------------------------------
+
+Must feel calm, premium, human.
+
+NO clutter.
+
+NO generic SaaS widgets.
+
+NO outdated admin panel styling.
+
+Use real product polish.
+
+---------------------------------------------------
+## PERSONALIZATION
+---------------------------------------------------
+
+Use authenticated session user name from NextAuth.
+
+If available, show:
+
+- name
+- today stats
+- memory reminders
+- tasks count
+
+Do not block SSR hydration.
+
+Use client-safe session provider pattern already used in project.
+
+Reference: :contentReference[oaicite:1]{index=1}
+
+---------------------------------------------------
+## PERFORMANCE
+---------------------------------------------------
+
+Must be production-grade.
+
+- Lazy load heavy modules
+- Avoid hydration mismatch
+- Use server components where suitable
+- Use client components only when needed
+- Responsive on all devices
+
+---------------------------------------------------
+## FILES TO UPDATE
+---------------------------------------------------
+
+Likely areas:
+
+src/app/(app)/chat/page.tsx
+src/components/ui/*
+src/components/layout/*
+src/components/chat/*
+src/components/home/*
+src/components/navigation/*
+
+Create new folders if required.
+
+---------------------------------------------------
+## COMPONENTS TO BUILD
+---------------------------------------------------
+
+Create reusable components:
+
+- GreetingHero.tsx
+- AIFeed.tsx
+- SmartCard.tsx
+- LifeModuleGrid.tsx
+- LeftRail.tsx
+- BottomNav.tsx
+- PremiumInputBar.tsx
+- QuickActions.tsx
+- StatsHeader.tsx
+
+---------------------------------------------------
+## ANIMATIONS
+---------------------------------------------------
+
+Use Framer Motion if already available.
+If not, use Tailwind transitions.
+
+Subtle only.
+
+---------------------------------------------------
+## DARK MODE
+---------------------------------------------------
+
+Implement elegant dark mode.
+
+---------------------------------------------------
+## TRUST SIGNALS
+---------------------------------------------------
+
+Always visible subtle privacy badge:
+
+🔒 Private by design
+
+---------------------------------------------------
+## OUTPUT FORMAT
+---------------------------------------------------
+
+1. First inspect current project structure.
+2. Then implement complete Version 2 UI.
+3. Keep existing business logic untouched.
+4. Improve only architecture if needed.
+5. Return all changed files with code.
+6. Ensure app runs immediately with npm run dev.
+
+---------------------------------------------------
+## FINAL QUALITY BAR
+---------------------------------------------------
+
+If this looked at by Google PM / OpenAI PM / Apple designer,
+they should say:
+
+“This feels like the future.”
+
+Begin now.
+```
