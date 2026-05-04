@@ -26,8 +26,18 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         // ── 3. Trusted proxies ────────────────────────────────────────
-        // Trust X-Forwarded-For from load-balancers / CDN
+        // X-Forwarded-* headers from arbitrary clients are spoofable; only
+        // honour them from proxy hops listed in TRUSTED_PROXIES (env-driven).
+        // Use "*" only when you fully control every network hop in front of
+        // the app (i.e. running behind a single, trusted CDN like Cloudflare).
+        // env() is used directly because config() isn't available at boot.
+        $trustedProxiesRaw = env('TRUSTED_PROXIES', '*');
+        $trustedProxies = $trustedProxiesRaw === '*'
+            ? '*'
+            : array_filter(array_map('trim', explode(',', (string) $trustedProxiesRaw)));
+
         $middleware->trustProxies(
+            at: $trustedProxies,
             headers: Request::HEADER_X_FORWARDED_FOR
                    | Request::HEADER_X_FORWARDED_HOST
                    | Request::HEADER_X_FORWARDED_PORT

@@ -1,5 +1,11 @@
-<x-app-layout>
-    <x-slot name="title">{{ $title }}</x-slot>
+<x-app-layout :title="$title" :description="$description ?? null" :keywords="$keywords ?? null" :robots="$robots ?? null">
+
+    @push('schema')
+        <x-schema type="breadcrumb" :data="[
+            ['name' => 'Home',         'url' => '/'],
+            ['name' => 'Partnerships', 'url' => '/enterprise'],
+        ]" />
+    @endpush
 
     {{-- Hero --}}
     <x-section bg="bg-white" padding="pt-32 pb-16">
@@ -45,18 +51,20 @@
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             @php
                 $sectors = [
-                    ['icon' => '🏢', 'title' => 'Workplace',   'desc' => 'Reduce administrative burnout by helping employees manage their invisible mental load.',   'tag' => 'Restored focus'],
-                    ['icon' => '🏦', 'title' => 'Finance',     'desc' => 'Embed smarter money intelligence to help customers navigate major life decisions.',       'tag' => 'Digital loyalty'],
-                    ['icon' => '🩺', 'title' => 'Health',      'desc' => 'Proactive protection and coordination lead to safer outcomes and lower claims.',          'tag' => 'Risk reduction'],
-                    ['icon' => '🏫', 'title' => 'Education',   'desc' => 'Direct coordination between school schedules and parents\' HandleLife hubs.',            'tag' => 'Family sync'],
-                    ['icon' => '👵', 'title' => 'Eldercare',   'desc' => 'Helping families manage complex care for aging loved ones with precision and dignity.',   'tag' => 'Quality of life'],
-                    ['icon' => '🌍', 'title' => 'Social impact','desc' => 'Scaling life coordination for social dignity and global citizen wellness.',             'tag' => 'Dignity at scale'],
+                    ['icon' => 'building',     'title' => 'Workplace',    'desc' => 'Reduce administrative burnout by helping employees manage their invisible mental load.', 'tag' => 'Restored focus'],
+                    ['icon' => 'bank',         'title' => 'Finance',      'desc' => 'Embed smarter money intelligence to help customers navigate major life decisions.',       'tag' => 'Digital loyalty'],
+                    ['icon' => 'stethoscope', 'title' => 'Health',        'desc' => 'Proactive protection and coordination lead to safer outcomes and lower claims.',          'tag' => 'Risk reduction'],
+                    ['icon' => 'school',       'title' => 'Education',    'desc' => 'Direct coordination between school schedules and parents\' HandleLife hubs.',             'tag' => 'Family sync'],
+                    ['icon' => 'user-elder',   'title' => 'Eldercare',    'desc' => 'Helping families manage complex care for aging loved ones with precision and dignity.',   'tag' => 'Quality of life'],
+                    ['icon' => 'globe',        'title' => 'Social impact','desc' => 'Scaling life coordination for social dignity and global citizen wellness.',               'tag' => 'Dignity at scale'],
                 ];
             @endphp
 
             @foreach($sectors as $s)
-                <div class="bg-slate-900/50 border border-slate-800 rounded-3xl p-7 group hover:border-teal-500/40 hover:-translate-y-1 transition-all duration-300">
-                    <div class="text-3xl mb-5 grayscale group-hover:grayscale-0 transition-all duration-300" aria-hidden="true">{{ $s['icon'] }}</div>
+                <div class="bg-slate-900/50 border border-slate-800 rounded-3xl p-7 group hover:border-teal-500/40 hover:-translate-y-1 transition-all duration-300 ease-out">
+                    <div class="icon-tile-dark icon-tile-md mb-5 group-hover:scale-105 group-hover:rotate-[-2deg]">
+                        <x-icon :name="$s['icon']" :size="22" :stroke="1.6" />
+                    </div>
                     <h3 class="font-bold text-white mb-3 text-base">{{ $s['title'] }}</h3>
                     <p class="text-slate-400 text-sm leading-relaxed font-medium mb-5">{{ $s['desc'] }}</p>
                     <span class="text-teal-400 text-xs font-semibold uppercase tracking-wider">{{ $s['tag'] }}</span>

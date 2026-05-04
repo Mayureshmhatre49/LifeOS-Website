@@ -1,5 +1,11 @@
-<x-app-layout>
-    <x-slot name="title">{{ $title }}</x-slot>
+<x-app-layout :title="$title" :description="$description ?? null" :keywords="$keywords ?? null" :robots="$robots ?? null">
+
+    @push('schema')
+        <x-schema type="breadcrumb" :data="[
+            ['name' => 'Home',     'url' => '/'],
+            ['name' => 'Families', 'url' => '/families'],
+        ]" />
+    @endpush
 
     {{-- Hero --}}
     <x-section bg="bg-white" padding="pt-32 pb-16">
@@ -55,12 +61,14 @@
 
         <div class="grid md:grid-cols-3 gap-8">
             @foreach([
-                ['icon' => '☁️', 'title' => 'Invisible burden',  'text' => 'School dates, grocery needs, medical appointments, maintenance — the mental load that usually falls on one person\'s shoulders.'],
-                ['icon' => '🌀', 'title' => 'Household chaos',   'text' => 'Birthdays, bill payments, school events that slip through the cracks of a busy life, causing unnecessary pressure on the whole home.'],
-                ['icon' => '🌿', 'title' => 'Finding sync',      'text' => 'Reclaiming your time isn\'t about doing more tasks — it\'s about more clarity. HandleLife helps your whole household breathe easier, together.'],
+                ['icon' => 'cloud',  'title' => 'Invisible burden',  'text' => 'School dates, grocery needs, medical appointments, maintenance — the mental load that usually falls on one person\'s shoulders.'],
+                ['icon' => 'orbit',  'title' => 'Household chaos',   'text' => 'Birthdays, bill payments, school events that slip through the cracks of a busy life, causing unnecessary pressure on the whole home.'],
+                ['icon' => 'leaf',   'title' => 'Finding sync',      'text' => 'Reclaiming your time isn\'t about doing more tasks — it\'s about more clarity. HandleLife helps your whole household breathe easier, together.'],
             ] as $item)
                 <div class="group text-center">
-                    <div class="text-4xl mb-5 grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:-translate-y-1 transform" aria-hidden="true">{{ $item['icon'] }}</div>
+                    <div class="icon-tile icon-tile-lg mx-auto mb-5 group-hover:-translate-y-1 group-hover:scale-105">
+                        <x-icon :name="$item['icon']" :size="26" :stroke="1.5" />
+                    </div>
                     <h3 class="font-bold text-slate-950 mb-3 uppercase tracking-wide text-sm">{{ $item['title'] }}</h3>
                     <p class="text-slate-500 text-sm leading-relaxed font-medium">{{ $item['text'] }}</p>
                 </div>
@@ -76,12 +84,14 @@
                 <h2 class="text-3xl md:text-5xl font-black font-heading text-slate-950 mb-10 leading-tight">Harmony, by design.</h2>
                 <div class="space-y-8">
                     @foreach([
-                        ['icon' => '🏠', 'title' => 'Household logic',    'text' => 'OS identifies recurring needs and assigns them fairly across the household, reducing constant verbal reminders.'],
-                        ['icon' => '👵', 'title' => 'Elder support',       'text' => 'A dedicated dashboard for managing wellbeing of parents — from medical tracking to care visit coordination.'],
-                        ['icon' => '🛒', 'title' => 'Supply intelligence', 'text' => 'Automatically tracks inventory and builds optimized shopping lists based on consumption patterns.'],
+                        ['icon' => 'home',        'title' => 'Household logic',    'text' => 'OS identifies recurring needs and assigns them fairly across the household, reducing constant verbal reminders.'],
+                        ['icon' => 'user-elder',  'title' => 'Elder support',      'text' => 'A dedicated dashboard for managing wellbeing of parents — from medical tracking to care visit coordination.'],
+                        ['icon' => 'shopping-cart','title' => 'Supply intelligence','text' => 'Automatically tracks inventory and builds optimized shopping lists based on consumption patterns.'],
                     ] as $f)
                         <div class="flex items-start gap-5 group">
-                            <div class="w-12 h-12 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 group-hover:scale-105 transition-transform duration-200" aria-hidden="true">{{ $f['icon'] }}</div>
+                            <div class="icon-tile icon-tile-md flex-shrink-0 group-hover:scale-105">
+                                <x-icon :name="$f['icon']" :size="22" :stroke="1.6" />
+                            </div>
                             <div>
                                 <h3 class="font-bold text-slate-950 mb-2 text-base">{{ $f['title'] }}</h3>
                                 <p class="text-slate-500 text-sm leading-relaxed font-medium">{{ $f['text'] }}</p>
@@ -101,7 +111,9 @@
                     </blockquote>
                 </div>
                 <div class="relative z-10 flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-xl" aria-hidden="true">🏠</div>
+                    <div class="w-12 h-12 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center text-teal-300 flex-shrink-0" aria-hidden="true">
+                        <x-icon name="home" :size="22" :stroke="1.6" />
+                    </div>
                     <div>
                         <div class="font-bold text-white text-sm">A family of four</div>
                         <div class="text-teal-400 text-xs font-semibold mt-0.5">Plus Family Account</div>

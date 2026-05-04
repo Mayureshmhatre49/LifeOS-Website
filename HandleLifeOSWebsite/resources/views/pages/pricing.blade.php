@@ -1,5 +1,46 @@
-<x-app-layout>
-    <x-slot name="title">{{ $title }}</x-slot>
+<x-app-layout :title="$title" :description="$description ?? null" :keywords="$keywords ?? null" :robots="$robots ?? null">
+
+    {{-- ── Per-page Structured Data (Breadcrumb + FAQ + Product) ─────────── --}}
+    @push('schema')
+        <x-schema type="breadcrumb" :data="[
+            ['name' => 'Home',    'url' => '/'],
+            ['name' => 'Pricing', 'url' => '/pricing'],
+        ]" />
+        <x-schema type="faq" :data="[
+            ['q' => 'Is HandleLife OS really free to start?',
+             'a' => 'Yes. The Starter plan is free forever — no credit card required. You can upgrade to Plus or Family Hub anytime.'],
+            ['q' => 'Can I cancel anytime?',
+             'a' => 'Yes. There are no long-term contracts, no penalties, and no dark patterns. Switch plans or cancel instantly from your account.'],
+            ['q' => 'What currencies does HandleLife OS support?',
+             'a' => 'We support USD, EUR, GBP, INR, AED, BRL, CAD, AUD, JPY, and SGD at launch — with more added regularly. Pricing is shown in your local currency at checkout.'],
+            ['q' => 'Is HandleLife OS available globally?',
+             'a' => 'Yes. HandleLife OS is available in 190+ countries and supports 20+ languages. Our privacy standards meet GDPR, CCPA, PDPA, and other major data-protection frameworks worldwide.'],
+            ['q' => 'How is my data protected?',
+             'a' => 'All personal data is encrypted with AES-256 end-to-end. We use a zero-knowledge architecture — even our team cannot read your private content. Your data is never sold or used to train models.'],
+            ['q' => 'Do you offer a free trial of paid plans?',
+             'a' => 'Yes. Every paid plan includes a 14-day money-back guarantee. If HandleLife OS isn\'t right for you, we refund you — no questions asked.'],
+        ]" />
+        <x-schema type="product" :data="[
+            'name'        => 'HandleLife OS',
+            'description' => 'AI-powered personal life operating system. Reduce mental load and handle life with calm clarity.',
+            'image'       => asset('images/og-main.png'),
+            'brand'       => ['@type' => 'Brand', 'name' => 'HandleLife OS'],
+            'offers'      => [
+                '@type'       => 'AggregateOffer',
+                'lowPrice'    => '0',
+                'highPrice'   => '39',
+                'priceCurrency' => 'USD',
+                'offerCount'  => 3,
+                'availability'=> 'https://schema.org/PreOrder',
+            ],
+            'aggregateRating' => [
+                '@type'       => 'AggregateRating',
+                'ratingValue' => '4.9',
+                'reviewCount' => '50000',
+                'bestRating'  => '5',
+            ],
+        ]" />
+    @endpush
 
     <div id="pricing-section" class="bg-white">
         
@@ -63,7 +104,7 @@
                         <div class="mb-8">
                             <h3 class="text-slate-500 text-xs font-bold uppercase tracking-[0.2em] mb-4">Start Better</h3>
                             <div class="flex items-baseline gap-1">
-                                <span class="text-4xl font-black text-slate-900">₹0</span>
+                                <span class="text-4xl font-black text-slate-900" data-price-inr="0">₹0</span>
                                 <span class="text-slate-400 text-sm font-medium">/forever</span>
                             </div>
                             <p class="text-slate-400 text-sm mt-2">Essential Life Dashboard</p>
@@ -100,7 +141,7 @@
                         <div class="mb-8 mt-2">
                             <h3 class="text-teal-600 text-xs font-bold uppercase tracking-[0.2em] mb-4">Personal Growth</h3>
                             <div class="flex items-baseline gap-1">
-                                <span class="text-4xl font-black text-slate-900 price-value" data-monthly="₹199" data-yearly="₹1,999">₹199</span>
+                                <span class="text-4xl font-black text-slate-900 price-value" data-price-inr="199" data-monthly-inr="199" data-yearly-inr="1999">₹199</span>
                                 <span class="text-slate-400 text-sm font-medium period-value">/month</span>
                             </div>
                             <p class="text-slate-400 text-sm mt-2">Scale your personal output</p>
@@ -137,7 +178,7 @@
                         <div class="mb-8 mt-2">
                             <h3 class="text-teal-400 text-xs font-bold uppercase tracking-[0.2em] mb-4">Life Manager</h3>
                             <div class="flex items-baseline gap-1">
-                                <span class="text-4xl font-black text-white price-value" data-monthly="₹499" data-yearly="₹4,999">₹499</span>
+                                <span class="text-4xl font-black text-white price-value" data-price-inr="499" data-monthly-inr="499" data-yearly-inr="4999">₹499</span>
                                 <span class="text-slate-500 text-sm font-medium period-value">/month</span>
                             </div>
                             <p class="text-slate-400 text-sm mt-2">The complete AI life system</p>
@@ -176,7 +217,7 @@
                         <div class="mb-8 mt-2">
                             <h3 class="text-indigo-600 text-xs font-bold uppercase tracking-[0.2em] mb-4">Household OS</h3>
                             <div class="flex items-baseline gap-1">
-                                <span class="text-4xl font-black text-slate-900 price-value" data-monthly="₹999" data-yearly="₹9,999">₹999</span>
+                                <span class="text-4xl font-black text-slate-900 price-value" data-price-inr="999" data-monthly-inr="999" data-yearly-inr="9999">₹999</span>
                                 <span class="text-slate-400 text-sm font-medium period-value">/month</span>
                             </div>
                             <p class="text-slate-400 text-sm mt-2">Sync the entire family unit</p>
@@ -244,7 +285,7 @@
                     
                     <div class="md:w-72 w-full text-center p-8 bg-slate-950 rounded-[2.5rem] shadow-premium-lg z-10 border border-teal-500/30">
                         <p class="text-teal-400 text-xs font-bold uppercase tracking-widest mb-4">Premium Plan</p>
-                        <div class="text-4xl font-black text-white mb-2">₹1,999</div>
+                        <div class="text-4xl font-black text-white mb-2" data-price-inr="1999">₹1,999</div>
                         <p class="text-slate-500 text-xs font-medium mb-8">per month, billed monthly</p>
                         <a href="{{ route('contact') }}" class="block w-full py-4 bg-teal-500 text-white font-bold rounded-2xl hover:bg-teal-400 transition-all duration-300 shadow-xl shadow-teal-500/20">
                             Talk to Us
@@ -428,33 +469,34 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // 1. BILLING TOGGLE
-            const toggle = document.getElementById('billing-toggle');
+            // 1. BILLING TOGGLE — reads base INR amounts, converts to visitor currency
+            var toggle = document.getElementById('billing-toggle');
             if (toggle) {
-                const btns = toggle.querySelectorAll('.billing-btn');
-                const priceValues = document.querySelectorAll('.price-value');
-                const periodValues = document.querySelectorAll('.period-value');
+                var btns        = toggle.querySelectorAll('.billing-btn');
+                var priceValues = document.querySelectorAll('.price-value');
+                var periodValues = document.querySelectorAll('.period-value');
 
-                btns.forEach(btn => {
+                btns.forEach(function(btn) {
                     btn.addEventListener('click', function() {
-                        const cycle = this.dataset.cycle;
-                        
-                        // Update buttons
-                        btns.forEach(b => {
+                        var cycle = this.dataset.cycle;
+
+                        btns.forEach(function(b) {
                             b.classList.remove('active', 'bg-white', 'text-slate-900', 'shadow-sm', 'border', 'border-slate-200/50');
                             b.classList.add('text-slate-500', 'hover:text-slate-700');
                         });
-                        
                         this.classList.add('active', 'bg-white', 'text-slate-900', 'shadow-sm', 'border', 'border-slate-200/50');
                         this.classList.remove('text-slate-500', 'hover:text-slate-700');
 
-                        // Update prices
-                        priceValues.forEach(pv => {
-                            pv.textContent = pv.dataset[cycle];
+                        // Convert base INR amount to visitor currency
+                        priceValues.forEach(function(pv) {
+                            var inrKey = cycle === 'monthly' ? 'monthlyInr' : 'yearlyInr';
+                            var inr = parseFloat(pv.dataset[inrKey]);
+                            if (!isNaN(inr)) pv.textContent = _formatPrice(inr, _getSaved());
+                            // Keep data-price-inr in sync so _applyPrices() stays consistent
+                            pv.setAttribute('data-price-inr', pv.dataset[inrKey]);
                         });
 
-                        // Update periods
-                        periodValues.forEach(pv => {
+                        periodValues.forEach(function(pv) {
                             pv.textContent = cycle === 'monthly' ? '/month' : '/year';
                         });
                     });

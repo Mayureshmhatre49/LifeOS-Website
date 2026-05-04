@@ -1,5 +1,11 @@
-<x-app-layout>
-    <x-slot name="title">{{ $title }}</x-slot>
+<x-app-layout :title="$title" :description="$description ?? null" :keywords="$keywords ?? null" :robots="$robots ?? null">
+
+    @push('schema')
+        <x-schema type="breadcrumb" :data="[
+            ['name' => 'Home',     'url' => '/'],
+            ['name' => 'Security', 'url' => '/security'],
+        ]" />
+    @endpush
 
     {{-- Hero --}}
     <section class="bg-slate-950 text-white pt-[76px] pb-24 relative overflow-hidden">
@@ -75,12 +81,14 @@
         </div>
         <div class="grid md:grid-cols-3 gap-6 max-w-3xl mx-auto">
             @foreach([
-                ['icon' => '🏗️', 'title' => 'SOC 2 Type II',   'sub' => 'Certified readiness'],
-                ['icon' => '🌍', 'title' => 'GDPR & CCPA',      'sub' => 'Full compliance'],
-                ['icon' => '🔐', 'title' => 'AES-256 Bit',      'sub' => 'Encrypted endpoints'],
+                ['icon' => 'check-circle', 'title' => 'SOC 2 Type II', 'sub' => 'Certified readiness'],
+                ['icon' => 'globe',        'title' => 'GDPR & CCPA',   'sub' => 'Full compliance'],
+                ['icon' => 'lock',         'title' => 'AES-256 Bit',   'sub' => 'Encrypted endpoints'],
             ] as $s)
-                <div class="bg-white border border-slate-200 rounded-2xl p-8 text-center shadow-card hover:shadow-card-hover transition-all duration-300 group">
-                    <div class="text-3xl mb-5 grayscale group-hover:grayscale-0 transition-all duration-300" aria-hidden="true">{{ $s['icon'] }}</div>
+                <div class="bg-white border border-slate-200/70 rounded-2xl p-8 text-center shadow-card hover:shadow-card-hover transition-all duration-300 ease-out group hover:-translate-y-0.5">
+                    <div class="icon-tile icon-tile-md mx-auto mb-5 group-hover:scale-105">
+                        <x-icon :name="$s['icon']" :size="22" :stroke="1.6" />
+                    </div>
                     <div class="font-bold text-slate-950 text-sm uppercase tracking-wider">{{ $s['title'] }}</div>
                     <div class="text-slate-400 text-xs mt-2 font-medium">{{ $s['sub'] }}</div>
                 </div>

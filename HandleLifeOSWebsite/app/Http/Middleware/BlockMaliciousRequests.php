@@ -42,23 +42,24 @@ class BlockMaliciousRequests
         '/\bCONVERT\s*\(.*\bUSING\b/i',
     ];
 
-    // XSS patterns
+    // XSS patterns — designed to flag *attack vectors*, not legitimate prose.
+    // Every pattern below should be specific enough that a legitimate user typing
+    // a normal sentence into a textarea (including discussions about JavaScript)
+    // does NOT trigger a block.
     private array $xssPatterns = [
         '/<\s*script[\s\S]*?>[\s\S]*?<\s*\/\s*script\s*>/i',
         '/<\s*script[\s\S]*?(src|type|language)\s*=/i',
-        '/javascript\s*:/i',
-        '/vbscript\s*:/i',
+        '/javascript\s*:[^\s]/i',                         // requires non-space char after `:`
+        '/vbscript\s*:[^\s]/i',
         '/data\s*:\s*text\s*\/\s*(html|javascript)/i',
-        '/on(load|error|click|mouse\w+|key\w+|focus|blur|change|submit|reset|select|abort|drag\w*|drop|scroll|resize|unload|beforeunload|hashchange|input|invalid|search|toggle|wheel|contextmenu|copy|cut|paste|pointer\w*|animation\w*|transition\w*)\s*=/i',
+        '/<\s*\w+[^>]*\s+on(load|error|click|mouse\w+|key\w+|focus|blur|change|submit|reset|select|abort|drag\w*|drop|scroll|resize|unload|beforeunload|hashchange|input|invalid|search|toggle|wheel|contextmenu|copy|cut|paste|pointer\w*|animation\w*|transition\w*)\s*=/i',
         '/<\s*(iframe|frame|object|embed|applet|meta|link|base)\s/i',
-        '/expression\s*\(/i',                     // IE CSS expression
-        '/&#(x[0-9a-fA-F]+|[0-9]+);/i',          // HTML entity encoding for XSS
-        '/%[0-9a-fA-F]{2}/i',                     // URL encoding (caught contextually)
-        '/\\\u[0-9a-fA-F]{4}/i',                  // Unicode escape
-        '/document\s*\.\s*(cookie|location|write|writeln|body|head)/i',
-        '/window\s*\.\s*(location|open|eval|setTimeout|setInterval)/i',
-        '/eval\s*\(/i',
-        '/Function\s*\(/i',
+        '/expression\s*\(\s*[a-z]/i',                     // IE CSS expression — must call something
+        '/&#x[0-9a-fA-F]{2,};.*<\s*\w/i',                 // entity-encoded payload before a tag
+        // NOTE: removed `/%[0-9a-fA-F]{2}/` — false positive. $request->all() is
+        // already URL-decoded by the framework, so any %XX in field values is a
+        // user typing it literally (e.g. "200% growth"), not an attack.
+        '/<\s*\w+[^>]*\seval\s*\(/i',                     // eval inside an HTML tag
     ];
 
     // Path traversal and file inclusion patterns
@@ -80,17 +81,30 @@ class BlockMaliciousRequests
         '/glob:\/\//i',
     ];
 
-    // Command injection patterns
+    // Command injection patterns — match shell-injection sequences, NOT mere
+    // presence of a metacharacter, since legitimate textarea prose contains
+    // ampersands, dollar signs, and newlines.
     private array $commandPatterns = [
-        '/[;&|`$]\s*(ls|cat|id|whoami|uname|pwd|echo|wget|curl|nc|bash|sh|cmd|powershell)/i',
-        '/`[^`]*`/',                 // Backtick command execution
-        '/\$\([^)]+\)/i',           // $(command)
-        '/\b(exec|system|passthru|popen|proc_open|shell_exec|eval)\s*\(/i', // PHP functions
-        '/\bos\.(system|popen|execv?|spawn)/i',   // Python os module
-        '/subprocess\.(call|run|check_output)/i',  // Python subprocess
-        '/%0[aAdD]/i',              // CRLF injection
-        '/\r\n|\r|\n/m',            // Raw newlines in parameter values (checked contextually)
+        '/[;&|`]\s*(ls|cat|id|whoami|uname|pwd|wget|curl|nc|bash|sh|cmd|powershell)\s/i',
+        '/\$\([\w\s\-\/]+\)/',                                  // $(command)
+        '/`[a-z][^`]{0,80}`/i',                                 // backtick exec — must look like a command
+        '/\b(exec|system|passthru|popen|proc_open|shell_exec|assert)\s*\(\s*[\$\'\"]/i', // PHP RCE w/ arg
+        '/\bos\.(system|popen|execv?|spawn)\s*\(/i',           // Python os module
+        '/subprocess\.(call|run|check_output|Popen)\s*\(/i',   // Python subprocess
+        // NOTE: removed broad `/\r\n|\r|\n/m` — it blocked every multi-line
+        // textarea submission. CRLF-injection in HEADERS is handled separately
+        // by Symfony's HeaderBag; raw newlines inside field VALUES are legitimate.
     ];
+
+    // Fields whose values commonly contain control characters or quoted prose
+    // and should be scanned more leniently (e.g. multi-line user messages).
+    private array $proseFields = ['message', 'content', 'description', 'comment', 'feedback', 'notes'];
+
+    // Fields exempt from scanning entirely
+    private array $exemptFields = ['_token', '_hp_website', '_method'];
+
+    // CRLF injection in single-line header-style fields only
+    private string $crlfPattern = '/(\r\n|\r|\n|%0[aAdD])/';
 
     // Null byte injection
     private string $nullBytePattern = '/\x00|%00/i';
@@ -118,7 +132,7 @@ class BlockMaliciousRequests
 
         // 4. Scan all parameter values for attack patterns
         foreach ($request->all() as $key => $value) {
-            if (is_string($value)) {
+            if (\is_string($value)) {
                 $reason = $this->scanValue($key, $value);
                 if ($reason) {
                     return $this->block($request, $reason['type'], "{$key}: {$reason['match']}", 400);
@@ -168,10 +182,12 @@ class BlockMaliciousRequests
 
     private function scanValue(string $key, string $value): ?array
     {
-        // Skip honeypot and CSRF fields
-        if (in_array($key, ['_token', '_hp_website', '_method'], true)) {
+        // Skip CSRF / honeypot / method-spoofing fields
+        if (\in_array($key, $this->exemptFields, true)) {
             return null;
         }
+
+        $isProseField = \in_array($key, $this->proseFields, true);
 
         foreach ($this->sqlPatterns as $pattern) {
             if (preg_match($pattern, $value)) {
@@ -195,6 +211,12 @@ class BlockMaliciousRequests
             if (preg_match($pattern, $value)) {
                 return ['type' => 'command_injection', 'match' => substr($value, 0, 100)];
             }
+        }
+
+        // CRLF injection check — only on single-line fields (name, email, etc).
+        // Prose fields (message, content) legitimately contain newlines.
+        if (!$isProseField && preg_match($this->crlfPattern, $value)) {
+            return ['type' => 'crlf_injection', 'match' => substr($value, 0, 100)];
         }
 
         return null;

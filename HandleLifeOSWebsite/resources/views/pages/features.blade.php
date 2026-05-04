@@ -1,5 +1,11 @@
-<x-app-layout>
-    <x-slot name="title">{{ $title }}</x-slot>
+<x-app-layout :title="$title" :description="$description ?? null" :keywords="$keywords ?? null" :robots="$robots ?? null">
+
+    @push('schema')
+        <x-schema type="breadcrumb" :data="[
+            ['name' => 'Home',     'url' => '/'],
+            ['name' => 'Features', 'url' => '/features'],
+        ]" />
+    @endpush
 
     {{-- Hero --}}
     <section class="bg-slate-950 text-white pt-[76px] pb-24 md:pb-32 relative overflow-hidden">
@@ -34,13 +40,17 @@
                     It doesn't just list tasks — it understands context. HandleLife OS anticipates your needs and highlights the most important decisions, helping you move forward with real clarity.
                 </p>
                 <div class="grid sm:grid-cols-2 gap-4">
-                    <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 hover:shadow-card-hover transition-all duration-300 group">
-                        <div class="text-xl mb-3 transition-transform duration-300 group-hover:scale-110" aria-hidden="true">🌿</div>
+                    <div class="p-6 bg-gradient-to-b from-white to-slate-50/60 rounded-2xl border border-slate-200/70 hover:shadow-card-hover transition-all duration-300 group">
+                        <div class="icon-tile icon-tile-sm mb-4 group-hover:scale-105">
+                            <x-icon name="leaf" :size="18" :stroke="1.6" />
+                        </div>
                         <h4 class="font-semibold text-slate-950 text-sm mb-2">Non-judgmental helper</h4>
                         <p class="text-xs text-slate-500 leading-relaxed">A calm interface built to reduce mental load, not add to it.</p>
                     </div>
-                    <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 hover:shadow-card-hover transition-all duration-300 group">
-                        <div class="text-xl mb-3 transition-transform duration-300 group-hover:scale-110" aria-hidden="true">📅</div>
+                    <div class="p-6 bg-gradient-to-b from-white to-slate-50/60 rounded-2xl border border-slate-200/70 hover:shadow-card-hover transition-all duration-300 group">
+                        <div class="icon-tile icon-tile-sm mb-4 group-hover:scale-105">
+                            <x-icon name="calendar" :size="18" :stroke="1.6" />
+                        </div>
                         <h4 class="font-semibold text-slate-950 text-sm mb-2">Smart sequencing</h4>
                         <p class="text-xs text-slate-500 leading-relaxed">Intelligent routines that evolve alongside your life goals.</p>
                     </div>
@@ -116,9 +126,15 @@
                     Stop wondering where it goes. Financial OS tracks subscriptions, identifies waste, and gives gentle proactive guidance on your monthly budget.
                 </p>
                 <ul class="space-y-4">
-                    @foreach([['💳', 'Subscription guard'], ['📉', 'Waste analysis'], ['📊', 'Budget forecasting']] as $f)
+                    @foreach([
+                        ['credit-card', 'Subscription guard'],
+                        ['trend-down',  'Waste analysis'],
+                        ['chart-bar',   'Budget forecasting'],
+                    ] as $f)
                         <li class="flex items-center gap-4">
-                            <div class="w-10 h-10 bg-emerald-50 border border-emerald-100 rounded-xl flex items-center justify-center text-lg flex-shrink-0" aria-hidden="true">{{ $f[0] }}</div>
+                            <div class="w-10 h-10 bg-gradient-to-br from-white to-emerald-50/60 border border-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 flex-shrink-0 shadow-[0_1px_2px_rgba(15,23,42,0.04),inset_0_1px_0_rgba(255,255,255,0.8)]" aria-hidden="true">
+                                <x-icon :name="$f[0]" :size="18" :stroke="1.6" />
+                            </div>
                             <span class="font-semibold text-slate-900">{{ $f[1] }}</span>
                         </li>
                     @endforeach
@@ -147,7 +163,9 @@
                 </x-button>
             </div>
             <div class="bg-slate-50 rounded-3xl p-8 aspect-square border border-slate-200 flex flex-col items-center justify-center gap-6 relative overflow-hidden" aria-hidden="true">
-                <div class="w-20 h-20 bg-emerald-500/10 border border-emerald-500/20 rounded-3xl flex items-center justify-center text-4xl shadow-sm">🛡️</div>
+                <div class="w-20 h-20 bg-gradient-to-br from-emerald-50 to-emerald-100/60 border border-emerald-200/60 rounded-3xl flex items-center justify-center text-emerald-600 shadow-[0_4px_12px_rgba(16,185,129,0.10),inset_0_1px_0_rgba(255,255,255,0.8)]">
+                    <x-icon name="shield" :size="36" :stroke="1.5" />
+                </div>
                 <div class="text-center">
                     <div class="flex items-center justify-center gap-2 mb-2">
                         <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse-slow"></span>

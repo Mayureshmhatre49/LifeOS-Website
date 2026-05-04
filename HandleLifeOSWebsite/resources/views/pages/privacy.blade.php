@@ -1,5 +1,11 @@
-<x-app-layout>
-    <x-slot name="title">{{ $title }}</x-slot>
+<x-app-layout :title="$title" :description="$description ?? null" :keywords="$keywords ?? null" :robots="$robots ?? null">
+
+    @push('schema')
+        <x-schema type="breadcrumb" :data="[
+            ['name' => 'Home',           'url' => '/'],
+            ['name' => 'Privacy Policy', 'url' => '/privacy'],
+        ]" />
+    @endpush
 
     {{-- Hero --}}
     <x-section bg="bg-white" padding="pt-32 pb-20">

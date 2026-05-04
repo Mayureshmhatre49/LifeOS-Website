@@ -1,5 +1,12 @@
-<x-app-layout>
-    <x-slot name="title">{{ $title }}</x-slot>
+<x-app-layout :title="$title" :description="$description ?? null" :keywords="$keywords ?? null" :robots="$robots ?? null">
+
+    @push('schema')
+        <x-schema type="aboutpage" />
+        <x-schema type="breadcrumb" :data="[
+            ['name' => 'Home',  'url' => '/'],
+            ['name' => 'About', 'url' => '/about'],
+        ]" />
+    @endpush
 
     {{-- Hero --}}
     <x-section bg="bg-white" padding="pt-32 pb-20">
@@ -50,12 +57,14 @@
         </div>
         <div class="grid md:grid-cols-3 gap-8">
             @foreach([
-                ['icon' => '🤝', 'title' => 'Dignity first',   'text' => 'Technology should serve your wellbeing, not exploit your attention for profit. Our systems are built to save time — never to steal it.'],
-                ['icon' => '🛡️', 'title' => 'Zero visibility', 'text' => 'Safety is not a feature; it\'s the architecture. We build with end-to-end zero-knowledge standards so your life remains your own.'],
-                ['icon' => '✨', 'title' => 'Calm clarity',    'text' => 'We don\'t just organize chaos — we neutralize it. Our goal is to anticipate needs before they become stressors, providing clear paths forward.'],
+                ['icon' => 'heart',    'title' => 'Dignity first',   'text' => 'Technology should serve your wellbeing, not exploit your attention for profit. Our systems are built to save time — never to steal it.'],
+                ['icon' => 'shield',   'title' => 'Zero visibility', 'text' => 'Safety is not a feature; it\'s the architecture. We build with end-to-end zero-knowledge standards so your life remains your own.'],
+                ['icon' => 'sparkles', 'title' => 'Calm clarity',    'text' => 'We don\'t just organize chaos — we neutralize it. Our goal is to anticipate needs before they become stressors, providing clear paths forward.'],
             ] as $v)
                 <div class="group">
-                    <div class="text-4xl mb-6 grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:-translate-y-1 transform" aria-hidden="true">{{ $v['icon'] }}</div>
+                    <div class="icon-tile icon-tile-lg mb-6 group-hover:-translate-y-1 group-hover:scale-105">
+                        <x-icon :name="$v['icon']" :size="26" :stroke="1.5" />
+                    </div>
                     <h3 class="text-base font-bold text-slate-950 mb-3 uppercase tracking-wide">{{ $v['title'] }}</h3>
                     <p class="text-slate-500 text-sm leading-relaxed font-medium">{{ $v['text'] }}</p>
                 </div>

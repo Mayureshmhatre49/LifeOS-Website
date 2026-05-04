@@ -1,5 +1,12 @@
-<x-app-layout>
-    <x-slot name="title">Life Resources & Insights</x-slot>
+<x-app-layout title="Life Resources & Insights — Blog"
+              description="Insights, guides, and stories about handling life better. Read about productivity, family coordination, money management, scam protection, and more."
+              keywords="HandleLife OS blog, life management articles, AI productivity insights, family coordination guide, mental load resources">
+    @push('schema')
+        <x-schema type="breadcrumb" :data="[
+            ['name' => 'Home', 'url' => '/'],
+            ['name' => 'Blog', 'url' => '/blog'],
+        ]" />
+    @endpush
 
     <!-- Header -->
     <x-section bg="bg-white" padding="pt-40 pb-20">
@@ -24,7 +31,7 @@
                 <article class="group">
                     <a href="{{ route('blog.show', $post->slug) }}" class="block mb-6 overflow-hidden rounded-[2rem] aspect-[16/10] bg-slate-100 relative shadow-premium">
                         @if($post->featured_image)
-                            <img src="{{ $post->featured_image }}" alt="{{ $post->title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <img src="{{ $post->featured_image }}" alt="{{ $post->title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async" width="800" height="450">
                         @else
                             <div class="w-full h-full flex items-center justify-center text-slate-300 font-black uppercase tracking-widest text-xs opacity-50">Post Visual</div>
                         @endif

@@ -149,7 +149,9 @@
 @endphp
 
 @if($schema)
+{{-- JSON_HEX_TAG/APOS/QUOT/AMP prevents `</script>` and quote breakouts when
+     user-controlled fields (e.g. blog post titles) flow into the schema. --}}
 <script type="application/ld+json">
-{!! json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+{!! json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) !!}
 </script>
 @endif

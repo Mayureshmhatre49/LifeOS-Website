@@ -14,7 +14,8 @@
 <nav
     x-data="navbar"
     :class="navClasses"
-    class="fixed top-0 inset-x-0 z-50 transition-transform duration-300 bg-white border-b border-slate-200 shadow-sm"
+    class="fixed top-0 inset-x-0 z-50 transition-transform duration-300 ease-out bg-white/85 backdrop-blur-xl border-b border-slate-200/60 shadow-[0_1px_2px_rgba(15,23,42,0.04)] supports-[backdrop-filter]:bg-white/85"
+    style="backdrop-filter: saturate(180%) blur(16px); -webkit-backdrop-filter: saturate(180%) blur(16px);"
     role="navigation"
     aria-label="Main navigation">
 
@@ -54,12 +55,22 @@
                 <!-- Language picker -->
                 <div x-data="langSwitcher" class="relative" @click.outside="close()">
                     <button
-                        @click="toggle()"
+                        @click="!loading && toggle()"
                         :aria-expanded="open.toString()"
+                        :aria-busy="loading"
                         aria-label="Select language"
-                        class="flex items-center gap-1.5 h-9 px-3 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors duration-200 notranslate">
-                        <span x-text="current.flag" class="text-base leading-none" aria-hidden="true"></span>
-                        <span x-text="current.code.split('-')[0].toUpperCase()" class="tabular-nums"></span>
+                        class="flex items-center gap-1.5 h-9 px-3 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors duration-200 notranslate"
+                        :class="loading ? 'opacity-60 cursor-wait' : ''">
+                        <template x-if="loading">
+                            <svg class="w-4 h-4 animate-spin text-teal-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                        </template>
+                        <template x-if="!loading">
+                            <span x-text="current.flag" class="text-base leading-none" aria-hidden="true"></span>
+                        </template>
+                        <span x-show="!loading" x-text="current.code.split('-')[0].toUpperCase()" class="tabular-nums"></span>
                         <svg class="w-3 h-3 transition-transform duration-200 flex-shrink-0"
                              :class="open ? 'rotate-180' : ''"
                              fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">

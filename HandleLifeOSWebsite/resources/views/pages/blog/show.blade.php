@@ -1,16 +1,34 @@
-<x-app-layout>
-    <x-slot name="description">{{ $post->meta_description ?? $post->excerpt }}</x-slot>
-
+<x-app-layout :title="$post->title"
+              :description="$post->meta_description ?? $post->excerpt"
+              :image="$post->featured_image">
     @push('schema')
         <x-schema type="blogpost" :data="[
-            'headline' => $post->title,
-            'description' => $post->excerpt,
-            'image' => $post->featured_image,
+            'headline'      => $post->title,
+            'description'   => $post->excerpt,
+            'image'         => $post->featured_image,
             'datePublished' => $post->published_at->toIso8601String(),
-            'author' => [
+            'dateModified'  => optional($post->updated_at)->toIso8601String() ?? $post->published_at->toIso8601String(),
+            'author'        => [
                 '@type' => 'Person',
-                'name' => $post->author_name
-            ]
+                'name'  => $post->author_name,
+            ],
+            'publisher' => [
+                '@type' => 'Organization',
+                'name'  => 'HandleLife OS',
+                'logo'  => [
+                    '@type' => 'ImageObject',
+                    'url'   => asset('images/logo.png'),
+                ],
+            ],
+            'mainEntityOfPage' => [
+                '@type' => 'WebPage',
+                '@id'   => route('blog.show', $post->slug),
+            ],
+        ]" />
+        <x-schema type="breadcrumb" :data="[
+            ['name' => 'Home', 'url' => '/'],
+            ['name' => 'Blog', 'url' => '/blog'],
+            ['name' => $post->title, 'url' => '/blog/' . $post->slug],
         ]" />
     @endpush
 
@@ -50,7 +68,7 @@
         <div class="max-w-4xl mx-auto">
             @if($post->featured_image)
                 <div class="mb-20 rounded-[3rem] overflow-hidden shadow-2xl">
-                    <img src="{{ $post->featured_image }}" alt="{{ $post->title }}" class="w-full h-auto">
+                    <img src="{{ $post->featured_image }}" alt="{{ $post->title }}" class="w-full h-auto" loading="eager" decoding="async" fetchpriority="high" width="1200" height="630">
                 </div>
             @endif
 
@@ -60,7 +78,10 @@
                 prose-strong:text-slate-900 prose-strong:font-black
                 prose-a:text-teal-600 prose-a:no-underline hover:prose-a:underline
                 selection:bg-teal-500/20">
-                {!! $post->content !!}
+                {{-- Content is HTML-sanitised before render: strips <script>, on* handlers,
+                     javascript: URIs, dangerous CSS. Even if an authoring path is ever
+                     compromised, stored XSS surface stays minimal. --}}
+                {!! \App\Support\HtmlSanitizer::clean($post->content) !!}
             </article>
 
             <!-- Bottom Share/CTA -->

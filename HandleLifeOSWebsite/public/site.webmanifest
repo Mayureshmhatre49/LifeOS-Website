@@ -1,0 +1,38 @@
+{
+    "name": "HandleLife OS",
+    "short_name": "HandleLife",
+    "description": "AI-powered personal life operating system. Reduce mental load, make smarter decisions, and handle life with clarity.",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "any",
+    "background_color": "#ffffff",
+    "theme_color": "#020617",
+    "lang": "en",
+    "dir": "ltr",
+    "categories": ["productivity", "lifestyle", "utilities"],
+    "icons": [
+        {
+            "src": "/favicon-16x16.png",
+            "sizes": "16x16",
+            "type": "image/png"
+        },
+        {
+            "src": "/favicon-32x32.png",
+            "sizes": "32x32",
+            "type": "image/png"
+        },
+        {
+            "src": "/apple-touch-icon.png",
+            "sizes": "180x180",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/images/og-main.png",
+            "sizes": "1200x630",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ]
+}

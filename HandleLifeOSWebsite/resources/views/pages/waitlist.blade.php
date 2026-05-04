@@ -1,5 +1,11 @@
-<x-app-layout>
-    <x-slot name="title">{{ $title }}</x-slot>
+<x-app-layout :title="$title" :description="$description ?? null" :keywords="$keywords ?? null" :robots="$robots ?? null">
+
+    @push('schema')
+        <x-schema type="breadcrumb" :data="[
+            ['name' => 'Home',     'url' => '/'],
+            ['name' => 'Waitlist', 'url' => '/waitlist'],
+        ]" />
+    @endpush
 
     {{-- Hero --}}
     <section class="relative bg-slate-950 text-white overflow-hidden min-h-[100svh] flex items-center pt-[76px]">
@@ -75,46 +81,30 @@
         </div>
 
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            <x-feature-card theme="muted"
+            <x-feature-card theme="muted" iconName="home"
                 title="Families"
-                description="From nuclear homes to multi-generational households — coordinate life together without the chaos.">
-                <x-slot name="icon">🏠</x-slot>
-            </x-feature-card>
-            <x-feature-card theme="muted"
+                description="From nuclear homes to multi-generational households — coordinate life together without the chaos." />
+            <x-feature-card theme="muted" iconName="briefcase"
                 title="Working people"
-                description="Employee, entrepreneur, or freelancer — stop letting personal logistics fall through the cracks.">
-                <x-slot name="icon">💼</x-slot>
-            </x-feature-card>
-            <x-feature-card theme="muted"
+                description="Employee, entrepreneur, or freelancer — stop letting personal logistics fall through the cracks." />
+            <x-feature-card theme="muted" iconName="graduation-cap"
                 title="Students"
-                description="Balance studies, finances, and growing responsibilities with a calm system built for your stage of life.">
-                <x-slot name="icon">🎓</x-slot>
-            </x-feature-card>
-            <x-feature-card theme="muted"
+                description="Balance studies, finances, and growing responsibilities with a calm system built for your stage of life." />
+            <x-feature-card theme="muted" iconName="globe"
                 title="Individuals"
-                description="Living solo doesn't mean handling everything alone. Your personal OS keeps life in order, wherever you are.">
-                <x-slot name="icon">🌍</x-slot>
-            </x-feature-card>
-            <x-feature-card theme="muted"
+                description="Living solo doesn't mean handling everything alone. Your personal OS keeps life in order, wherever you are." />
+            <x-feature-card theme="muted" iconName="user-elder"
                 title="Older adults"
-                description="Stay on top of health, finances, and daily routines with a calm, clear assistant that works at your pace.">
-                <x-slot name="icon">👴</x-slot>
-            </x-feature-card>
-            <x-feature-card theme="muted"
+                description="Stay on top of health, finances, and daily routines with a calm, clear assistant that works at your pace." />
+            <x-feature-card theme="muted" iconName="heart"
                 title="Caregivers"
-                description="Track the needs of those you love — from young children to aging parents — all in one clear place.">
-                <x-slot name="icon">💚</x-slot>
-            </x-feature-card>
-            <x-feature-card theme="muted"
+                description="Track the needs of those you love — from young children to aging parents — all in one clear place." />
+            <x-feature-card theme="muted" iconName="lock"
                 title="Privacy-first"
-                description="For everyone who believes their personal data belongs to them — not to corporations or advertisers.">
-                <x-slot name="icon">🛡️</x-slot>
-            </x-feature-card>
-            <x-feature-card theme="muted"
+                description="For everyone who believes their personal data belongs to them — not to corporations or advertisers." />
+            <x-feature-card theme="muted" iconName="sprout"
                 title="New beginnings"
-                description="New city, new country, or new chapter of life — your OS adapts to wherever you are in the world.">
-                <x-slot name="icon">🌱</x-slot>
-            </x-feature-card>
+                description="New city, new country, or new chapter of life — your OS adapts to wherever you are in the world." />
         </div>
     </x-section>
 

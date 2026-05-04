@@ -80,24 +80,51 @@ class SecurityHeaders
         $response->headers->set('Cross-Origin-Resource-Policy', 'same-origin');
 
         // ── Content Security Policy ───────────────────────────────────
-        // Alpine.js uses inline x-on handlers, so unsafe-inline is required for scripts.
-        // All other directives are locked down tightly.
-        $csp = implode('; ', [
+        // 'unsafe-inline' is required for our Alpine.data() bootstrap <script>.
+        // 'unsafe-eval' is required for Google Translate's element.js (it uses
+        // Function() at runtime to inject translation handlers).
+        // GT iframes load from translate.googleusercontent.com, scripts/fonts
+        // pull from www.google.com + *.gstatic.com.
+        $cspDirectives = [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://translate.google.com https://translate.googleapis.com https://www.gstatic.com",
+            // 'unsafe-inline' required for the Alpine.data() bootstrap <script>.
+            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
             "font-src 'self' data: https://fonts.gstatic.com",
             "img-src 'self' data: blob: https:",
-            "connect-src 'self' https://translate.googleapis.com https://translate.google.com",
-            "frame-src https://translate.google.com",
+            // translate.googleapis.com: the built-in translation engine fetches from
+            // this endpoint directly — same XHR the GT widget used internally.
+            "connect-src 'self' https://translate.googleapis.com",
+            "frame-src 'none'",
             "frame-ancestors 'none'",
             "object-src 'none'",
             "base-uri 'self'",
             "form-action 'self'",
             "manifest-src 'self'",
             "worker-src 'none'",
-            "upgrade-insecure-requests",
-        ]);
+        ];
+
+        // Only force HTTPS upgrades outside local dev (HTTP localhost serves fine).
+        if (!app()->environment('local')) {
+            $cspDirectives[] = 'upgrade-insecure-requests';
+        }
+
+        if (app()->environment('local')) {
+            $viteUrl = 'http://127.0.0.1:5173';
+            $viteWs  = 'ws://127.0.0.1:5173';
+
+            foreach ($cspDirectives as &$directive) {
+                if (str_starts_with($directive, 'script-src')) {
+                    $directive .= " $viteUrl";
+                } elseif (str_starts_with($directive, 'style-src')) {
+                    $directive .= " $viteUrl";
+                } elseif (str_starts_with($directive, 'connect-src')) {
+                    $directive .= " $viteUrl $viteWs";
+                }
+            }
+        }
+
+        $csp = implode('; ', $cspDirectives);
         $response->headers->set('Content-Security-Policy', $csp);
 
         // ── Cache: never cache sensitive pages ────────────────────────

@@ -17,7 +17,7 @@ class LeadRequest extends FormRequest
             'name'         => ['required', 'string', 'min:2', 'max:100', 'regex:/^[\p{L}\p{M}\s\'\-\.]+$/u'],
             'email'        => ['required', 'email:rfc,dns', 'max:254'],
             'company_name' => ['nullable', 'string', 'max:150', 'regex:/^[\p{L}\p{M}\d\s&\'\-\.,]+$/u'],
-            'inquiry_type' => ['required', 'string', 'in:general,enterprise,partnership,press,support,other'],
+            'inquiry_type' => ['required', 'string', 'in:general,demo,sales,partnership'],
             'message'      => ['nullable', 'string', 'max:2000'],
             '_hp_website'  => ['present', 'max:0'],   // honeypot: must exist and be empty
         ];
@@ -37,9 +37,10 @@ class LeadRequest extends FormRequest
     {
         // Sanitise string inputs — strip control characters and trim whitespace
         $this->merge([
-            'name'         => $this->sanitise($this->name),
-            'company_name' => $this->sanitise($this->company_name),
-            'message'      => $this->sanitise($this->message),
+            'name'         => $this->sanitise($this->input('name')),
+            'company_name' => $this->sanitise($this->input('company_name')),
+            'message'      => $this->sanitise($this->input('message')),
+            'email'        => is_string($this->input('email')) ? strtolower(trim($this->input('email'))) : null,
         ]);
     }
 

@@ -1,5 +1,12 @@
-<x-app-layout>
-    <x-slot name="title">{{ $title }}</x-slot>
+<x-app-layout :title="$title" :description="$description ?? null" :keywords="$keywords ?? null" :robots="$robots ?? null">
+
+    @push('schema')
+        <x-schema type="contactpage" />
+        <x-schema type="breadcrumb" :data="[
+            ['name' => 'Home',    'url' => '/'],
+            ['name' => 'Contact', 'url' => '/contact'],
+        ]" />
+    @endpush
 
     {{-- Success / error flash --}}
     @if(session('success'))

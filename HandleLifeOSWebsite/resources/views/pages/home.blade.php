@@ -1,5 +1,4 @@
-<x-app-layout>
-    <x-slot name="title">{{ $title }}</x-slot>
+<x-app-layout :title="$title" :description="$description ?? null" :keywords="$keywords ?? null" :robots="$robots ?? null">
 
     {{-- ── HERO ──────────────────────────────────────────────────────── --}}
     <section class="relative bg-slate-950 text-white overflow-hidden min-h-[100svh] flex items-center pt-[76px]">
@@ -89,7 +88,9 @@
 
                         {{-- Shield alert --}}
                         <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl px-4 py-3 flex items-center gap-3 mb-4">
-                            <div class="w-8 h-8 bg-emerald-500/15 rounded-xl flex items-center justify-center flex-shrink-0 text-base" aria-hidden="true">🛡️</div>
+                            <div class="w-8 h-8 bg-emerald-500/15 rounded-xl flex items-center justify-center flex-shrink-0 text-emerald-300" aria-hidden="true">
+                                <x-icon name="shield" :size="16" :stroke="1.75" />
+                            </div>
                             <div class="min-w-0">
                                 <div class="text-white text-xs font-semibold">Scam detected &amp; blocked</div>
                                 <div class="text-slate-400 text-xs truncate">Phishing link in SMS — flagged safe</div>
@@ -161,26 +162,18 @@
         </div>
 
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            <x-feature-card theme="light"
+            <x-feature-card theme="light" iconName="sparkles"
                 title="Decision fatigue"
-                description="From the moment you wake up, your mind is already running — deciding, remembering, managing — before the day even begins.">
-                <x-slot name="icon">✨</x-slot>
-            </x-feature-card>
-            <x-feature-card theme="light"
+                description="From the moment you wake up, your mind is already running — deciding, remembering, managing — before the day even begins." />
+            <x-feature-card theme="light" iconName="cloud"
                 title="Invisible workload"
-                description="The mental load of keeping everything together is real — and rarely shared equally.">
-                <x-slot name="icon">☁️</x-slot>
-            </x-feature-card>
-            <x-feature-card theme="light"
+                description="The mental load of keeping everything together is real — and rarely shared equally." />
+            <x-feature-card theme="light" iconName="credit-card"
                 title="Money stress"
-                description="Most people don't know exactly where their money goes until it's too late.">
-                <x-slot name="icon">💳</x-slot>
-            </x-feature-card>
-            <x-feature-card theme="light"
+                description="Most people don't know exactly where their money goes until it's too late." />
+            <x-feature-card theme="light" iconName="shield"
                 title="Digital threats"
-                description="Scams, phishing, and predatory contracts target people at their most vulnerable moments.">
-                <x-slot name="icon">🛡️</x-slot>
-            </x-feature-card>
+                description="Scams, phishing, and predatory contracts target people at their most vulnerable moments." />
         </div>
     </x-section>
 
