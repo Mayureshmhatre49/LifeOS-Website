@@ -17,7 +17,7 @@ const createSchema = z.object({
   reminder_time: z.string().regex(/^\d{2}:\d{2}$/).optional(),
 })
 
-export async function GET() {
+export async function GET(_req: NextRequest) {
   const session = await auth()
   if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const habits = await getHabitsWithStats(session.user.id)

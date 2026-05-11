@@ -14,7 +14,7 @@ function makeSupabaseChain(resolveValue: unknown) {
     chain[m] = () => chain
   }
   chain.then = (resolve: (v: unknown) => unknown) => Promise.resolve(resolveValue).then(resolve)
-  chain[Symbol.toStringTag] = 'Promise'
+  ;(chain as Record<string | symbol, unknown>)[Symbol.toStringTag] = 'Promise'
   // make it a proper thenable
   Object.defineProperty(chain, 'then', {
     value: (resolve: (v: unknown) => unknown) => Promise.resolve(resolveValue).then(resolve),

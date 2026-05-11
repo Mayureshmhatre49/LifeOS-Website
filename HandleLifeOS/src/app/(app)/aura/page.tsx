@@ -102,7 +102,7 @@ export default function AuraDashboardPage() {
 
       {/* Child switcher */}
       <AuraChildSwitcher
-        children={profiles}
+        profiles={profiles}
         selectedId={selectedId}
         onSelect={handleSelect}
         onAddNew={() => setShowAddForm(true)}

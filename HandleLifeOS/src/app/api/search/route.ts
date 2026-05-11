@@ -40,6 +40,10 @@ export async function POST(req: NextRequest) {
   const db = getSupabaseAdmin()
   const ilike = `%${q}%`
 
+  // Pre-fetch user's family memberships to scope shared_tasks (IDOR guard)
+  const { data: memberRows } = await db.from('family_members').select('family_id').eq('user_id', userId)
+  const familyIds = (memberRows ?? []).map((r: { family_id: string }) => r.family_id)
+
   // Run all module searches in parallel. Each returns up to ~5 hits.
   const queries = [
     // Tasks
@@ -50,8 +54,10 @@ export async function POST(req: NextRequest) {
     db.from('gratitude_entries').select('id, items, date, created_at').eq('user_id', userId).order('date', { ascending: false }).limit(50),
     // Mood notes
     db.from('mood_logs').select('id, note, mood, logged_at').eq('user_id', userId).ilike('note', ilike).order('logged_at', { ascending: false }).limit(5),
-    // Family shared tasks
-    db.from('shared_tasks').select('id, title, notes, family_id, status, updated_at').or(`title.ilike.${ilike},notes.ilike.${ilike}`).order('updated_at', { ascending: false }).limit(5),
+    // Family shared tasks — scoped to user's families only
+    familyIds.length > 0
+      ? db.from('shared_tasks').select('id, title, notes, family_id, status, updated_at').in('family_id', familyIds).or(`title.ilike.${ilike},notes.ilike.${ilike}`).order('updated_at', { ascending: false }).limit(5)
+      : Promise.resolve({ data: [] as { id: string; title: string; notes: string | null; family_id: string; status: string; updated_at: string }[] }),
     // AURA profiles
     db.from('aura_profiles').select('id, data, updated_at').eq('user_id', userId).order('updated_at', { ascending: false }).limit(20),
     // AURA documents

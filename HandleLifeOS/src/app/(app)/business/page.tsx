@@ -66,6 +66,7 @@ export default function BusinessPage() {
     setClients(r.clients ?? []); setProjects(r.projects ?? []); setInvoices(r.invoices ?? []); setExpenses(r.expenses ?? [])
     if (p?.currency) setCurrency(p.currency)
   }
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- async data load on mount
   useEffect(() => { refresh().finally(() => setLoading(false)) }, [])
 
   async function add(kind: string, payload: Record<string, unknown>) {

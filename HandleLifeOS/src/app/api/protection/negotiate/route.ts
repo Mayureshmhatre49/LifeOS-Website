@@ -34,7 +34,12 @@ export async function POST(req: NextRequest) {
     userContext = formatMemoryForPrompt(memCtx) || undefined
   }
 
-  const result = await generateNegotiationScript(context, type, tone, amount, currency, userContext)
+  let result
+  try {
+    result = await generateNegotiationScript(context, type, tone, amount, currency, userContext)
+  } catch {
+    return NextResponse.json({ error: 'Failed to generate negotiation script' }, { status: 500 })
+  }
 
   if (save !== false && isSupabaseConfigured()) {
     try {

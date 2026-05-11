@@ -52,6 +52,7 @@ export const mockSession = {
 
 // ── Profile ───────────────────────────────────────────────────────────────────
 export const mockProfile = {
+  id: TEST_USER_ID,
   user_id: TEST_USER_ID,
   display_name: 'Nishant',
   occupation: 'Software Engineer',
@@ -62,6 +63,7 @@ export const mockProfile = {
   goals: ['save ₹5L this year', 'run a marathon', 'read 24 books'],
   memory_enabled: true,
   created_at: '2026-01-01T00:00:00.000Z',
+  updated_at: '2026-01-01T00:00:00.000Z',
 }
 
 // ── Memory Items ──────────────────────────────────────────────────────────────

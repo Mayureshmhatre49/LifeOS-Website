@@ -1,6 +1,7 @@
 import { vi } from 'vitest'
 
 // Load test environment variables
+// @ts-expect-error -- vitest needs to override NODE_ENV at test bootstrap
 process.env.NODE_ENV = 'test'
 process.env.NEXTAUTH_SECRET = 'test-secret-for-vitest-only-not-production'
 process.env.AUTH_SECRET = 'test-secret-for-vitest-only-not-production'

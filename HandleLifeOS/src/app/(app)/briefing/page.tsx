@@ -21,6 +21,7 @@ export default function BriefingPage() {
     }
   }
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- async data load on mount
   useEffect(() => { load(false) }, [])
 
   return (

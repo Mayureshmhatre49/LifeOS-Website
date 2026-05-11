@@ -316,7 +316,7 @@ async function testHabits(page: Page, persona: Persona, moduleRef: { current: st
   if (canAdd) {
     await addBtn.click()
     await page.waitForTimeout(1000)
-    const habitInput = page.locator('input').filter({ hasAttribute: 'placeholder' }).first()
+    const habitInput = page.locator('input[placeholder]').first()
     if (await habitInput.isVisible().catch(() => false)) {
       await habitInput.fill('Morning meditation')
       const saveBtn = page.locator('button[type="submit"], button').filter({ hasText: /save|create|add/i }).first()
@@ -381,7 +381,7 @@ async function testTravel(page: Page, persona: Persona, moduleRef: { current: st
   if (canAdd) {
     await addBtn.click()
     await page.waitForTimeout(1500)
-    const destInput = page.locator('input').filter({ hasAttribute: 'placeholder' }).first()
+    const destInput = page.locator('input[placeholder]').first()
     if (await destInput.isVisible().catch(() => false)) {
       await destInput.fill('Paris, France')
     }

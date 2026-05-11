@@ -1,214 +1,321 @@
 /**
- * Seed: Nadia Kovács — Psychotherapist (Private Practice), Budapest, Hungary (HUF)
+ * Seed: Nadia Kovács — CBT/ACT Psychotherapist (Private Practice), Budapest, Hungary (HUF)
  * Email: nadia.kovacs@e2e-test.handlelifeos.app
- * Persona #35 — CBT/ACT therapist, private clinic, mental health advocacy, HUF inflation
+ * Persona #35 — Private clinic, EAP corporate contracts, HUF inflation anxiety, mental health advocacy
  */
-import { createClient } from '@supabase/supabase-js';
 
-const SUPABASE_URL = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const EMAIL = 'nadia.kovacs@e2e-test.handlelifeos.app';
+import { createClient } from '@supabase/supabase-js'
+import * as dotenv from 'dotenv'
+import { resolve, dirname } from 'path'
+import { fileURLToPath } from 'url'
 
-if (!SUPABASE_URL || !SERVICE_KEY) {
-  console.error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY'); process.exit(1);
+const __dirname = dirname(fileURLToPath(import.meta.url))
+dotenv.config({ path: resolve(__dirname, '../../.env.local') })
+
+const sb = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY,
+  { auth: { persistSession: false } }
+)
+
+const EMAIL = 'nadia.kovacs@e2e-test.handlelifeos.app'
+
+async function cnt(table, uid) {
+  const { count } = await sb.from(table).select('*', { count: 'exact', head: true }).eq('user_id', uid)
+  return count ?? 0
 }
 
-const sb = createClient(SUPABASE_URL, SERVICE_KEY, { auth: { autoRefreshToken: false, persistSession: false } });
+export async function seedNadia() {
+  // 1. Resolve user id
+  const { data: { users }, error: listErr } = await sb.auth.admin.listUsers()
+  if (listErr) throw listErr
+  const user = users.find(u => u.email === EMAIL)
+  if (!user) throw new Error(`User ${EMAIL} not found — create auth account first`)
+  const uid = user.id
 
-const ok = (label, data, error) => { if (error) { console.error(`✗ ${label}`, error.message); } else { console.log(`✓ ${label}`, Array.isArray(data) ? `(${data.length})` : ''); } };
-const fail = (label, error) => { console.error(`✗ ${label}`, error?.message ?? error); };
-const cnt = async (table, uid) => { const { count } = await sb.from(table).select('*', { count: 'exact', head: true }).eq('user_id', uid); return count ?? 0; };
-
-function dateOffset(days) {
-  const d = new Date('2026-04-19T00:00:00Z');
-  d.setUTCDate(d.getUTCDate() + days);
-  return d.toISOString().slice(0, 10);
-}
-const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-
-async function seed() {
-  const { data: { users }, error: uErr } = await sb.auth.admin.listUsers();
-  if (uErr) { fail('listUsers', uErr); return; }
-  const user = users.find(u => u.email === EMAIL);
-  if (!user) { fail('findUser', `No user with email ${EMAIL}`); return; }
-  const uid = user.id;
-  console.log(`\n🌱 Seeding Nadia Kovács (${uid})\n`);
-
-  const { data: prof, error: profErr } = await sb.from('profiles').upsert({
-    user_id: uid,
-    full_name: 'Nadia Kovács',
-    display_name: 'Nadia',
-    locale: 'hu-HU',
+  // 2. Profile
+  await sb.from('profiles').upsert({
+    id: uid,
+    display_name: 'Nadia Kovács',
+    occupation: 'Pszichoterapeuta & CBT/ACT Klinikai Pszichológus — magánpraxis',
+    life_stage: 'mid_career',
+    country: 'HU',
     currency: 'HUF',
     timezone: 'Europe/Budapest',
-    country: 'HU',
-    occupation: 'Pszichoterapeuta (CBT/ACT) — Kovács Terápia Magánrendelő, Budapest',
-    dietary_preferences: [],
-    has_child: false,
-    has_business: true,
-    accessibility_needs: [],
-    onboarding_complete: true,
-    avatar_url: null,
-  }, { onConflict: 'user_id' }).select();
-  ok('profile upsert', prof, profErr);
+    goals: [
+      'Publish CBT workbook on anxiety management in Hungarian — manuscript due Q4 2026',
+      'Become certified ACT supervisor — complete 40-hour supervision training',
+      'Expand EAP contracts to 3 corporate clients — currently 1 (MOL Group)',
+      'Build HUF-inflation-proof savings: 30% in EUR-denominated assets by end 2026'
+    ],
+    memory_enabled: true
+  }, { onConflict: 'id' })
 
-  if (await cnt('memory_items', uid) === 0) {
-    const items = [
-      { user_id: uid, type: 'fact', content: 'Nadia runs Kovács Terápia private practice in Budapest XI. district (Buda side). 22 active clients/week at 12,000 HUF/session', importance: 10 },
-      { user_id: uid, type: 'fact', content: 'Monthly income: HUF 800,000-1,050,000. CBT (cognitive behavioural) + ACT (acceptance and commitment) therapy specialization', importance: 9 },
-      { user_id: uid, type: 'fact', content: 'PhD in Clinical Psychology from ELTE Budapest. Supervised 6 years before independent practice', importance: 8 },
-      { user_id: uid, type: 'preference', content: 'Travels to Vienna quarterly for CPD supervision (EU clinical requirement). Takes the RailJet train', importance: 7 },
-      { user_id: uid, type: 'goal', content: 'Launch online CBT program for anxiety — digital extension of practice, scalable income beyond 1:1 sessions', importance: 9 },
-      { user_id: uid, type: 'fact', content: 'Lives in a 65m² apartment in Budaörs (suburb, 15min to practice). Owns it — bought 2019 with her parents\' help', importance: 8 },
-      { user_id: uid, type: 'preference', content: 'Banks with OTP Bank. Invests in OTP Alap mutual funds and small EUR savings (inflation hedge)', importance: 7 },
-      { user_id: uid, type: 'fact', content: 'Partner: Balázs (architect). No children planned. Very deliberate lifestyle — quality over quantity', importance: 6 },
-      { user_id: uid, type: 'goal', content: 'Publish book on ACT for Hungarian general public — Libri publisher expressed interest', importance: 8 },
-      { user_id: uid, type: 'fact', content: 'HUF inflation (peaked 25.7% in 2023) significantly eroded savings — now holds 20% of portfolio in EUR/USD assets', importance: 8 },
-    ];
-    const { data, error } = await sb.from('memory_items').insert(items).select();
-    ok('memory_items', data, error);
+  // 3. Budgets (idempotency: month + year + category)
+  const budgets = [
+    { user_id: uid, month: 4, year: 2026, category: 'Housing', budgeted: 285000, spent: 285000, currency: 'HUF' },
+    { user_id: uid, month: 4, year: 2026, category: 'Food', budgeted: 130000, spent: 118000, currency: 'HUF' },
+    { user_id: uid, month: 4, year: 2026, category: 'Transport', budgeted: 40000, spent: 35000, currency: 'HUF' },
+    { user_id: uid, month: 4, year: 2026, category: 'Health', budgeted: 80000, spent: 72000, currency: 'HUF' },
+    { user_id: uid, month: 4, year: 2026, category: 'Business', budgeted: 150000, spent: 138000, currency: 'HUF' },
+    { user_id: uid, month: 4, year: 2026, category: 'Savings', budgeted: 400000, spent: 400000, currency: 'HUF' },
+    { user_id: uid, month: 5, year: 2026, category: 'Housing', budgeted: 285000, spent: 142500, currency: 'HUF' },
+    { user_id: uid, month: 5, year: 2026, category: 'Food', budgeted: 130000, spent: 62000, currency: 'HUF' },
+    { user_id: uid, month: 5, year: 2026, category: 'Business', budgeted: 150000, spent: 68000, currency: 'HUF' },
+    { user_id: uid, month: 5, year: 2026, category: 'Savings', budgeted: 400000, spent: 400000, currency: 'HUF' },
+  ]
+  for (const bm of budgets) {
+    const { count } = await sb.from('budgets').select('*', { count: 'exact', head: true })
+      .eq('user_id', uid).eq('month', bm.month).eq('year', bm.year).eq('category', bm.category)
+    if (!count) await sb.from('budgets').insert(bm)
   }
 
-  const budgetMonths = [
-    { month: '2026-03-01', income: 880000, expenses_budget: 420000, savings_budget: 220000, investment_budget: 240000 },
-    { month: '2026-04-01', income: 960000, expenses_budget: 430000, savings_budget: 250000, investment_budget: 280000 },
-    { month: '2026-05-01', income: 900000, expenses_budget: 425000, savings_budget: 235000, investment_budget: 240000 },
-  ];
-  for (const bm of budgetMonths) {
-    const { count } = await sb.from('budgets').select('*', { count: 'exact', head: true }).eq('user_id', uid).eq('month', bm.month);
-    if (!count) {
-      const { data, error } = await sb.from('budgets').insert({ user_id: uid, ...bm }).select();
-      ok(`budget ${bm.month}`, data, error);
-    }
-  }
-
+  // 4. Expenses
   if (await cnt('expenses', uid) === 0) {
-    const expenses = [
-      { user_id: uid, category: 'Lakhatás', description: 'Közüzemi díjak (gáz, villany, víz) — Budaörs', amount: 58000, currency: 'HUF', date: '2026-05-03', payment_method: 'Csoportos beszedés' },
-      { user_id: uid, category: 'Rendelő', description: 'Irodabérlet (XI. kerület) — terápiás rendelő', amount: 95000, currency: 'HUF', date: '2026-05-01', payment_method: 'Átutalás' },
-      { user_id: uid, category: 'Szakmai', description: 'Szuperviziós díj (havonta) — szupervizor Dr. Molnár', amount: 32000, currency: 'HUF', date: '2026-05-06', payment_method: 'Készpénz' },
-      { user_id: uid, category: 'Szakmai', description: 'Szakmai felelősségbiztosítás (havi)', amount: 12000, currency: 'HUF', date: '2026-05-01', payment_method: 'Csoportos beszedés' },
-      { user_id: uid, category: 'Élelmiszer', description: 'Lidl + Auchan heti bevásárlás (2x)', amount: 52000, currency: 'HUF', date: '2026-05-06', payment_method: 'Bankkártya' },
-      { user_id: uid, category: 'Közlekedés', description: 'BKK bérlet (Budapest havi) + Budaörs autóbusz', amount: 18000, currency: 'HUF', date: '2026-05-01', payment_method: 'Csoportos' },
-      { user_id: uid, category: 'Egészség', description: 'Saját terápia (minden terapeuta terápiában jár!)', amount: 12000, currency: 'HUF', date: '2026-05-07', payment_method: 'Készpénz' },
-      { user_id: uid, category: 'Adó', description: 'SZJA előleg (havi negyede)', amount: 145000, currency: 'HUF', date: '2026-05-10', payment_method: 'NAV átutalás' },
-      { user_id: uid, category: 'Megtakarítás', description: 'OTP Alap befektetési alap befizetés', amount: 150000, currency: 'HUF', date: '2026-05-01', payment_method: 'Átutalás' },
-      { user_id: uid, category: 'EUR devizatartalék', description: 'EUR vásárlás (inflációs hedge)', amount: 85000, currency: 'HUF', date: '2026-05-02', payment_method: 'OTP Deviza' },
-      { user_id: uid, category: 'Kikapcsolódás', description: 'Étterem Balázszal + mozi (havi)', amount: 28000, currency: 'HUF', date: '2026-05-08', payment_method: 'Bankkártya' },
-      { user_id: uid, category: 'Szakmai fejlődés', description: 'ACT könyvek (angolul) + online CPD kurzus', amount: 22000, currency: 'HUF', date: '2026-05-05', payment_method: 'Kártya' },
-    ];
-    const { data, error } = await sb.from('expenses').insert(expenses).select();
-    ok('expenses', data, error);
+    await sb.from('expenses').insert([
+      { user_id: uid, amount: 285000, currency: 'HUF', category: 'rent', description: 'Lakbér — Ferencváros 2BR, április 2026', expense_date: '2026-04-01' },
+      { user_id: uid, amount: 48000, currency: 'HUF', category: 'misc', description: 'Szakmai szupervízió — havi 4 alkalom (ACT szuperviziós csoport)', expense_date: '2026-04-03' },
+      { user_id: uid, amount: 82000, currency: 'HUF', category: 'health', description: 'Saját terápia — havi 4 ülés @ HUF 20.500 (Balázs terapeutánál)', expense_date: '2026-04-05' },
+      { user_id: uid, amount: 52000, currency: 'HUF', category: 'food', description: 'Bevásárlás — Auchan + Spar + piac, egy hét', expense_date: '2026-04-08' },
+      { user_id: uid, amount: 28000, currency: 'HUF', category: 'transport', description: 'BKK bérlet (havi) + Bolt fuvarok kliensmegbeszélésekhez', expense_date: '2026-04-10' },
+      { user_id: uid, amount: 42000, currency: 'HUF', category: 'misc', description: 'Szakkönyvek — ACT & CFT kézikönyvek, Libri rendelés', expense_date: '2026-04-14' },
+      { user_id: uid, amount: 66000, currency: 'HUF', category: 'food', description: 'Bevásárlás + két éttermi vacsora (baráti összejövetelek)', expense_date: '2026-04-22' },
+      { user_id: uid, amount: 285000, currency: 'HUF', category: 'rent', description: 'Lakbér — Ferencváros, május 2026', expense_date: '2026-05-01' },
+      { user_id: uid, amount: 36000, currency: 'HUF', category: 'misc', description: 'CBT munkafüzet — ISBN regisztráció + szerzői jogi tanácsadás', expense_date: '2026-05-04' },
+      { user_id: uid, amount: 120000, currency: 'HUF', category: 'health', description: 'Kardiológiai magánvizsgálat + labor (stressz-vizsgálat, megelőzés)', expense_date: '2026-05-07' },
+      { user_id: uid, amount: 45000, currency: 'HUF', category: 'food', description: 'Bevásárlás + lunch workshop vendégekkel', expense_date: '2026-05-09' },
+    ])
   }
 
-  if (await cnt('savings_goals', uid) === 0) {
-    const goals = [
-      { user_id: uid, name: 'Vészhelyzeti tartalék (6 hónap)', target_amount: 3500000, current_amount: 2800000, currency: 'HUF', target_date: '2026-09-01', category: 'Emergency', notes: 'OTP lekötött betét + készpénz. Viszonylag közel a célhoz' },
-      { user_id: uid, name: 'EUR megtakarítás (inflációs hedge)', target_amount: 15000, current_amount: 5800, currency: 'EUR', target_date: '2028-01-01', category: 'Investment', notes: 'OTP devizaszámla — havonta EUR 200-300 vásárlás' },
-      { user_id: uid, name: 'Online CBT program fejlesztés', target_amount: 1200000, current_amount: 380000, currency: 'HUF', target_date: '2027-01-01', category: 'Business', notes: 'Videóproducer, platform fejlesztő, marketing — digitális termék' },
-    ];
-    const { data, error } = await sb.from('savings_goals').insert(goals).select();
-    ok('savings_goals', data, error);
-  }
-
-  if (await cnt('money_subscriptions', uid) === 0) {
-    const subs = [
-      { user_id: uid, name: 'SimplePay Online Therapy Platform', amount: 8500, currency: 'HUF', billing_cycle: 'monthly', category: 'Business', next_billing_date: '2026-06-01' },
-      { user_id: uid, name: 'Therapynotes EMR software', amount: 9200, currency: 'HUF', billing_cycle: 'monthly', category: 'Professional', next_billing_date: '2026-06-01' },
-      { user_id: uid, name: 'Spotify Premium', amount: 2090, currency: 'HUF', billing_cycle: 'monthly', category: 'Entertainment', next_billing_date: '2026-06-01' },
-      { user_id: uid, name: 'Kindle Unlimited (szakirodalom)', amount: 2500, currency: 'HUF', billing_cycle: 'monthly', category: 'Professional', next_billing_date: '2026-06-01' },
-    ];
-    const { data, error } = await sb.from('money_subscriptions').insert(subs).select();
-    ok('subscriptions', data, error);
-  }
-
-  if (await cnt('investments', uid) === 0) {
-    const investments = [
-      { user_id: uid, name: 'OTP Prémium Alap (Hungarian balanced fund)', type: 'Mutual Fund', current_value: 1850000, purchase_price: 1400000, currency: 'HUF', notes: 'Havi 150,000 HUF befizetés. 5 éves horizont' },
-      { user_id: uid, name: 'Magyar Állampapír (MÁP+)', type: 'Government Bond', current_value: 2200000, purchase_price: 2000000, currency: 'HUF', notes: 'Inflációkövető állampapír — 4.5% feletti reálhozam' },
-      { user_id: uid, name: 'EUR megtakarítás (OTP deviza)', type: 'Currency', current_value: 5800, purchase_price: 5200, currency: 'EUR', notes: 'Devizatartalék — HUF/EUR árfolyamkockázat csökkentése' },
-      { user_id: uid, name: 'Budaörsi lakás (saját)', type: 'Real Estate', current_value: 42000000, purchase_price: 28000000, currency: 'HUF', notes: 'Jelzálogmentes — szülők segítségével vette 2019-ben' },
-    ];
-    const { data, error } = await sb.from('investments').insert(investments).select();
-    ok('investments', data, error);
-  }
-
+  // 5. Habits
   if (await cnt('habits', uid) === 0) {
-    const habits = [
-      { user_id: uid, name: 'Reggeli meditáció (10 perc)', frequency: 'daily', target_count: 1, color: '#8B5CF6', icon: '🧘' },
-      { user_id: uid, name: 'Kliens jegyzetek + terápiás terv frissítés', frequency: 'weekdays', target_count: 1, color: '#3B82F6', icon: '📝' },
-      { user_id: uid, name: 'Séta a Budaörsi parkban', frequency: 'daily', target_count: 1, color: '#10B981', icon: '🌳' },
-      { user_id: uid, name: 'Szakmai olvasás (30 perc)', frequency: 'weekdays', target_count: 1, color: '#F59E0B', icon: '📚' },
-      { user_id: uid, name: 'Önszupervi­zió napló', frequency: 'weekly', target_count: 1, color: '#EC4899', icon: '✍️' },
-    ];
-    const { data: hd, error: he } = await sb.from('habits').insert(habits).select();
-    ok('habits', hd, he);
+    await sb.from('habits').insert([
+      {
+        user_id: uid, name: 'Saját terápia + szupervízió', description: 'Minden jó terapeuta saját terápiában van. Heti ülés Balázssal csütörtökönként.', frequency: 'weekly',
+        target_count: 1, current_streak: 18, longest_streak: 52, completed_today: false,
+        category: 'mental_health', color: '#8b5cf6', icon: '🧠', reminder_time: '16:00', active: true, created_at: '2025-09-01T00:00:00Z'
+      },
+      {
+        user_id: uid, name: 'Ülések dokumentálása — notes naprakészen', description: 'Minden ülés után 10 perc kliensnapló. Etikai kötelezettség és jó praxis.', frequency: 'daily',
+        target_count: 1, current_streak: 22, longest_streak: 60, completed_today: true,
+        category: 'work', color: '#10b981', icon: '📝', reminder_time: '18:30', active: true, created_at: '2026-01-05T00:00:00Z'
+      },
+      {
+        user_id: uid, name: 'Heti olvasás — szakirodalom', description: 'Legalább 30 oldal szakirodalom hetente. ACT, séma terápia, EMDR. Naprakész maradni.', frequency: 'weekly',
+        target_count: 1, current_streak: 8, longest_streak: 24, completed_today: false,
+        category: 'learning', color: '#f59e0b', icon: '📚', reminder_time: '20:00', active: true, created_at: '2026-01-15T00:00:00Z'
+      },
+      {
+        user_id: uid, name: 'Reggeli séta — Kopaszi-gát', description: 'Napi 30 perces gyaloglás a Dunánál. A legjobb módszer a munkából való kilépésre.', frequency: 'daily',
+        target_count: 1, current_streak: 14, longest_streak: 35, completed_today: true,
+        category: 'health', color: '#3b82f6', icon: '🚶', reminder_time: '07:30', active: true, created_at: '2026-02-01T00:00:00Z'
+      },
+      {
+        user_id: uid, name: 'Havi pénzügyi összefoglaló', description: 'Számlák, megtakarítás, befektetések — minden hónap 1-jén áttekintés. HUF infláció figyelése.', frequency: 'monthly',
+        target_count: 1, current_streak: 4, longest_streak: 14, completed_today: false,
+        category: 'finance', color: '#ec4899', icon: '📊', reminder_time: '10:00', active: true, created_at: '2026-01-01T00:00:00Z'
+      },
+    ])
+  }
 
-    if (hd?.length) {
-      const logs = [];
-      for (let offset = 0; offset < 21; offset++) {
-        const date = dateOffset(offset);
-        const dow = DOW[new Date(date + 'T00:00:00Z').getUTCDay()];
-        for (const h of hd) {
-          const isWeekday = !['Sat', 'Sun'].includes(dow);
-          if (h.frequency === 'weekdays' && !isWeekday) continue;
-          if (Math.random() < 0.86) {
-            logs.push({ user_id: uid, habit_id: h.id, completed_at: date, count: 1 });
-          }
-        }
+  // 6. Focus sessions
+  if (await cnt('focus_sessions', uid) === 0) {
+    await sb.from('focus_sessions').insert([
+      {
+        user_id: uid, mode: 'deep', planned_minutes: 180, actual_minutes: 176, completed: true,
+        abandoned: false, body_doubling_enabled: false, task_title: 'CBT munkafüzet — 3. fejezet: szorongás és kognitív torzítások (kézirat)',
+        notes: 'Megírtam a kognitív torzítások fejezetének főbb részeit. 12 oldal nettó. A munkafüzet 60% kész. A kiadó decemberi deadline reális.',
+        started_at: '2026-04-09T09:00:00Z', ended_at: '2026-04-09T11:56:00Z'
+      },
+      {
+        user_id: uid, mode: 'deep', planned_minutes: 120, actual_minutes: 118, completed: true,
+        abandoned: false, body_doubling_enabled: false, task_title: 'MOL Group EAP megújítási proposal — 2026/27 szerződés feltételek',
+        notes: 'MOL HR-nek elküldve: 120 ülés/év, HUF 13.500/ülés (8% emelés), kibővített csoportos workshop csomag. Tárgyalás jövő héten.',
+        started_at: '2026-04-16T14:00:00Z', ended_at: '2026-04-16T16:00:00Z'
+      },
+      {
+        user_id: uid, mode: 'deep', planned_minutes: 90, actual_minutes: 45, completed: false,
+        abandoned: true, body_doubling_enabled: false, task_title: 'ACT szuperviziós képzés — online modulok 5-6 (ACBS Hungary)',
+        notes: 'Abbahagyta 45 percnél — sürgős ügyeleti hívás krízis klienstől. Folytatta másnap.',
+        started_at: '2026-04-24T20:00:00Z', ended_at: '2026-04-24T20:45:00Z'
+      },
+      {
+        user_id: uid, mode: 'deep', planned_minutes: 120, actual_minutes: 122, completed: true,
+        abandoned: false, body_doubling_enabled: false, task_title: 'ELTE adjunktusi pozíció mérlegelése — pros/cons elemzés és anyagi számítás',
+        notes: 'Az ELTE ajánlat HUF 580K/hó bruttó + 25 kliensóra kiesés. Nettó egyenleg: -HUF 240K/hó a jelenlegi praxishoz képest. Anyagilag nem éri meg.',
+        started_at: '2026-05-05T10:00:00Z', ended_at: '2026-05-05T12:02:00Z'
+      },
+    ])
+  }
+
+  // 7. Mood logs
+  if (await cnt('mood_logs', uid) === 0) {
+    await sb.from('mood_logs').insert([
+      { user_id: uid, mood: 4, energy: 3, note: 'Tele hét — 28 ülés. Minőség megvolt, de fizikailag kimerült vagyok. Az öngondoskodás nem luxus, ez a szakma feltétele.', logged_at: '2026-04-11T21:00:00Z' },
+      { user_id: uid, mood: 5, energy: 4, note: 'MOL HR visszajelzett: elfogadták a 8%-os díjemelést! 120 ülés/év EAP szerződés megújítva. Stabilitás.', logged_at: '2026-04-20T18:00:00Z' },
+      { user_id: uid, mood: 3, energy: 2, note: 'Krízis kliens hívása este 8-kor megborította a határaimat. Holnap Balázssal megbeszélem — pont ezért van szupervízió.', logged_at: '2026-04-24T22:00:00Z' },
+      { user_id: uid, mood: 4, energy: 4, note: 'Az ELTE ajánlatot udvariasan visszautasítottam. Praxisom fontosabb. Jó döntés — érzem a megkönnyebbülést.', logged_at: '2026-05-06T20:00:00Z' },
+      { user_id: uid, mood: 4, energy: 5, note: 'A munkafüzet 60%-nál jár. Balázs azt mondta a mai ülésen: látszik, hogy az írás boldoggá tesz. Igaza van.', logged_at: '2026-05-10T21:00:00Z' },
+    ])
+  }
+
+  // 8. Gratitude entries (UNIQUE user_id + date)
+  const gratitudeDates = [
+    { date: '2026-04-11', items: ['28 ember bízta rám a lelkét ezen a héten', 'A szupervíziós csoport, aki érteni véli a nehéz eseteket', 'Ez a munka — a legjobb ami velem történhetett'] },
+    { date: '2026-04-20', items: ['MOL megújítás — pénzügyi stabilitás legalább egy évre', 'A saját terápiám, ami megtart', 'Budapest — a Duna, ami mindig meggyógyít egy reggeli sétán'] },
+    { date: '2026-05-10', items: ['A munkafüzet, ami talán valaki életét könnyebbé teszi majd', 'Balázs, a terapeutám, aki visszatükrözi azt amit nem látok magamban', 'Az olvasók, akikért a könyv íródik'] },
+  ]
+  for (const gd of gratitudeDates) {
+    const { count } = await sb.from('gratitude_entries').select('*', { count: 'exact', head: true })
+      .eq('user_id', uid).eq('date', gd.date)
+    if (!count) await sb.from('gratitude_entries').insert({ user_id: uid, date: gd.date, items: gd.items })
+  }
+
+  // 9. Journal entries
+  if (await cnt('journal_entries', uid) === 0) {
+    await sb.from('journal_entries').insert([
+      {
+        user_id: uid, title: 'Az ELTE Ajánlat — Miért Mondtam Nemet',
+        content: 'Az adjunktusi pozíció presztízsét nem kérdőjelezem meg. De a számok egyértelműek: HUF 580K bruttó akademiai fizetés vs. jelenlegi nettó HUF 1.200K. Ráadásul 25 kliens kiesne. Az akadémia vonzott volna húsz évvel ezelőtt. Most a praxis az otthon. A "nem" mondás is döntés — és ez jó döntés volt.',
+        mood: 4, tags: ['döntés', 'karrier', 'határok'], created_at: '2026-05-06T22:00:00Z'
+      },
+      {
+        user_id: uid, title: 'A Klienshatárok Paradoxona',
+        content: 'A krízishívás este nyolckor megrendítette a határ-struktúrámat. Válaszoltam. Kellett. De aztán egész éjjel ébren voltam. Balázs ma megkérdezte: "Mikor volt utoljára határ, amit nem léptél át magadnak?" Nem tudtam válaszolni. A könyv negyedik fejezete éppen a határokról szól. Időszerű.',
+        mood: 3, tags: ['önismeret', 'határok', 'szakma'], created_at: '2026-04-25T07:00:00Z'
+      },
+    ])
+  }
+
+  // 10. Decision logs
+  if (await cnt('decision_logs', uid) === 0) {
+    await sb.from('decision_logs').insert([
+      {
+        user_id: uid,
+        question: 'Elfogadjam-e az ELTE adjunktusi pozíciót (pszichológia tanszék), vagy maradjak kizárólag a magánpraxisnál?',
+        category: 'Career',
+        mode: 'compare',
+        options: [
+          { label: 'ELTE adjunktusi pozíció', pros: ['Akadémiai presztízs és publikációs lehetőségek', 'Hallgatók mentorálása — generatív munka', 'Stabil állami nyugdíj hozzájárulás'], cons: ['HUF 580K bruttó vs. jelenlegi HUF 1.4M nettó bevétel', '25 kliensóra kiesik — HUF 375K/hó veszteség', 'Bürokratikus akadémiai rendszer, kevesebb klinikal munka'] },
+          { label: 'Maradás magánpraxisnál', pros: ['Teljes autonómia — saját esetek, saját módszerek', 'Magasabb jövedelem — HUF 1.2-1.5M/hó', 'Könyvírásra és EAP bővítésre marad energia'], cons: ['Nincs akadémiai háttér biztonsága', 'Izolációs kockázat — peer community ritkább', 'Nincs fizetett szabadság és betegszabadság'] }
+        ],
+        result: { summary: 'Pénzügyileg egyértelmű: magánpraxis HUF 240K+/hó előnnyel. Szakmailag: az EAP bővítés és a könyv biztosít peer jelenléttet akadémia nélkül is. ELTE visszautasítva.', chosen: 'Magánpraxis — ELTE visszautasítva', outcome: 'decided' },
+        favorite: true,
+        created_at: '2026-05-05T12:00:00Z'
+      },
+      {
+        user_id: uid,
+        question: 'Emeljem-e az egyéni terápiás díjat HUF 15.000-ről HUF 18.000-re januártól, figyelembe véve az infláció hatásait?',
+        category: 'Finance',
+        mode: 'analyze',
+        options: [
+          { label: 'Díjemelés HUF 18.000-re (20% emelés)', pros: ['Infláció kompenzálása (HUF 8.1% 2025)', 'Évi HUF 1.8M+ bevételnövekedés (25 kliens)', 'Piaci átlaggal való igazodás (Budapest magán HUF 16-22K)'], cons: ['Néhány alacsonyabb jövedelmű kliens elvesztése', 'Átmeneti ügyfél-elégedetlenség', 'Átlátható kommunikáció szükséges'] },
+          { label: 'Díj változatlan HUF 15.000', pros: ['Klienshűség megőrzése', 'Nincs váltási kockázat'], cons: ['Reálbevétel csökken inflációval', 'Piaci alulpozicionálás', 'Hosszú távon fenntarthatatlan'] }
+        ],
+        result: { summary: 'Díjemelés januártól HUF 18.000-re indokolt és piaci szinten igazolt. Kommunikáció: 3 hónappal előre jelzett, indokolt, méltányos átmeneti díj opció új klienseknek.', chosen: 'Díjemelés HUF 18.000-re január 2027-től', outcome: 'pending' },
+        favorite: false,
+        created_at: '2026-04-18T11:00:00Z'
       }
-      const { data, error } = await sb.from('habit_logs').insert(logs).select();
-      ok('habit_logs', data, error);
+    ])
+  }
+
+  // 11. Investments (HUF-inflation-conscious strategy)
+  if (await cnt('investments', uid) === 0) {
+    await sb.from('investments').insert([
+      { user_id: uid, name: 'MÁP Plusz — Magyar Állampapír (5 éves)', type: 'bonds', invested_amount: 4500000, current_value: 4950000, currency: 'HUF', account: 'OTP Bank ÁKK', notes: 'Kamatozó állampapír 4.95% fix. HUF-ban denominált — inflációs kockázat tudatos. Lejárat 2028.', purchase_date: '2023-06-01' },
+      { user_id: uid, name: 'Erste Duett Alapok — MSCI World index', type: 'etf', invested_amount: 2800000, current_value: 3350000, currency: 'HUF', account: 'Erste Befektetési Zrt', notes: 'EUR-denominált index alap HUF-on keresztül. Részleges deviza fedezet az infláció ellen.', purchase_date: '2022-03-01' },
+      { user_id: uid, name: 'OTP Raiffeisen lekötött betét — EUR', type: 'savings', invested_amount: 1200000, current_value: 1248000, currency: 'HUF', account: 'Raiffeisen Bank', notes: 'EUR lekötés HUF-ban számontartva. 4.1% EUR betéti kamat. Deviza diverzifikáció.', purchase_date: '2024-09-01' },
+      { user_id: uid, name: 'NYESZ (Nyugdíj-Előtakarékossági Számla) — vegyes', type: 'other', invested_amount: 3200000, current_value: 3580000, currency: 'HUF', account: 'OTP Bank NYESZ', notes: 'Adókedvezményes nyugdíjszámla. Évi HUF 280K befizetés → szja-visszatérítés. Vegyes részvény-kötvény.', purchase_date: '2020-01-01' },
+    ])
+  }
+
+  // 12. Business clients (EAP + peer training)
+  if (await cnt('business_clients', uid) === 0) {
+    const { data: clients } = await sb.from('business_clients').insert([
+      { user_id: uid, name: 'MOL Group — HR Wellbeing', email: 'hr.wellbeing@mol.hu', company: 'MOL Nyrt', notes: 'EAP szerződés: 120 ülés/év, HUF 13.500/ülés. MOL dolgozóknak ingyenes rövid terápia (6+6 ülés). Megújítva 2026/27.', currency: 'HUF' },
+      { user_id: uid, name: 'Magyar Telekom — People & Culture', email: 'people@telekom.hu', company: 'Magyar Telekom Nyrt', notes: 'Prospektív EAP kliens. Ajánlat beadva április 2026. Döntés várható júniusban. 80+ dolgozó, burnout fókusz.', currency: 'HUF' },
+      { user_id: uid, name: 'ELTE PPK — Továbbképzési Iroda', email: 'tovabbkepzes@ppk.elte.hu', company: 'ELTE PPK', notes: 'CBT workshop vendégelőadó — 2x/év, 1 napos tréning pszichológus hallgatóknak. HUF 85.000/nap.', currency: 'HUF' },
+    ]).select()
+
+    if (clients && clients.length) {
+      await sb.from('business_projects').insert([
+        { user_id: uid, client_id: clients[0].id, name: 'MOL EAP 2026/27 — éves üléscsomag', status: 'active', fee: 1620000, currency: 'HUF', notes: '120 ülés × HUF 13.500 = HUF 1.620.000 szerződéses érték. Havi allokáció: 10 ülés. Rugalmas beosztás MOL HR igény szerint.', due_date: '2027-03-31' },
+        { user_id: uid, client_id: clients[1].id, name: 'Magyar Telekom EAP — ajánlat', status: 'proposal', fee: 1800000, currency: 'HUF', notes: 'Ajánlat: 100 ülés/év + 2 csoportos burnout-megelőzés workshop (HUF 150K/workshop). Döntés júniusban.', due_date: '2026-06-30' },
+        { user_id: uid, client_id: clients[2].id, name: 'ELTE PPK — CBT alapok tréning (2026 ősz)', status: 'active', fee: 85000, currency: 'HUF', notes: 'Egész napos workshop november 15. Témák: kognitív modell, gondolatnaplók, BCE technika. 25 résztvevő.', due_date: '2026-11-15' },
+      ])
     }
   }
 
-  if (await cnt('mood_logs', uid) === 0) {
-    const moods = [
-      { user_id: uid, mood: 'fulfilled', energy: 8, notes: 'Páciensem ma arról mesélt, hogy 8 hónapos terápia után visszament dolgozni. Ezt csinálom én.', logged_at: '2026-05-05T20:00:00Z' },
-      { user_id: uid, mood: 'tired', energy: 4, notes: 'Nehéz hét — 3 krízisintervenció egymás után. Szupervizióra van szükségem hamarabb mint terveztem', logged_at: '2026-05-07T21:00:00Z' },
-      { user_id: uid, mood: 'creative', energy: 7, notes: 'Az online CBT program vázlata elkészült! Balázs segített a struktúrával. Izgatott vagyok', logged_at: '2026-05-09T19:00:00Z' },
-      { user_id: uid, mood: 'content', energy: 8, notes: 'Vasárnap kirándulás Pilisben Balázszal. A természetben feltöltődök. Hétfőre készen vagyok', logged_at: '2026-05-10T20:00:00Z' },
-    ];
-    const { data, error } = await sb.from('mood_logs').insert(moods).select();
-    ok('mood_logs', data, error);
+  // 13. Contacts
+  if (await cnt('contacts', uid) === 0) {
+    await sb.from('contacts').insert([
+      { user_id: uid, name: 'Balázs Fekete', email: 'fekete.balazs@pszichologus.hu', phone: '+36301234567', group_name: 'Mentors', notes: 'Saját terapeutám. Gestalt + perszonközpontú megközelítés. Csütörtönként 16:00. Emberileg és szakmailag meghatározó.' },
+      { user_id: uid, name: 'Horváth Eszter', email: 'horvath.eszter@mol.hu', phone: '+36204567890', group_name: 'Business', notes: 'MOL Group HR Wellbeing Manager. EAP kapcsolattartó. Gyors, korrekt, empatikus HR-es. Megbízható partner.' },
+      { user_id: uid, name: 'Dr. Varga Péter', email: 'varga.peter@acbshungary.hu', phone: '+36303334444', group_name: 'Mentors', notes: 'ACBS Hungary elnök. ACT szuperviziós képzésem koordinátora. Kulcsember a hazai ACT közösségben.' },
+      { user_id: uid, name: 'Anya — Kovács Mária', email: '', phone: '+36701112222', group_name: 'Family', notes: 'Pécsett él. Büszke rám de aggódik a "túl sok munkán". Vasárnap esténként hívom.' },
+    ])
   }
 
-  if (await cnt('journal_entries', uid) === 0) {
-    const entries = [
-      { user_id: uid, title: 'Miért vagyok terapeuta — emlékeztető', content: 'Nehéz hét után mindig visszatérek ehhez. Nem azért csináljuk ezt, mert könnyű. Hanem mert amikor egy páciens azt mondja, hogy "képes voltam ma reggel felkelni" — ez a remény munkája. Az ACT azt tanítja: az értékvezérelt élet nem kényelmes, de értelmes. Legyen az enyém is.', mood: 'reflective', logged_at: '2026-05-07T22:00:00Z' },
-    ];
-    const { data, error } = await sb.from('journal_entries').insert(entries).select();
-    ok('journal_entries', data, error);
-  }
-
+  // 14. Career goals
   if (await cnt('career_goals', uid) === 0) {
-    const goals = [
-      { user_id: uid, title: 'Online CBT szorongás program (digitális)', category: 'Business Development', target_date: '2027-01-01', status: 'in_progress', progress: 30, notes: 'Vázlat kész. Következő: videóproducer keresése + platform döntés (Teachable vs saját)' },
-      { user_id: uid, title: 'Könyv: "Az ACT útmutatója — Mindennapi Élethez" (Libri)', category: 'Publication', target_date: '2027-06-01', status: 'not_started', progress: 5, notes: 'Libri Kiadó érdeklődött. Szinopszis még nem készült. 2026 végéig elindítani' },
-    ];
-    const { data, error } = await sb.from('career_goals').insert(goals).select();
-    ok('career_goals', data, error);
+    await sb.from('career_goals').insert([
+      {
+        user_id: uid, title: 'CBT szorongás-munkafüzet kézirata — kiadói leadás', category: 'impact',
+        description: 'Kézirat 60% kész. Kiadó (Oriold & Társai) decemberi deadline. 12 fejezet, 180 oldal tervezett. ISBN ügyek rendezve.',
+        target_date: '2026-12-15', status: 'active', progress_pct: 60
+      },
+      {
+        user_id: uid, title: 'ACT szupervizori minősítés (ACBS Hungary)', category: 'skill',
+        description: '40 szuperviziós óra szükséges. Eddig 28 elvégezve. Vizsgabemutató szupervíziós ülés szükséges a tanúsítványhoz.',
+        target_date: '2026-10-31', status: 'active', progress_pct: 70
+      },
+      {
+        user_id: uid, title: 'Magyar Telekom EAP szerződés megnyerése', category: 'income',
+        description: 'A második EAP kliens stabilizálná a bevételt. HUF 1.8M értékű éves szerződés. Ajánlat beadva, döntés júniusban.',
+        target_date: '2026-07-01', status: 'active', progress_pct: 40
+      },
+      {
+        user_id: uid, title: 'EUR-denomintált eszközök aránya 30%-ra növelni', category: 'income',
+        description: 'HUF infláció elleni védekezés. Erste MSCI World + Raiffeisen EUR betét bővítése. Jelenlegi deviza arány: ~18%.',
+        target_date: '2026-12-31', status: 'active', progress_pct: 18
+      },
+    ])
   }
 
-  if (await cnt('focus_sessions', uid) === 0) {
-    const sessions = [
-      { user_id: uid, duration_minutes: 90, type: 'program_design', notes: 'Online CBT modul 1 tervezés — szorongás psychoeducation videószkript', completed_at: '2026-05-05T10:00:00Z' },
-      { user_id: uid, duration_minutes: 60, type: 'study', notes: 'ACT és krónikus fájdalom — új meta-analízis olvasása (Journal of Contextual Behavioral Science)', completed_at: '2026-05-07T20:00:00Z' },
-      { user_id: uid, duration_minutes: 45, type: 'finance', notes: 'EUR vs HUF allokáció felülvizsgálata — infláció 2026 előrejelzések', completed_at: '2026-05-09T19:00:00Z' },
-    ];
-    const { data, error } = await sb.from('focus_sessions').insert(sessions).select();
-    ok('focus_sessions', data, error);
+  // 15. No trips for Nadia — homebased practice. Add a conference.
+  if (await cnt('trips', uid) === 0) {
+    const { data: trips } = await sb.from('trips').insert([
+      {
+        user_id: uid, destination: 'Vienna, Austria', country_code: 'AT',
+        starts_on: '2026-07-02', ends_on: '2026-07-05',
+        purpose: 'business', status: 'booked',
+        budget_total: 280000, currency: 'HUF',
+        notes: 'ACBS World Conference 2026. ACT szuperviziós workshopok. Networking a nemzetközi ACT közösséggel. Poster prezentáció: CBT+ACT integráció szorongásnál.'
+      }
+    ]).select()
+
+    if (trips && trips.length) {
+      await sb.from('trip_items').insert([
+        { trip_id: trips[0].id, type: 'transport', title: 'Budapest Keleti → Wien Hauptbahnhof — Railjet', starts_at: '2026-07-02T07:25:00Z', ends_at: '2026-07-02T09:55:00Z', cost: 32000, currency: 'HUF', notes: '2,5 óra. Eurorail kedvezménnyel. Kényelmes, vonaton is lehet dolgozni.' },
+        { trip_id: trips[0].id, type: 'hotel', title: 'Hotel Ibis Wien Messe — 3 éj', starts_at: '2026-07-02T15:00:00Z', ends_at: '2026-07-05T11:00:00Z', cost: 96000, currency: 'HUF', notes: 'U2 megállóval a konferencia helyszínétől. Reggelivel.' },
+        { trip_id: trips[0].id, type: 'activity', title: 'ACBS World Conference — 3 napos részvétel', starts_at: '2026-07-03T08:00:00Z', ends_at: '2026-07-05T17:00:00Z', cost: 120000, currency: 'HUF', notes: 'Regisztráció HUF 120K. Poster: "CBT és ACT integráció általánosított szorongásnál". Szuperviziós workshop: Russ Harris.' },
+      ])
+    }
   }
 
-  if (await cnt('decision_logs', uid) === 0) {
-    const decisions = [
-      { user_id: uid, title: 'Online CBT program: Teachable platform vs saját webfejlesztés?', options: ['Teachable: gyors indulás, 5% jutalék, korlátozott testreszabás', 'Saját fejlesztés (Balázs segít): rugalmas, 6 hónap + fejlesztési költség', 'Thinkific (Teachable alternatíva): alacsonyabb jutalék, jobb analitika'], chosen_option: 'Thinkific (Teachable alternatíva): alacsonyabb jutalék, jobb analitika', outcome_notes: 'Kompromisszum: gyors indulás (Thinkific) + saját fejlesztésre váltás 2 év után ha sikeres', decided_at: '2026-05-09T18:00:00Z' },
-    ];
-    const { data, error } = await sb.from('decision_logs').insert(decisions).select();
-    ok('decision_logs', data, error);
+  // 16. Meal plans
+  if (await cnt('meal_plans', uid) === 0) {
+    const weekStart = '2026-05-11'
+    await sb.from('meal_plans').insert([
+      { user_id: uid, week_start: weekStart, day_of_week: 1, meal_type: 'breakfast', recipe_name: 'Zab zabpehellyel + banán + fekete kávé', calories: 420, notes: 'Gyors reggelizenés 8 előtt — 9-kor első kliens' },
+      { user_id: uid, week_start: weekStart, day_of_week: 1, meal_type: 'lunch', recipe_name: 'Csirkés wrap + görög joghurt', calories: 580, notes: 'Ebédszünet 13-14 között — 5 perc a Kálvin téri Subway-nél' },
+      { user_id: uid, week_start: weekStart, day_of_week: 1, meal_type: 'dinner', recipe_name: 'Zöldségleves + kenyér + sajt', calories: 460, notes: 'Könnyű vacsora — ülések után fáradtan nem kell sokat főzni' },
+      { user_id: uid, week_start: weekStart, day_of_week: 3, meal_type: 'breakfast', recipe_name: 'Rántotta + pirítós + paradicsom', calories: 480, notes: 'Szupervízió napja — kicsit több energia kell' },
+      { user_id: uid, week_start: weekStart, day_of_week: 5, meal_type: 'dinner', recipe_name: 'Étteremlátogatás — Baraka Budapest, 2 főétel', calories: 750, notes: 'Péntek este — kolléganővel, heti levezetés' },
+    ])
   }
 
-  console.log('\n✅ Nadia Kovács seed complete\n');
+  console.log('✅ Nadia Kovács (#35) seeded — HUF, Budapest, CBT/ACT psychotherapist, EAP, ACBS conference')
 }
 
-seed().catch(e => { console.error('Fatal:', e); process.exit(1); });
+seedNadia().catch(e => { console.error(e); process.exit(1) })

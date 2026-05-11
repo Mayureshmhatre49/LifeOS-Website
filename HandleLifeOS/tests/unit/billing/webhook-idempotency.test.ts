@@ -64,7 +64,7 @@ describe('Webhook idempotency logic', () => {
     const event = {
       event_id: 'evt_fallback_123',
       event: 'unknown.event',
-      payload: {},
+      payload: {} as Record<string, { entity?: { id?: string } }>,
     }
     const dedupeId =
       event.payload?.payment?.entity?.id ??

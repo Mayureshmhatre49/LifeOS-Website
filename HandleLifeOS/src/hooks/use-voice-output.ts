@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 
 const MARKDOWN_PATTERNS: [RegExp, string][] = [
   [/#{1,6}\s+/g, ''],
@@ -70,12 +70,14 @@ export function useVoiceOutput(): UseVoiceOutputReturn {
   const isBrowserTtsSupported = typeof window !== 'undefined' && 'speechSynthesis' in window
   const isSupported = true // Always "supported" since cloud TTS is always available
 
-  // Load browser voices on mount
-  if (isBrowserTtsSupported && voices.length === 0) {
+  // Load browser voices once on mount
+  useEffect(() => {
+    if (!isBrowserTtsSupported) return
     const loadVoices = () => setVoices(window.speechSynthesis.getVoices())
     loadVoices()
     window.speechSynthesis.onvoiceschanged = loadVoices
-  }
+    return () => { window.speechSynthesis.onvoiceschanged = null }
+  }, [isBrowserTtsSupported])
 
   const stop = useCallback(() => {
     // Stop cloud audio if playing

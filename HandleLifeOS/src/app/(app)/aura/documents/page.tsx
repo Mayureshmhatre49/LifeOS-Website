@@ -139,7 +139,7 @@ export default function AuraDocumentsPage() {
       </div>
 
       {profiles.length > 0 && (
-        <AuraChildSwitcher children={profiles} selectedId={selectedId} onSelect={handleSelect} />
+        <AuraChildSwitcher profiles={profiles} selectedId={selectedId} onSelect={handleSelect} />
       )}
 
       {/* Upload */}

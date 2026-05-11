@@ -1,299 +1,325 @@
 /**
- * Seed: Michael Asante — Football Coach + Youth Academy Owner, Accra, Ghana (GHS)
- * Email: michael.asante@e2e-test.handlelifeos.app
- * Persona #40 — Founder of Asante Youth Football Academy, part-time national team analyst, Kumasi/Accra
+ * Seed: Michael Osei — Football Coach & Youth Academy Founder, Accra, Ghana (GHS)
+ * Email: michael.osei@e2e-test.handlelifeos.app
+ * Persona #40 — Osei Youth Football Academy (80 students), part-time Accra Lions FC analyst, GFA affiliation goal
  */
-import { createClient } from '@supabase/supabase-js';
 
-const SUPABASE_URL = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const EMAIL = 'michael.asante@e2e-test.handlelifeos.app';
+import { createClient } from '@supabase/supabase-js'
+import * as dotenv from 'dotenv'
+import { resolve, dirname } from 'path'
+import { fileURLToPath } from 'url'
 
-if (!SUPABASE_URL || !SERVICE_KEY) {
-  console.error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY'); process.exit(1);
+const __dirname = dirname(fileURLToPath(import.meta.url))
+dotenv.config({ path: resolve(__dirname, '../../.env.local') })
+
+const sb = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY,
+  { auth: { persistSession: false } }
+)
+
+const EMAIL = 'michael.osei@e2e-test.handlelifeos.app'
+
+async function cnt(table, uid) {
+  const { count } = await sb.from(table).select('*', { count: 'exact', head: true }).eq('user_id', uid)
+  return count ?? 0
 }
 
-const sb = createClient(SUPABASE_URL, SERVICE_KEY, { auth: { autoRefreshToken: false, persistSession: false } });
+export async function seedMichael() {
+  // 1. Resolve user id
+  const { data: { users }, error: listErr } = await sb.auth.admin.listUsers()
+  if (listErr) throw listErr
+  const user = users.find(u => u.email === EMAIL)
+  if (!user) throw new Error(`User ${EMAIL} not found — create auth account first`)
+  const uid = user.id
 
-const ok = (label, data, error) => { if (error) { console.error(`✗ ${label}`, error.message); } else { console.log(`✓ ${label}`, Array.isArray(data) ? `(${data.length})` : ''); } };
-const fail = (label, error) => { console.error(`✗ ${label}`, error?.message ?? error); };
-const cnt = async (table, uid) => { const { count } = await sb.from(table).select('*', { count: 'exact', head: true }).eq('user_id', uid); return count ?? 0; };
-
-function dateOffset(days) {
-  const d = new Date('2026-04-19T00:00:00Z');
-  d.setUTCDate(d.getUTCDate() + days);
-  return d.toISOString().slice(0, 10);
-}
-const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-
-async function seed() {
-  const { data: { users }, error: uErr } = await sb.auth.admin.listUsers();
-  if (uErr) { fail('listUsers', uErr); return; }
-  const user = users.find(u => u.email === EMAIL);
-  if (!user) { fail('findUser', `No user with email ${EMAIL}`); return; }
-  const uid = user.id;
-  console.log(`\n🌱 Seeding Michael Asante (${uid})\n`);
-
-  const { data: prof, error: profErr } = await sb.from('profiles').upsert({
-    user_id: uid,
-    full_name: 'Michael Asante',
-    display_name: 'Coach Mike',
-    locale: 'en-GH',
+  // 2. Profile
+  await sb.from('profiles').upsert({
+    id: uid,
+    display_name: 'Michael Osei',
+    occupation: 'Football Coach & Founder — Osei Youth Football Academy, Accra',
+    life_stage: 'mid_career',
+    country: 'GH',
     currency: 'GHS',
     timezone: 'Africa/Accra',
-    country: 'GH',
-    occupation: 'Head Coach — Asante Youth Football Academy + Ghana FA Technical Analyst',
-    dietary_preferences: ['halal'],
-    has_child: true,
-    has_business: true,
-    accessibility_needs: [],
-    onboarding_complete: true,
-    avatar_url: null,
-  }, { onConflict: 'user_id' }).select();
-  ok('profile upsert', prof, profErr);
+    goals: [
+      'Get 3 Osei Academy players signed by European youth academies by 2027',
+      'Obtain GFA Phase 1 affiliation certificate by December 2026',
+      'Grow academy enrollment to 120 students — currently 80',
+      'Accept part-time Black Stars U-17 assistant analyst role if offered by GFA'
+    ],
+    memory_enabled: true
+  }, { onConflict: 'id' })
 
-  if (await cnt('memory_items', uid) === 0) {
-    const items = [
-      { user_id: uid, type: 'fact', content: 'Michael founded Asante Youth Football Academy in 2019 in Accra. Currently 84 registered players (ages 8–17), 6 coaches on staff. Monthly academy revenue: GHS 22,000–28,000 from player fees + kit sales', importance: 10 },
-      { user_id: uid, type: 'fact', content: 'Contracted as part-time Technical Analyst for Ghana FA (Black Stars U-20). Monthly retainer: GHS 4,500. Travels to matches in Accra Sports Stadium and regional venues', importance: 9 },
-      { user_id: uid, type: 'fact', content: 'Formerly played professionally for Hearts of Oak (2009–2015) and brief stint at Asante Kotoko (2015–2017) as defensive midfielder. Retired at 30 due to ACL injury', importance: 8 },
-      { user_id: uid, type: 'goal', content: 'Get 3 academy players scouted and signed to Elite One (Division 1) clubs by end of 2026. Current pipeline: Emmanuel Darko (16, striker), Joshua Boateng (17, CM), Abena Ansah (15, first female prodigy — Women\'s league pathway)', importance: 10 },
-      { user_id: uid, type: 'fact', content: 'Married to Abena Asante (primary school teacher). Two sons: Kwame (10, enrolled at the academy) and Kobi (6). Lives in Tema, Accra in a family compound they are building', importance: 8 },
-      { user_id: uid, type: 'preference', content: 'Muslim (halal food). Fasts Ramadan. Strong community ties — sponsors 12 underprivileged academy players with free enrolment paid from academy surplus each term', importance: 7 },
-      { user_id: uid, type: 'fact', content: 'Academy facility: rented training pitch at Accra Sports Stadium complex GHS 3,500/month. Owns training equipment (cones, bibs, balls, goals) worth ~GHS 35,000. Seeks own facility (5-acre land in Dodowa)', importance: 9 },
-      { user_id: uid, type: 'goal', content: 'Secure corporate sponsorship from MTN Ghana or Guinness Ghana Breweries to fund pitch construction in Dodowa — target GHS 800,000 facility by 2028', importance: 10 },
-      { user_id: uid, type: 'preference', content: 'Uses MTN MoMo for all transactions. Stanbic Bank current account for academy payroll. Ecobank savings for compound building fund', importance: 6 },
-      { user_id: uid, type: 'fact', content: 'Has UEFA B coaching licence (completed 2021 online). Enrolled in UEFA A coaching programme — exam March 2027. This will be a differentiator for national team full-time appointment', importance: 8 },
-    ];
-    const { data, error } = await sb.from('memory_items').insert(items).select();
-    ok('memory_items', data, error);
+  // 3. Budgets (GHS scale — 1 USD ≈ 15 GHS, idempotency: month + year + category)
+  const budgets = [
+    { user_id: uid, month: 4, year: 2026, category: 'Housing', budgeted: 3000, spent: 3000, currency: 'GHS' },
+    { user_id: uid, month: 4, year: 2026, category: 'Food', budgeted: 2500, spent: 2300, currency: 'GHS' },
+    { user_id: uid, month: 4, year: 2026, category: 'Business', budgeted: 6000, spent: 5200, currency: 'GHS' },
+    { user_id: uid, month: 4, year: 2026, category: 'Transport', budgeted: 1200, spent: 1080, currency: 'GHS' },
+    { user_id: uid, month: 4, year: 2026, category: 'Savings', budgeted: 2500, spent: 2500, currency: 'GHS' },
+    { user_id: uid, month: 5, year: 2026, category: 'Housing', budgeted: 3000, spent: 1500, currency: 'GHS' },
+    { user_id: uid, month: 5, year: 2026, category: 'Food', budgeted: 2500, spent: 1150, currency: 'GHS' },
+    { user_id: uid, month: 5, year: 2026, category: 'Business', budgeted: 6000, spent: 2800, currency: 'GHS' },
+    { user_id: uid, month: 5, year: 2026, category: 'Savings', budgeted: 2500, spent: 2500, currency: 'GHS' },
+  ]
+  for (const bm of budgets) {
+    const { count } = await sb.from('budgets').select('*', { count: 'exact', head: true })
+      .eq('user_id', uid).eq('month', bm.month).eq('year', bm.year).eq('category', bm.category)
+    if (!count) await sb.from('budgets').insert(bm)
   }
 
-  const budgetMonths = [
-    { month: '2026-03-01', income: 30000, expenses_budget: 18000, savings_budget: 7000, investment_budget: 5000 },
-    { month: '2026-04-01', income: 27500, expenses_budget: 17000, savings_budget: 6000, investment_budget: 4500 },
-    { month: '2026-05-01', income: 32000, expenses_budget: 18500, savings_budget: 8000, investment_budget: 5500 },
-  ];
-  for (const bm of budgetMonths) {
-    const { count } = await sb.from('budgets').select('*', { count: 'exact', head: true }).eq('user_id', uid).eq('month', bm.month);
-    if (!count) {
-      const { data, error } = await sb.from('budgets').insert({ user_id: uid, ...bm }).select();
-      ok(`budget ${bm.month}`, data, error);
-    }
-  }
-
+  // 4. Expenses
   if (await cnt('expenses', uid) === 0) {
-    const expenses = [
-      { user_id: uid, category: 'Academy Operations', description: 'Accra Sports Stadium pitch rental (May)', amount: 3500, currency: 'GHS', date: '2026-05-01', payment_method: 'Stanbic Bank Transfer' },
-      { user_id: uid, category: 'Academy Operations', description: 'Staff wages — 6 coaches (pro-rated May)', amount: 8400, currency: 'GHS', date: '2026-05-01', payment_method: 'MTN MoMo' },
-      { user_id: uid, category: 'Academy Operations', description: 'Umbro training kit reorder — 30 player set (XS–L)', amount: 2100, currency: 'GHS', date: '2026-05-03', payment_method: 'Stanbic Debit Card' },
-      { user_id: uid, category: 'Transport', description: 'Minibus charter — away tournament Kumasi (2 days)', amount: 1800, currency: 'GHS', date: '2026-05-06', payment_method: 'MTN MoMo' },
-      { user_id: uid, category: 'Food', description: 'Chop bar + rice water — training days Tema', amount: 850, currency: 'GHS', date: '2026-05-08', payment_method: 'Cash' },
-      { user_id: uid, category: 'Housing', description: 'Tema compound building — bricklayers payment Block C', amount: 4500, currency: 'GHS', date: '2026-05-02', payment_method: 'Ecobank Transfer' },
-      { user_id: uid, category: 'Education', description: 'UEFA A coaching programme module fee (online)', amount: 1200, currency: 'GHS', date: '2026-05-01', payment_method: 'Visa Debit' },
-      { user_id: uid, category: 'Telecom', description: 'MTN Ghana postpaid — coaching WhatsApp groups data', amount: 250, currency: 'GHS', date: '2026-05-01', payment_method: 'MTN MoMo' },
-      { user_id: uid, category: 'Insurance', description: 'Academy player group accident insurance (Ghana Insurance Commission registered)', amount: 600, currency: 'GHS', date: '2026-05-01', payment_method: 'Stanbic Bank Transfer' },
-      { user_id: uid, category: 'Charity', description: 'Free enrolment sponsorship — 12 underprivileged players (May term subsidy)', amount: 1800, currency: 'GHS', date: '2026-05-01', payment_method: 'MTN MoMo' },
-      { user_id: uid, category: 'Healthcare', description: 'NHIS renewal — Michael + Abena + Kwame + Kobi', amount: 320, currency: 'GHS', date: '2026-05-05', payment_method: 'MTN MoMo' },
-      { user_id: uid, category: 'Entertainment', description: 'Ghana Premier League — Accra Hearts of Oak vs Kotoko tickets (family outing)', amount: 180, currency: 'GHS', date: '2026-05-10', payment_method: 'Cash' },
-    ];
-    const { data, error } = await sb.from('expenses').insert(expenses).select();
-    ok('expenses', data, error);
+    await sb.from('expenses').insert([
+      { user_id: uid, amount: 3000, currency: 'GHS', category: 'rent', description: 'Apartment rent — East Legon, Accra (April)', expense_date: '2026-04-01' },
+      { user_id: uid, amount: 2800, currency: 'GHS', category: 'misc', description: 'Pitch hire — Accra Sports Stadium training ground (April — 12 sessions)', expense_date: '2026-04-03' },
+      { user_id: uid, amount: 1400, currency: 'GHS', category: 'misc', description: 'Training bibs, cones, agility ladders — equipment restock', expense_date: '2026-04-07' },
+      { user_id: uid, amount: 1200, currency: 'GHS', category: 'food', description: 'Groceries — Palace Mall Supermarket + chop bar weekly lunches', expense_date: '2026-04-10' },
+      { user_id: uid, amount: 850, currency: 'GHS', category: 'transport', description: 'Trotro + Uber — academy site, GFA offices, Accra Lions training', expense_date: '2026-04-14' },
+      { user_id: uid, amount: 1800, currency: 'GHS', category: 'misc', description: 'Goalkeeper kit — gloves + padded shorts for U-15 squad (12 pairs)', expense_date: '2026-04-18' },
+      { user_id: uid, amount: 1100, currency: 'GHS', category: 'food', description: 'Family groceries — wife Abena + 2 children, rest of April', expense_date: '2026-04-24' },
+      { user_id: uid, amount: 3000, currency: 'GHS', category: 'rent', description: 'Apartment rent — East Legon (May)', expense_date: '2026-05-01' },
+      { user_id: uid, amount: 2400, currency: 'GHS', category: 'misc', description: 'Academy player transport subsidy — 15 scholarship players from Ashaiman', expense_date: '2026-05-04' },
+      { user_id: uid, amount: 1100, currency: 'GHS', category: 'food', description: 'Groceries + post-training team meal (rice and stew, 25 U-17 players)', expense_date: '2026-05-09' },
+    ])
   }
 
-  if (await cnt('savings_goals', uid) === 0) {
-    const goals = [
-      { user_id: uid, name: 'Dodowa 5-acre football facility', target_amount: 800000, current_amount: 142000, currency: 'GHS', target_date: '2028-12-31', category: 'Business', notes: 'Land purchase ~GHS 380K. Construction GHS 420K. Seeking MTN/Guinness sponsorship to bridge gap' },
-      { user_id: uid, name: 'Tema family compound completion', target_amount: 280000, current_amount: 95000, currency: 'GHS', target_date: '2027-06-30', category: 'Housing', notes: 'Block C and D remain. Ecobank savings dedicated account' },
-      { user_id: uid, name: 'Emergency fund', target_amount: 60000, current_amount: 18500, currency: 'GHS', target_date: '2027-01-01', category: 'Emergency', notes: 'Covers 3 months academy operations + family living' },
-      { user_id: uid, name: 'Boys\' education — Kwame + Kobi', target_amount: 120000, current_amount: 22000, currency: 'GHS', target_date: '2030-01-01', category: 'Education', notes: 'Target private secondary school (Ridge International) GHS 30K/year per child' },
-    ];
-    const { data, error } = await sb.from('savings_goals').insert(goals).select();
-    ok('savings_goals', data, error);
-  }
-
-  if (await cnt('investments', uid) === 0) {
-    const investments = [
-      { user_id: uid, name: 'Ghana Government Treasury Bills (182-day)', type: 'bonds', amount_invested: 25000, current_value: 26875, currency: 'GHS', institution: 'Bank of Ghana / Stanbic', notes: 'Rolling 182-day T-bill at 27.5% p.a. Safe inflation hedge' },
-      { user_id: uid, name: 'Databank Ark Fund', type: 'mutual_fund', amount_invested: 15000, current_value: 17240, currency: 'GHS', institution: 'Databank Brokerage', notes: 'Balanced fund — equity + bonds. Monthly GHS 1,000 contribution' },
-    ];
-    const { data, error } = await sb.from('investments').insert(investments).select();
-    ok('investments', data, error);
-  }
-
-  if (await cnt('money_subscriptions', uid) === 0) {
-    const subs = [
-      { user_id: uid, name: 'Wyscout (coach video analysis platform)', amount: 850, currency: 'GHS', billing_cycle: 'monthly', category: 'Business', next_billing_date: '2026-06-01' },
-      { user_id: uid, name: 'Ghana FA Technical Analyst licence renewal', amount: 200, currency: 'GHS', billing_cycle: 'yearly', category: 'Professional', next_billing_date: '2027-01-15' },
-      { user_id: uid, name: 'Academy management software (SportyHQ)', amount: 350, currency: 'GHS', billing_cycle: 'monthly', category: 'Business', next_billing_date: '2026-06-01' },
-    ];
-    const { data, error } = await sb.from('money_subscriptions').insert(subs).select();
-    ok('subscriptions', data, error);
-  }
-
-  if (await cnt('business_clients', uid) === 0) {
-    const clients = [
-      { user_id: uid, name: 'Ghana Football Association (Black Stars U-20)', industry: 'Sports Governance', contact_email: 'technical@ghanafoot.com', monthly_value: 4500, currency: 'GHS', status: 'active', country: 'GH' },
-      { user_id: uid, name: 'MTN Ghana (sponsorship negotiation)', industry: 'Telecom', contact_email: 'csr@mtn.com.gh', monthly_value: 0, currency: 'GHS', status: 'prospect', country: 'GH' },
-      { user_id: uid, name: 'Umbro Ghana (kit supply partner)', industry: 'Sports Retail', contact_email: null, monthly_value: 1200, currency: 'GHS', status: 'active', country: 'GH', notes: 'Volume discount deal — Umbro supplies kits at 40% off RRP for 3-year partnership' },
-      { user_id: uid, name: 'Accra Sports Stadium Authority', industry: 'Sports Infrastructure', contact_email: 'pitchhire@accrasports.gov.gh', monthly_value: 0, currency: 'GHS', status: 'active', country: 'GH', notes: 'Pitch rental client — Michael pays them, but key facility partner' },
-    ];
-    const { data, error } = await sb.from('business_clients').insert(clients).select();
-    ok('business_clients', data, error);
-  }
-
-  if (await cnt('business_projects', uid) === 0) {
-    const projects = [
-      { user_id: uid, name: 'MTN Ghana Sponsorship Proposal', status: 'in_progress', client_name: 'MTN Ghana', budget: 800000, currency: 'GHS', start_date: '2026-04-01', end_date: '2026-09-30', description: 'Full proposal for GHS 800K facility naming rights + CSR sponsorship over 5 years. Deck, financials, social impact report' },
-      { user_id: uid, name: 'UEFA A Coaching Exam Preparation', status: 'in_progress', client_name: null, budget: 0, currency: 'GHS', start_date: '2026-01-01', end_date: '2027-03-31', description: 'Self-study + online modules for UEFA A licence. Exam March 2027. Key differentiator for Ghana FA full-time role' },
-      { user_id: uid, name: 'Academy 2026–27 Season Player Trials', status: 'planned', client_name: null, budget: 2500, currency: 'GHS', start_date: '2026-06-01', end_date: '2026-06-30', description: 'Open trials for U-10 through U-17. Target 20 new players. Advertising on Accra FM and social media' },
-    ];
-    const { data, error } = await sb.from('business_projects').insert(projects).select();
-    ok('business_projects', data, error);
-  }
-
+  // 5. Habits
   if (await cnt('habits', uid) === 0) {
-    const habits = [
-      { user_id: uid, name: 'Morning Fajr prayer + 20min Quran reading', frequency: 'daily', target_count: 1, color: '#10B981', icon: '🕌' },
-      { user_id: uid, name: 'Watch 1 match video analysis (Wyscout)', frequency: 'daily', target_count: 1, color: '#3B82F6', icon: '⚽' },
-      { user_id: uid, name: 'Academy training session coaching', frequency: 'weekdays', target_count: 1, color: '#F59E0B', icon: '🏟️' },
-      { user_id: uid, name: 'Academy admin — fees, attendance, parent comms', frequency: 'weekdays', target_count: 1, color: '#8B5CF6', icon: '📋' },
-      { user_id: uid, name: '30-min cardio / cycling (knee rehab protocol)', frequency: 'daily', target_count: 1, color: '#EC4899', icon: '🚴' },
-      { user_id: uid, name: 'Review academy financials (MTN MoMo + Stanbic)', frequency: 'weekly', target_count: 1, color: '#EF4444', icon: '💰' },
-    ];
-    const { data: hd, error: he } = await sb.from('habits').insert(habits).select();
-    ok('habits', hd, he);
-
-    if (hd?.length) {
-      const logs = [];
-      for (let offset = 0; offset < 21; offset++) {
-        const date = dateOffset(offset);
-        const dow = DOW[new Date(date + 'T00:00:00Z').getUTCDay()];
-        for (const h of hd) {
-          const isWeekday = !['Sat', 'Sun'].includes(dow);
-          if (h.frequency === 'weekdays' && !isWeekday) continue;
-          if (h.frequency === 'monthly') continue;
-          if (Math.random() < 0.86) {
-            logs.push({ user_id: uid, habit_id: h.id, completed_at: date, count: 1 });
-          }
-        }
-      }
-      const { data, error } = await sb.from('habit_logs').insert(logs).select();
-      ok('habit_logs', data, error);
-    }
+    await sb.from('habits').insert([
+      {
+        user_id: uid, name: 'Pre-dawn run — 5km Labadi Beach Road', description: 'Running before training keeps energy high for 6-hour coaching days. 5am before the heat.', frequency: 'daily',
+        target_count: 1, current_streak: 22, longest_streak: 45, completed_today: true,
+        category: 'health', color: '#f59e0b', icon: '🏃', reminder_time: '05:00', active: true, created_at: '2026-01-05T00:00:00Z'
+      },
+      {
+        user_id: uid, name: 'Tactical video analysis — 1 session', description: 'One hour of opponent or own team video analysis per coaching day. The game is won in preparation.', frequency: 'daily',
+        target_count: 1, current_streak: 14, longest_streak: 30, completed_today: true,
+        category: 'work', color: '#8b5cf6', icon: '📹', reminder_time: '19:00', active: true, created_at: '2026-01-15T00:00:00Z'
+      },
+      {
+        user_id: uid, name: 'Academy player progress review — weekly', description: 'Every Sunday: review each player\'s development notes, flag standouts, update Europe scouting targets.', frequency: 'weekly',
+        target_count: 1, current_streak: 7, longest_streak: 18, completed_today: false,
+        category: 'work', color: '#10b981', icon: '⚽', reminder_time: '18:00', active: true, created_at: '2026-02-01T00:00:00Z'
+      },
+      {
+        user_id: uid, name: 'GFA compliance files — monthly update', description: 'Phase 1 affiliation requires updated registration docs, player medical records, pitch safety certificates.', frequency: 'monthly',
+        target_count: 1, current_streak: 3, longest_streak: 6, completed_today: false,
+        category: 'work', color: '#3b82f6', icon: '📋', reminder_time: '10:00', active: true, created_at: '2026-02-15T00:00:00Z'
+      },
+      {
+        user_id: uid, name: 'MoMo savings — weekly GHS 500', description: 'GHS 500 to MTN MoMo savings wallet every Friday. Academy future fund — building to own training ground deposit.', frequency: 'weekly',
+        target_count: 1, current_streak: 10, longest_streak: 24, completed_today: false,
+        category: 'finance', color: '#ec4899', icon: '💰', reminder_time: '17:00', active: true, created_at: '2026-01-01T00:00:00Z'
+      },
+    ])
   }
 
-  if (await cnt('career_goals', uid) === 0) {
-    const goals = [
-      { user_id: uid, title: 'Secure MTN Ghana academy sponsorship (GHS 800K)', category: 'Fundraising', target_date: '2026-12-31', status: 'in_progress', progress: 25, notes: 'Proposal deck 60% done. Meeting with MTN CSR Director scheduled May 28. Need social impact data + player success stories' },
-      { user_id: uid, title: 'Get 3 academy players signed to Division 1 clubs', category: 'Player Development', target_date: '2026-12-31', status: 'in_progress', progress: 40, notes: 'Emmanuel Darko trialling at Hearts of Oak U-18. Joshua Boateng contacted by Medeama SC. Abena Ansah — Women\'s Premier League pathway via Hasaacas Ladies FC' },
-      { user_id: uid, title: 'UEFA A coaching licence', category: 'Professional Development', target_date: '2027-03-31', status: 'in_progress', progress: 55, notes: 'Modules 1–4 of 7 completed. Critical for Ghana FA full-time Head of Youth Development appointment' },
-      { user_id: uid, title: 'Ghana FA — Head of Youth Development appointment', category: 'Career', target_date: '2028-01-01', status: 'not_started', progress: 10, notes: 'UEFA A licence + track record of scouts signing academy players are the two requirements. Long-term goal but conversations ongoing' },
-    ];
-    const { data, error } = await sb.from('career_goals').insert(goals).select();
-    ok('career_goals', data, error);
-  }
-
-  if (await cnt('contacts', uid) === 0) {
-    const contacts = [
-      { user_id: uid, name: 'Emmanuel Darko', relationship: 'academy_player', email: null, phone: null, notes: '16-year-old striker — top prospect. Trialling Hearts of Oak U-18. Father is Emmanuel Darko Sr (MTN mobile money agent Tema)' },
-      { user_id: uid, name: 'Dr. Kwesi Appiah', relationship: 'mentor', email: 'kwesi.appiah@ghanafoot.com', phone: null, notes: 'Former Ghana Black Stars head coach. Michael\'s mentor since Hearts of Oak days. Advises on national team pathway strategy' },
-      { user_id: uid, name: 'Nana Ama Boateng', relationship: 'partner', email: 'nana.boateng@mtnghana.com', phone: null, notes: 'MTN Ghana CSR Director. Key decision-maker for academy sponsorship proposal. Meeting May 28' },
-      { user_id: uid, name: 'Kofi Owusu', relationship: 'colleague', email: null, phone: null, notes: 'Asante Youth Academy assistant coach. Former Kumasi Asante FC midfielder. Handles U-12 and U-14 squads' },
-      { user_id: uid, name: 'Abena Asante', relationship: 'family', email: null, phone: null, notes: 'Wife. Primary school teacher (Tema Municipal). Handles academy admin paperwork and parent communications when Michael travels' },
-    ];
-    const { data: cd, error: ce } = await sb.from('contacts').insert(contacts).select();
-    ok('contacts', cd, ce);
-
-    if (cd?.length) {
-      const interactions = [
-        { user_id: uid, contact_id: cd[1].id, type: 'call', notes: 'Kwesi Appiah called to discuss Ghana U-20 tactical setup. Recommended Michael focus on high-press 4-3-3 against WAFU B opponents', occurred_at: '2026-05-03T18:00:00Z' },
-        { user_id: uid, contact_id: cd[2].id, type: 'meeting', notes: 'Coffee with Nana Ama at MTN HQ Accra. Shared academy impact report — 84 players, 3 Division 1 prospects. She requested formal proposal deck by May 20', occurred_at: '2026-05-07T11:00:00Z' },
-        { user_id: uid, contact_id: cd[0].id, type: 'note', notes: 'Emmanuel scored hat-trick in Accra Football Academy friendly. Hearts of Oak scout Samuel Brew was watching. Called Michael after — very positive', occurred_at: '2026-05-09T20:00:00Z' },
-      ];
-      const { data, error } = await sb.from('contact_interactions').insert(interactions).select();
-      ok('contact_interactions', data, error);
-    }
-  }
-
-  if (await cnt('trips', uid) === 0) {
-    const { data: tripData, error: tripErr } = await sb.from('trips').insert({
-      user_id: uid,
-      name: 'WAFU B U-20 Championship — Abidjan',
-      destination: 'Abidjan, Côte d\'Ivoire',
-      start_date: '2026-07-10',
-      end_date: '2026-07-24',
-      status: 'planned',
-      budget: 8500,
-      currency: 'GHS',
-      notes: 'Ghana FA covering flights + hotel for technical staff. Michael self-funding coaching equipment transport and pocket money',
-    }).select();
-    ok('trip', tripData, tripErr);
-
-    if (tripData?.[0]) {
-      const tripId = tripData[0].id;
-      const items = [
-        { trip_id: tripId, user_id: uid, type: 'flight', title: 'ACC → ABJ Air Côte d\'Ivoire', date: '2026-07-10', cost: 0, currency: 'GHS', notes: 'Ghana FA funded. Check in bag limit for coaching equipment' },
-        { trip_id: tripId, user_id: uid, type: 'accommodation', title: 'Sofitel Abidjan Hôtel Ivoire (Ghana FA block booking)', date: '2026-07-10', cost: 0, currency: 'GHS', notes: '14 nights — Ghana FA technical staff rate' },
-        { trip_id: tripId, user_id: uid, type: 'activity', title: 'Group Stage matches — Stadium Félix Houphouët-Boigny', date: '2026-07-12', cost: 0, currency: 'GHS', notes: 'Ghana vs Burkina Faso (GD), Senegal (GD), Sierra Leone (GD)' },
-        { trip_id: tripId, user_id: uid, type: 'other', title: 'Equipment — extra video analysis laptop battery + charger', date: '2026-07-08', cost: 950, currency: 'GHS', notes: 'Wyscout offline match tagging setup' },
-        { trip_id: tripId, user_id: uid, type: 'activity', title: 'Scouting — WAFU B opponent team analysis sessions', date: '2026-07-11', cost: 0, currency: 'GHS', notes: 'Daily opposition Wyscout prep for Ghana coaching staff' },
-      ];
-      const { data, error } = await sb.from('trip_items').insert(items).select();
-      ok('trip_items', data, error);
-    }
-  }
-
+  // 6. Focus sessions
   if (await cnt('focus_sessions', uid) === 0) {
-    const sessions = [
-      { user_id: uid, duration_minutes: 120, type: 'analysis', notes: 'Wyscout: Hearts of Oak U-18 vs Accra Lions — scouted Emmanuel Darko\'s movement off the ball, tracked 8 pressing actions, 4 key passes', completed_at: '2026-05-05T21:00:00Z' },
-      { user_id: uid, duration_minutes: 90, type: 'planning', notes: 'MTN sponsorship deck — built "social impact" slide with player metrics, community reach numbers, free scholarship data. 84 players / 12 sponsored', completed_at: '2026-05-07T20:30:00Z' },
-      { user_id: uid, duration_minutes: 75, type: 'coaching', notes: 'UEFA A module 5: Periodisation in youth football. Notes on Arthur Andrade (Portugal) methodology for age-specific training loads', completed_at: '2026-05-09T22:00:00Z' },
-    ];
-    const { data, error } = await sb.from('focus_sessions').insert(sessions).select();
-    ok('focus_sessions', data, error);
+    await sb.from('focus_sessions').insert([
+      {
+        user_id: uid, mode: 'deep', planned_minutes: 180, actual_minutes: 176, completed: true,
+        abandoned: false, body_doubling_enabled: false, task_title: 'U-17 squad scouting report — 5 European academies for Kofi Mensah and Yaw Dartey',
+        notes: 'Compiled reports: PSV Eindhoven U17, FC Midtjylland, RSC Anderlecht youth, Vitesse Arnhem, RB Salzburg. Kofi (striker, 16) and Yaw (CM, 15) profiles sent to 3 scouts.',
+        started_at: '2026-04-12T10:00:00Z', ended_at: '2026-04-12T12:56:00Z'
+      },
+      {
+        user_id: uid, mode: 'deep', planned_minutes: 120, actual_minutes: 118, completed: true,
+        abandoned: false, body_doubling_enabled: false, task_title: 'GFA Phase 1 affiliation application — document pack assembly',
+        notes: 'Assembled: constitution, pitch certification, 3-year financial records, DBS certificates for all coaches, medical officer letter. 2 documents outstanding: ownership deed and insurance certificate.',
+        started_at: '2026-04-22T09:00:00Z', ended_at: '2026-04-22T11:00:00Z'
+      },
+      {
+        user_id: uid, mode: 'deep', planned_minutes: 90, actual_minutes: 88, completed: true,
+        abandoned: false, body_doubling_enabled: false, task_title: 'Accra Lions match prep — tactical analysis Ghana Premier League matchday 24',
+        notes: 'Identified 3 set-piece vulnerabilities in Bechem United defensive shape. Prepared corner kick patterns for Accra Lions attackers. Sent to head coach Monday morning.',
+        started_at: '2026-05-04T20:00:00Z', ended_at: '2026-05-04T21:28:00Z'
+      },
+      {
+        user_id: uid, mode: 'deep', planned_minutes: 60, actual_minutes: 35, completed: false,
+        abandoned: true, body_doubling_enabled: false, task_title: 'Hearts of Oak coaching offer — pros/cons analysis',
+        notes: 'Stopped at 35 min — called to deal with injured player at academy. Resumed next evening. Big decision, needs clear head.',
+        started_at: '2026-05-07T21:00:00Z', ended_at: '2026-05-07T21:35:00Z'
+      },
+    ])
   }
 
+  // 7. Mood logs
   if (await cnt('mood_logs', uid) === 0) {
-    const moods = [
-      { user_id: uid, mood: 'proud', energy: 9, notes: 'Emmanuel Darko hat-trick today. Hearts of Oak scout was there. Three years of coaching that boy — this is what it\'s for. Abena made jollof to celebrate', logged_at: '2026-05-09T22:30:00Z' },
-      { user_id: uid, mood: 'stressed', energy: 6, notes: 'MTN proposal deadline May 20 and academy quarterly accounts both due. Coach Kofi handling U-12 training so I can focus but pressure is real', logged_at: '2026-05-06T21:00:00Z' },
-      { user_id: uid, mood: 'grateful', energy: 8, notes: 'Kwame played his first full 11-a-side in the U-10 today. Scored from a corner. Seeing your son develop at your own academy — that\'s God\'s blessing', logged_at: '2026-05-03T19:30:00Z' },
-    ];
-    const { data, error } = await sb.from('mood_logs').insert(moods).select();
-    ok('mood_logs', data, error);
+    await sb.from('mood_logs').insert([
+      { user_id: uid, mood: 5, energy: 5, note: 'Kofi Mensah scored a hat trick in the GASSA U-17 finals. 16 years old. The PSV Eindhoven scout was in the stands. This is why we build academies.', logged_at: '2026-04-16T21:00:00Z' },
+      { user_id: uid, mood: 4, energy: 3, note: 'GFA Phase 1 docs nearly complete. Ownership deed is the last hurdle — landlord slow to provide. Patience. This is Ghana.', logged_at: '2026-04-23T19:00:00Z' },
+      { user_id: uid, mood: 3, energy: 3, note: 'Hearts of Oak approached me to join as assistant coach. Full-time. GHS 12K/month. It is good money. But I would have to step back from the academy. This is a real dilemma.', logged_at: '2026-05-07T20:00:00Z' },
+      { user_id: uid, mood: 5, energy: 4, note: 'PSV scout replied — they want to see Kofi and Yaw at the trial camp in Eindhoven this August! Bought the boys ice cream to celebrate. Two years of patient coaching showing up.', logged_at: '2026-05-10T21:00:00Z' },
+    ])
   }
 
+  // 8. Gratitude entries (UNIQUE user_id + date)
+  const gratitudeDates = [
+    { date: '2026-04-16', items: ['Kofi Mensah and his natural gift — our job is just to protect it', 'The PSV scout being in the stands on exactly the right day', 'Abena for holding the family together when I am at training 12 hours a day'] },
+    { date: '2026-04-23', items: ['GFA process moving forward despite the document delays', 'MTN MoMo making savings automatic and friction-free', 'The parents who trust us with their sons\' football dreams'] },
+    { date: '2026-05-10', items: ['PSV Eindhoven trial camp invitation for Kofi and Yaw', 'Every coach who ever believed in me as a player — paying it forward', 'Accra — this city is hard but it is mine'] },
+  ]
+  for (const gd of gratitudeDates) {
+    const { count } = await sb.from('gratitude_entries').select('*', { count: 'exact', head: true })
+      .eq('user_id', uid).eq('date', gd.date)
+    if (!count) await sb.from('gratitude_entries').insert({ user_id: uid, date: gd.date, items: gd.items })
+  }
+
+  // 9. Journal entries
   if (await cnt('journal_entries', uid) === 0) {
-    const entries = [
-      { user_id: uid, content: 'Sat down tonight to review where we are with the MTN proposal. We\'re asking for GHS 800,000. That\'s a big number. But the numbers back it up: 84 players, 12 free scholarships, 3 players heading to professional clubs, 6 coaches employed. The pitch at Dodowa will change everything — it gives the academy permanence. No more renting. I believe this is the right move. Bismillah.', mood: 'determined', tags: ['business', 'academy', 'sponsorship'], created_at: '2026-05-07T22:00:00Z' },
-      { user_id: uid, content: 'ACL injury in 2017 ended my playing career at 28. At the time I was devastated. Now I see it differently. If I\'d played until 35, I\'d never have built this academy. Those 84 kids wouldn\'t have had a proper coaching pathway. Everything has a reason. The injury was the door that opened this. I am grateful.', mood: 'reflective', tags: ['career', 'gratitude', 'faith'], created_at: '2026-05-04T21:30:00Z' },
-    ];
-    const { data, error } = await sb.from('journal_entries').insert(entries).select();
-    ok('journal_entries', data, error);
+    await sb.from('journal_entries').insert([
+      {
+        user_id: uid, title: 'Kofi at the Finals — The Moment That Justifies Everything',
+        content: 'Three goals. The third was a volley from outside the box that the goalkeeper had no answer for. I could hear one of the scouts on the phone. The academy runs on scholarship money we are still raising, pitch hire fees that strain the budget, and parents who don\'t always trust us. But in that moment, none of that mattered. Kofi is going to Eindhoven. I know it.',
+        mood: 5, tags: ['player', 'breakthrough', 'academy'], created_at: '2026-04-17T22:00:00Z'
+      },
+      {
+        user_id: uid, title: 'Hearts of Oak and the Academy — The Hardest Decision',
+        content: 'The offer is real. GHS 12,000/month, full coaching staff support, Champions League qualifying exposure. It is more money than I have ever earned coaching. But the academy needs me here. We have 80 students. Kofi and Yaw need me to shepherd their Europe move. If I go full-time to Hearts, who runs the Tuesday sessions? Abena said: "You built this academy. Don\'t abandon it before it can walk." She is right. But GHS 12K is also school fees for our children.',
+        mood: 3, tags: ['decision', 'career', 'hearts-of-oak'], created_at: '2026-05-08T23:00:00Z'
+      },
+    ])
   }
 
+  // 10. Decision logs
   if (await cnt('decision_logs', uid) === 0) {
-    const decisions = [
-      { user_id: uid, title: 'Accept Ghana FA full-time offer (GHS 12K/month) vs stay independent with academy?', options: ['Accept Ghana FA full-time: GHS 12,000/month salary, travel budget, pension. Lose academy autonomy', 'Stay independent: keep academy + part-time FA contract GHS 4,500/month. Lower income, full control', 'Hybrid: negotiate 60% time commitment to FA, keep 40% for academy. Needs GFA approval'], chosen_option: 'Hybrid: negotiate 60% time commitment to FA, keep 40% for academy. Needs GFA approval', outcome_notes: 'Spoke to Dr. Kwesi Appiah — he confirmed GFA is open to hybrid arrangement if UEFA A licence is achieved. Decision deferred until March 2027 (post-exam)', decided_at: '2026-05-01T19:00:00Z' },
-      { user_id: uid, title: 'Expand academy to Kumasi or consolidate Accra operations first?', options: ['Open Kumasi branch: wider reach, higher revenue ceiling, requires second head coach hire', 'Consolidate Accra: finish Dodowa facility, strengthen Accra brand, then expand', 'Franchise model: license Asante Youth Academy brand to Kumasi operator — low risk, low control'], chosen_option: 'Consolidate Accra: finish Dodowa facility, strengthen Accra brand, then expand', outcome_notes: 'Expanding too early is how academies fail. Dodowa facility first. Kumasi in 2028 after MTN sponsorship secured and facility operational', decided_at: '2026-04-25T20:00:00Z' },
-    ];
-    const { data, error } = await sb.from('decision_logs').insert(decisions).select();
-    ok('decision_logs', data, error);
+    await sb.from('decision_logs').insert([
+      {
+        user_id: uid,
+        question: 'Accept Hearts of Oak FC assistant coach offer (GHS 12,000/month, full-time) or remain independent with Osei Academy + Accra Lions part-time?',
+        category: 'Career',
+        mode: 'compare',
+        options: [
+          { label: 'Accept Hearts of Oak full-time', pros: ['GHS 12,000/month — 2× current coaching income', 'Ghana Premier League platform — visibility for eventual national team role', 'Champions League qualifying exposure builds reputation'], cons: ['Must step back from Osei Academy day-to-day coaching', 'Kofi + Yaw Europe move loses primary shepherd', 'GFA Phase 1 affiliation momentum interrupted', 'Risk: if Hearts underperforms, contract not renewed'] },
+          { label: 'Stay with Academy + Accra Lions part-time', pros: ['Osei Academy grows under direct leadership', 'Kofi + Yaw PSV trial camp has full support', 'GFA affiliation completed this year — first step to owned facility', 'Long-term: owning a certified academy is more valuable than coaching job'], cons: ['Lower income — GHS 6,000-8,000/month combined', 'School fees pressure on family budget', 'Slower national team pathway'] }
+        ],
+        result: { summary: 'Academy is the long-term asset. Hearts offer can be countered: propose consulting role (3 days/week, GHS 6K) that preserves academy leadership. If Hearts refuses part-time, decline and focus on GFA affiliation and Europe placements.', chosen: 'Counter-propose 3-day/week consulting — decline if full-time only', outcome: 'pending' },
+        favorite: true,
+        created_at: '2026-05-08T10:00:00Z'
+      },
+      {
+        user_id: uid,
+        question: 'Expand Osei Academy to Kumasi (second site) in 2026, or consolidate Accra first and wait until GFA Phase 1 is certified?',
+        category: 'Business',
+        mode: 'analyze',
+        options: [
+          { label: 'Open Kumasi site 2026', pros: ['Kumasi talent pool — Ashanti region produces top players', 'First mover in structured youth coaching there', 'Higher enrollment = more revenue and impact'], cons: ['Split management before Accra is stable', 'GFA affiliation for new site requires separate process', 'Capital needed: GHS 80K setup minimum'] },
+          { label: 'Consolidate Accra first', pros: ['GFA Phase 1 certification completes this year', 'Kofi + Yaw Europe placements prove the model', '80→120 students grows revenue without new site overhead'], cons: ['Missing the Kumasi market window', 'Competitors may set up there first'] }
+        ],
+        result: { summary: 'Kumasi before Phase 1 cert is premature. Certify Accra, place 2 players in Europe, then Kumasi from position of validated reputation. Target Kumasi site Q1 2028.', chosen: 'Accra consolidation and GFA certification first — Kumasi 2028', outcome: 'pending' },
+        favorite: false,
+        created_at: '2026-04-28T11:00:00Z'
+      }
+    ])
   }
 
-  if (await cnt('gratitude_entries', uid) === 0) {
-    const entries = [
-      { user_id: uid, content: 'Emmanuel Darko and his father trust me with his development. That trust is not small.', created_at: '2026-05-09T23:00:00Z' },
-      { user_id: uid, content: 'My wife Abena handles academy admin on top of her teaching. She never complains. She believes in this.', created_at: '2026-05-07T22:30:00Z' },
-      { user_id: uid, content: 'Kwame scored today. My son, at my academy, on a pitch I built. Alhamdulillah.', created_at: '2026-05-03T20:00:00Z' },
-      { user_id: uid, content: 'Dr. Kwesi Appiah still picks up when I call. His mentorship is invaluable.', created_at: '2026-04-30T21:00:00Z' },
-    ];
-    const { data, error } = await sb.from('gratitude_entries').insert(entries).select();
-    ok('gratitude_entries', data, error);
+  // 11. Investments (GHS — football-focused savings)
+  if (await cnt('investments', uid) === 0) {
+    await sb.from('investments').insert([
+      { user_id: uid, name: 'MTN MoMo Savings — Academy Future Fund', type: 'savings', invested_amount: 26000, current_value: 26000, currency: 'GHS', account: 'MTN MoMo', notes: 'GHS 500/week automated savings. Building toward own training ground deposit. Target GHS 80K.', purchase_date: '2024-01-01' },
+      { user_id: uid, name: 'GCB Fixed Deposit — 12 months', type: 'savings', invested_amount: 18000, current_value: 19800, currency: 'GHS', account: 'GCB Bank Ghana', notes: '10% annual interest GCB fixed deposit. Emergency fund — covers 4 months of academy operating costs.', purchase_date: '2025-06-01' },
+      { user_id: uid, name: 'Absa Ghana Unit Trust', type: 'mutual_fund', invested_amount: 12000, current_value: 13400, currency: 'GHS', account: 'Absa Ghana', notes: 'Balanced unit trust. Long-term family wealth building separate from academy finances.', purchase_date: '2024-09-01' },
+    ])
   }
 
-  console.log('\n✅ Michael Asante seed complete\n');
+  // 12. Business clients (academy + coaching contracts)
+  if (await cnt('business_clients', uid) === 0) {
+    const { data: clients } = await sb.from('business_clients').insert([
+      { user_id: uid, name: 'Accra Lions FC — Technical Department', email: 'technical@accralions.gh', company: 'Accra Lions FC', notes: 'Ghana Premier League club. Part-time analyst role: GHS 3,500/month for tactical analysis + matchday support. 2 days per week.', currency: 'GHS' },
+      { user_id: uid, name: 'MTN Ghana — CSR Sports Sponsorship', email: 'csr@mtn.com.gh', company: 'MTN Ghana', notes: 'Kit sponsorship: 80 jerseys + bibs + training balls annually. In-kind value GHS 12,000/year. Osei Academy logo on MTN community sports materials.', currency: 'GHS' },
+      { user_id: uid, name: 'GFA Youth Development Directorate', email: 'youth@gfa.com.gh', company: 'Ghana Football Association', notes: 'Phase 1 affiliation application in process. GFA affiliation unlocks insurance access, referee access, official inter-academy competition.', currency: 'GHS' },
+      { user_id: uid, name: 'Ashaiman District Schools', email: 'sports@ashaiman.edu.gh', company: 'Ashaiman Municipality', notes: 'Scholarship programme: 15 Ashaiman students at no cost (GHA government social fund covers transport subsidy). Community goodwill critical for pitch access.', currency: 'GHS' },
+    ]).select()
+
+    if (clients && clients.length) {
+      await sb.from('business_projects').insert([
+        { user_id: uid, client_id: clients[0].id, name: 'Accra Lions — Ghana Premier League Season 2025/26 Analysis', status: 'active', fee: 42000, currency: 'GHS', notes: 'GHS 3,500/month × 12 months = GHS 42,000. Matchday tactical reports, opposition analysis, set-piece design. Contract runs to May 2026.', due_date: '2026-05-31' },
+        { user_id: uid, client_id: clients[1].id, name: 'MTN Kit Sponsorship — 2026/27 Season', status: 'proposal', fee: 14000, currency: 'GHS', notes: 'Renewal proposal: upgrade to GHS 14,000 in-kind (add training equipment + water bottles). Meeting MTN CSR manager June 2026.', due_date: '2026-07-01' },
+        { user_id: uid, client_id: clients[2].id, name: 'GFA Phase 1 Affiliation — Osei Academy', status: 'active', fee: 0, currency: 'GHS', notes: 'No fee — process. Application 90% complete. Outstanding: ownership deed + insurance certificate. Target submission: June 30 2026.', due_date: '2026-06-30' },
+      ])
+    }
+  }
+
+  // 13. Contacts
+  if (await cnt('contacts', uid) === 0) {
+    await sb.from('contacts').insert([
+      { user_id: uid, name: 'Abena Osei', email: 'abena.osei@gmail.com', phone: '+233244123456', group_name: 'Family', notes: 'Wife. Runs the academy administration and parent communications. The real CEO of Osei Academy. Two children: Kwame (8) and Ama (6).' },
+      { user_id: uid, name: 'Erik van der Berg (PSV Eindhoven)', email: 'e.vandenberg@psv.nl', phone: '+31612345678', group_name: 'Business', notes: 'PSV Eindhoven U-17 scout for West Africa. Confirmed interest in Kofi Mensah and Yaw Dartey. Trial camp Eindhoven August 2026.' },
+      { user_id: uid, name: 'Emmanuel Boateng (GFA)', email: 'e.boateng@gfa.com.gh', phone: '+233302554545', group_name: 'Business', notes: 'GFA Youth Development coordinator. Phase 1 affiliation contact. Responsive when you go in person — emails get lost.' },
+      { user_id: uid, name: 'Coach Kweku Donkor', email: '', phone: '+233243456789', group_name: 'Mentors', notes: 'Former Ghanaian professional (Hearts of Oak 1998-2006). Michael\'s mentor. Monthly lunch in Osu to discuss academy development.' },
+    ])
+  }
+
+  // 14. Career goals
+  if (await cnt('career_goals', uid) === 0) {
+    await sb.from('career_goals').insert([
+      {
+        user_id: uid, title: 'Place 2 academy players in European academies (Kofi + Yaw)', category: 'impact',
+        description: 'PSV Eindhoven trial camp confirmed for August. Kofi Mensah (striker, 16) and Yaw Dartey (CM, 15). Also in contact with FC Midtjylland and Vitesse Arnhem.',
+        target_date: '2026-12-31', status: 'active', progress_pct: 60
+      },
+      {
+        user_id: uid, title: 'Obtain GFA Phase 1 Academy Affiliation', category: 'other',
+        description: 'Application 90% complete. Outstanding: ownership deed (landlord) + insurance certificate. Target submission June 30, decision September 2026.',
+        target_date: '2026-09-30', status: 'active', progress_pct: 90
+      },
+      {
+        user_id: uid, title: 'Grow academy enrollment to 120 students', category: 'income',
+        description: 'Currently 80 students (including 15 scholarship). Each paying student: GHS 400/term × 3 terms. Target 120 students by Q1 2027 via Kumasi referrals and GFA visibility.',
+        target_date: '2027-03-31', status: 'active', progress_pct: 67
+      },
+      {
+        user_id: uid, title: 'Accumulate GHS 80,000 training ground deposit', category: 'income',
+        description: 'Current savings: GHS 56,000 (MoMo + GCB). Target GHS 80K for land deposit in Tema or Spintex Road. Own pitch removes GHS 33K/year hire costs.',
+        target_date: '2027-12-31', status: 'active', progress_pct: 70
+      },
+    ])
+  }
+
+  // 15. Trip — GASSA U-17 Finals + PSV scout attendance
+  if (await cnt('trips', uid) === 0) {
+    const { data: trips } = await sb.from('trips').insert([
+      {
+        user_id: uid, destination: 'Kumasi, Ghana — GASSA U-17 Zonal Finals', country_code: 'GH',
+        starts_on: '2026-04-15', ends_on: '2026-04-17',
+        purpose: 'business', status: 'completed',
+        budget_total: 2800, currency: 'GHS',
+        notes: 'Osei Academy U-17 squad at Ghana Amateur School Sports Association finals. Kofi Mensah scored hat-trick. PSV Eindhoven scout Erik van der Berg in attendance — contact established.'
+      },
+      {
+        user_id: uid, destination: 'Eindhoven, Netherlands — PSV Academy Trial Camp', country_code: 'NL',
+        starts_on: '2026-08-10', ends_on: '2026-08-17',
+        purpose: 'business', status: 'planning',
+        budget_total: 8500, currency: 'GHS',
+        notes: 'Accompanying Kofi Mensah and Yaw Dartey to PSV Eindhoven U-17 trial camp. 1-week assessment. Need to arrange visas, travel insurance, chaperone documentation.'
+      }
+    ]).select()
+
+    if (trips && trips.length) {
+      await sb.from('trip_items').insert([
+        { trip_id: trips[0].id, type: 'transport', title: 'Accra → Kumasi — VIP bus (Academy squad)', starts_at: '2026-04-15T05:00:00Z', ends_at: '2026-04-15T09:00:00Z', cost: 1200, currency: 'GHS', notes: 'VIP bus Accra to Kumasi. 15 players + 2 coaches. Departed 5am for afternoon match.' },
+        { trip_id: trips[0].id, type: 'hotel', title: 'Golden Tulip City Hotel Kumasi — 2 nights', starts_at: '2026-04-15T14:00:00Z', ends_at: '2026-04-17T10:00:00Z', cost: 1000, currency: 'GHS', notes: 'Team accommodation. GASSA provided partial subsidy. Shared rooms for players.' },
+        { trip_id: trips[0].id, type: 'activity', title: 'GASSA U-17 Zonal Finals — Osei Academy vs. St. Hubert Seminary', starts_at: '2026-04-16T14:00:00Z', ends_at: '2026-04-16T16:00:00Z', cost: 0, currency: 'GHS', notes: 'Won 4-1. Kofi hat-trick. PSV scout in stands. Erik contacted Michael after the match.' },
+      ])
+    }
+  }
+
+  // 16. Meal plans (Accra family man + coaching lifestyle)
+  if (await cnt('meal_plans', uid) === 0) {
+    const weekStart = '2026-05-11'
+    await sb.from('meal_plans').insert([
+      { user_id: uid, week_start: weekStart, day_of_week: 1, meal_type: 'breakfast', recipe_name: 'Hausa koko + koose (5am pre-run meal)', calories: 380, notes: 'Light protein before 5km run. Abena makes the koose the night before.' },
+      { user_id: uid, week_start: weekStart, day_of_week: 1, meal_type: 'lunch', recipe_name: 'Jollof rice + grilled chicken + fried plantain', calories: 820, notes: 'Post-morning training lunch. Chop bar near academy pitch — GHS 35.' },
+      { user_id: uid, week_start: weekStart, day_of_week: 1, meal_type: 'dinner', recipe_name: 'Abena\'s palm nut soup + fufu', calories: 740, notes: 'Family dinner. The boys eat with us on training days.' },
+      { user_id: uid, week_start: weekStart, day_of_week: 3, meal_type: 'lunch', recipe_name: 'Waakye + fish + shito', calories: 720, notes: 'Wednesday is waakye day at the La roadside spot. Tradition.' },
+      { user_id: uid, week_start: weekStart, day_of_week: 5, meal_type: 'dinner', recipe_name: 'Banku + tilapia + okro stew', calories: 780, notes: 'Friday family dinner. Kwame and Ama help Abena pound — small hands but enthusiastic.' },
+    ])
+  }
+
+  console.log('✅ Michael Osei (#40) seeded — GHS, Accra, Osei Youth Football Academy, PSV Eindhoven trial camp booked')
 }
 
-seed().catch(e => { console.error('Fatal:', e); process.exit(1); });
+seedMichael().catch(e => { console.error(e); process.exit(1) })

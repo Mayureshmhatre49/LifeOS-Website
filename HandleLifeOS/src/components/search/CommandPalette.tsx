@@ -133,10 +133,8 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
     }
   }, [open])
 
-  // Keep activeIdx in range
-  useEffect(() => {
-    if (activeIdx >= allItems.length) setActiveIdx(0)
-  }, [allItems.length, activeIdx])
+  // Clamp activeIdx to valid range during render (avoids derived-state effect)
+  const clampedIdx = activeIdx < allItems.length ? activeIdx : 0
 
   const handleSelect = useCallback((item: { kind: 'action'; data: QuickAction } | { kind: 'result'; data: SearchResult }) => {
     onClose()
@@ -155,10 +153,10 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
       setActiveIdx(i => Math.max(i - 1, 0))
     } else if (e.key === 'Enter') {
       e.preventDefault()
-      const item = allItems[activeIdx]
+      const item = allItems[clampedIdx]
       if (item) handleSelect(item)
     }
-  }, [allItems, activeIdx, handleSelect, onClose])
+  }, [allItems, clampedIdx, handleSelect, onClose])
 
   if (!open) return null
 
@@ -215,7 +213,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                         onClick={() => handleSelect({ kind: 'action', data: a })}
                         className={cn(
                           'w-full flex items-center gap-3 px-3 py-2 text-left transition-colors',
-                          activeIdx === idx ? 'bg-indigo-50' : 'hover:bg-gray-50',
+                          clampedIdx === idx ? 'bg-indigo-50' : 'hover:bg-gray-50',
                         )}
                       >
                         <div className="h-7 w-7 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
@@ -248,7 +246,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                         onClick={() => handleSelect({ kind: 'result', data: r })}
                         className={cn(
                           'w-full flex items-start gap-3 px-3 py-2 text-left transition-colors',
-                          activeIdx === idx ? 'bg-indigo-50' : 'hover:bg-gray-50',
+                          clampedIdx === idx ? 'bg-indigo-50' : 'hover:bg-gray-50',
                         )}
                       >
                         <div className="h-7 w-7 rounded-lg bg-violet-50 flex items-center justify-center shrink-0 mt-0.5">

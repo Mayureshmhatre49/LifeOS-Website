@@ -10,7 +10,7 @@ dotenv.config({ path: '.env.local' })
 const EMAIL = 'robert.williams@e2e-test.handlelifeos.app'
 const PASSWORD = 'E2eTest1234!'
 const sb = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
-  auth: { autoRefreshToken: false, prioritSession: false }
+  auth: { autoRefreshToken: false, persistSession: false }
 })
 
 async function cnt(table, uid) {

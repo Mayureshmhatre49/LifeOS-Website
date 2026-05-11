@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { PLANS, PLAN_ORDER } from '@/lib/billing/plans'
 import { isRazorpayConfigured } from '@/lib/billing/razorpay'
 
-export async function GET() {
+export async function GET(_req: NextRequest) {
   const plans = PLAN_ORDER.map((id) => PLANS[id])
   return NextResponse.json({
     plans,

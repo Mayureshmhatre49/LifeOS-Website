@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import {
   ArrowLeft, GraduationCap, Plus, Trash2, BookOpen, Heart, School, Edit3,
@@ -79,7 +79,7 @@ export default function AuraLearningPage() {
       </div>
 
       <AuraChildSwitcher
-        children={profiles}
+        profiles={profiles}
         selectedId={selectedId}
         onSelect={handleSelect}
       />
@@ -196,11 +196,11 @@ function GoalsTab({ child, onChange }: {
     : 0
 
   // Review reminder
-  const reviewSoon = (() => {
+  const reviewSoon = useMemo(() => {
     if (!plan.next_review_date) return false
     const days = Math.floor((new Date(plan.next_review_date).getTime() - Date.now()) / 86_400_000)
     return days <= 30 && days >= -7
-  })()
+  }, [plan.next_review_date])
 
   return (
     <>

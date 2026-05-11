@@ -128,7 +128,7 @@ export default function AuraBehaviourPage() {
       </div>
 
       <AuraChildSwitcher
-        children={profiles}
+        profiles={profiles}
         selectedId={selectedId}
         onSelect={handleSelect}
       />

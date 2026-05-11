@@ -97,7 +97,7 @@ export default function AuraCoachPickerPage() {
 
       {/* Optional child selector */}
       {profiles.length > 0 && (
-        <AuraChildSwitcher children={profiles} selectedId={selectedId} onSelect={handleSelectChild} />
+        <AuraChildSwitcher profiles={profiles} selectedId={selectedId} onSelect={handleSelectChild} />
       )}
 
       {/* Modes */}

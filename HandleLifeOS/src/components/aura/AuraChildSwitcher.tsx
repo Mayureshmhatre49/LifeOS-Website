@@ -8,13 +8,13 @@ import type { AuraChildProfile } from '@/types/aura'
 import { getAgeDisplay } from '@/lib/aura-logic'
 
 interface Props {
-  children: AuraChildProfile[]
+  profiles: AuraChildProfile[]
   selectedId: string | null
   onSelect: (id: string) => void
   onAddNew?: () => void
 }
 
-export function AuraChildSwitcher({ children, selectedId, onSelect, onAddNew }: Props) {
+export function AuraChildSwitcher({ profiles, selectedId, onSelect, onAddNew }: Props) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
@@ -26,9 +26,9 @@ export function AuraChildSwitcher({ children, selectedId, onSelect, onAddNew }: 
     return () => document.removeEventListener('mousedown', onClickAway)
   }, [open])
 
-  const selected = children.find(c => c.id === selectedId)
+  const selected = profiles.find(c => c.id === selectedId)
 
-  if (children.length === 0) {
+  if (profiles.length === 0) {
     return (
       <button
         onClick={onAddNew}
@@ -59,7 +59,7 @@ export function AuraChildSwitcher({ children, selectedId, onSelect, onAddNew }: 
             {selected?.full_name ?? 'Select a child'}
           </p>
           <p className="text-[11px] text-gray-400">
-            {selected ? getAgeDisplay(selected.date_of_birth) : `${children.length} children`}
+            {selected ? getAgeDisplay(selected.date_of_birth) : `${profiles.length} children`}
           </p>
         </div>
         <ChevronDown className={cn('h-4 w-4 text-gray-400 transition-transform shrink-0', open && 'rotate-180')} />
@@ -67,7 +67,7 @@ export function AuraChildSwitcher({ children, selectedId, onSelect, onAddNew }: 
 
       {open && (
         <div className="absolute top-full left-0 right-0 mt-1.5 z-20 rounded-2xl bg-white border border-gray-100 shadow-lg p-1.5 max-h-72 overflow-y-auto">
-          {children.map(c => (
+          {profiles.map(c => (
             <button
               key={c.id}
               onClick={() => { onSelect(c.id); setOpen(false) }}

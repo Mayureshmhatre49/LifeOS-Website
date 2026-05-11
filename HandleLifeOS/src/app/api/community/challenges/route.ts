@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
     .single()
 
   if (error || !participant) {
-    return NextResponse.json({ error: error?.message ?? 'Could not join' }, { status: 500 })
+    return NextResponse.json({ error: 'Could not join challenge' }, { status: 500 })
   }
 
   // (Aggregate participant_count on the challenge row is updated lazily — a Postgres

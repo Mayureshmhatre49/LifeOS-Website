@@ -136,7 +136,7 @@ export default function AuraADHDLogPage() {
         </div>
       </div>
 
-      <AuraChildSwitcher children={profiles} selectedId={selectedId} onSelect={handleSelect} />
+      <AuraChildSwitcher profiles={profiles} selectedId={selectedId} onSelect={handleSelect} />
 
       {!selected ? (
         <EmptyChild />

@@ -1,11 +1,11 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { getActiveSubscription, cancelSubscription } from '@/lib/db/billing-queries'
 import { getUserPlanId, getQuotaStatus } from '@/lib/billing/quota'
 import { getPlan } from '@/lib/billing/plans'
 import { isSupabaseConfigured } from '@/lib/db/client'
 
-export async function GET() {
+export async function GET(_req: NextRequest) {
   const session = await auth()
   if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 

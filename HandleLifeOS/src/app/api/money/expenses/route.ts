@@ -13,7 +13,7 @@ const createSchema = z.object({
   amount: z.number().positive(),
   currency: z.string().max(10).optional(),
   description: z.string().max(200).optional(),
-  expense_date: z.string().optional(),
+  expense_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be YYYY-MM-DD').optional(),
   is_recurring: z.boolean().optional(),
 })
 

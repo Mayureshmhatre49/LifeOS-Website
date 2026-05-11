@@ -103,7 +103,7 @@ export default function AuraMilestonesPage() {
       </div>
 
       <AuraChildSwitcher
-        children={profiles}
+        profiles={profiles}
         selectedId={selectedId}
         onSelect={handleSelect}
       />

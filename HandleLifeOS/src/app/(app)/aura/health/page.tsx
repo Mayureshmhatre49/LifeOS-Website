@@ -73,7 +73,7 @@ export default function AuraHealthPage() {
       </div>
 
       <AuraChildSwitcher
-        children={profiles}
+        profiles={profiles}
         selectedId={selectedId}
         onSelect={handleSelect}
       />

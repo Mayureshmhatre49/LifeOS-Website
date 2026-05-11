@@ -127,7 +127,7 @@ export default function AuraGrowthPage() {
       </div>
 
       <AuraChildSwitcher
-        children={profiles}
+        profiles={profiles}
         selectedId={selectedId}
         onSelect={handleSelect}
       />

@@ -29,6 +29,7 @@ export function useVoiceInput({
   const [interimText, setInterimText] = useState('')
   const recognitionRef = useRef<SpeechRecognition | null>(null)
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- SSR-safe browser capability check
   useEffect(() => {
     setIsSupported(
       typeof window !== 'undefined' &&

@@ -130,7 +130,7 @@ describe('Auth state consistency across modules', () => {
       else if (mod.name === 'notifications') route = await import('@/app/api/notifications/route')
       else continue
 
-      const handler = mod.method === 'GET' ? route.GET : route.POST
+      const handler = (route as Record<string, ((req: NextRequest) => Promise<Response>) | undefined>)[mod.method]
       if (!handler) continue
 
       const req = new NextRequest(`http://localhost:3000${mod.path}`, { method: mod.method })

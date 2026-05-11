@@ -26,6 +26,7 @@ export default function InvoiceDetailPage() {
       setInvoice(r.invoice); setClient(r.client); setProject(r.project); setIssuer(r.issuer)
     }
   }
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- async data load on mount/param change
   useEffect(() => { load().finally(() => setLoading(false)) }, [params.id])
 
   async function setStatus(status: string) {
