@@ -207,7 +207,7 @@ export function StartFocusCard({ onSessionStart, lastSession }: StartFocusCardPr
       </div>
 
       {/* Start button */}
-      <Button onClick={handleStart} loading={starting} size="lg" className="w-full rounded-2xl text-base">
+      <Button data-testid="start-timer-btn" onClick={handleStart} loading={starting} size="lg" className="w-full rounded-2xl text-base">
         <Play className="h-5 w-5" />
         Start {plannedMinutes}-minute session
       </Button>

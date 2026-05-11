@@ -53,7 +53,7 @@ export async function generateSpendingInsight(
   if (isMockMode() || expenses.length === 0) {
     const total = expenses.reduce((s, e) => s + e.amount, 0)
     return {
-      summary: `You've spent ${budget?.currency ?? 'INR'} ${total.toLocaleString()} this month across ${expenses.length} transactions.`,
+      summary: `You've spent ${budget?.currency ?? 'USD'} ${total.toLocaleString()} this month across ${expenses.length} transactions.`,
       highlights: ['Your largest spending category is food & dining.', 'You have a few recurring bills coming up.'],
       suggestions: ['Consider setting a weekly food budget.', 'Review your subscriptions for unused services.'],
       disclaimer: DISCLAIMER,
@@ -69,7 +69,7 @@ export async function generateSpendingInsight(
 
   const prompt = `You are a calm, non-judgmental personal finance assistant.
 
-User's expense summary for this month (${budget?.currency ?? 'INR'}):
+User's expense summary for this month (${budget?.currency ?? 'USD'}):
 ${summary}
 ${budget ? `Monthly income: ${budget.monthly_income}, Savings target: ${budget.savings_target}` : ''}
 ${memoryContext ? `User context: ${memoryContext}` : ''}
@@ -352,8 +352,8 @@ export async function optimizeSubscriptions(
 User's active subscriptions:
 ${subList}
 
-Monthly total: ~${Math.round(monthlyTotal)} ${active[0]?.currency ?? 'INR'}
-Annual cost: ~${Math.round(annualTotal)} ${active[0]?.currency ?? 'INR'}
+Monthly total: ~${Math.round(monthlyTotal)} ${active[0]?.currency ?? 'USD'}
+Annual cost: ~${Math.round(annualTotal)} ${active[0]?.currency ?? 'USD'}
 
 Analyze for waste and savings as JSON:
 {

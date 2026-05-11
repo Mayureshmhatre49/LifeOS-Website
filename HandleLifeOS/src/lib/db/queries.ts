@@ -4,7 +4,7 @@ import type { Conversation, Message } from '@/types'
 export async function getUserByEmail(email: string) {
   if (!isSupabaseConfigured()) return null
   const db = getSupabaseAdmin()
-  const { data } = await db.from('users').select('*').eq('email', email).single()
+  const { data } = await db.from('users').select('*').eq('email', email).maybeSingle()
   return data
 }
 
@@ -34,9 +34,9 @@ export async function createConversation(params: { user_id: string; title: strin
   return data as Conversation
 }
 
-export async function updateConversationTitle(id: string, title: string) {
+export async function updateConversationTitle(id: string, userId: string, title: string) {
   const db = getSupabaseAdmin()
-  await db.from('conversations').update({ title, updated_at: new Date().toISOString() }).eq('id', id)
+  await db.from('conversations').update({ title, updated_at: new Date().toISOString() }).eq('id', id).eq('user_id', userId)
 }
 
 export async function getMessages(conversationId: string): Promise<Message[]> {
@@ -147,7 +147,7 @@ export async function markEmailVerified(userId: string, tokenId: string) {
 export async function getUserById(userId: string) {
   if (!isSupabaseConfigured()) return null
   const db = getSupabaseAdmin()
-  const { data } = await db.from('users').select('*').eq('id', userId).single()
+  const { data } = await db.from('users').select('*').eq('id', userId).maybeSingle()
   return data
 }
 

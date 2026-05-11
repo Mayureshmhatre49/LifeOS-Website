@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
   const keyHash = await hashApiKey(raw)
   const resolved = await resolveApiKey(keyHash)
   if (!resolved) {
-    return NextResponse.json({ error: 'Invalid or revoked API key.' }, { status: 401 })
+    return NextResponse.json({ error: 'Unauthorized.' }, { status: 401 })
   }
 
   // Quota check
@@ -75,7 +75,6 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({
     text,
-    model: process.env.AI_PROVIDER ?? 'anthropic',
     requestId: crypto.randomUUID(),
   })
 }

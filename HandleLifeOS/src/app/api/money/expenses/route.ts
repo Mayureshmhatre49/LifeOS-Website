@@ -17,15 +17,23 @@ const createSchema = z.object({
   is_recurring: z.boolean().optional(),
 })
 
+const querySchema = z.object({
+  month: z.coerce.number().int().min(1).max(12),
+  year: z.coerce.number().int().min(2000).max(2100),
+})
+
 export async function GET(req: NextRequest) {
   const session = await auth()
   if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { searchParams } = req.nextUrl
-  const month = parseInt(searchParams.get('month') ?? String(new Date().getMonth() + 1))
-  const year = parseInt(searchParams.get('year') ?? String(new Date().getFullYear()))
+  const parsed = querySchema.safeParse({
+    month: searchParams.get('month') ?? String(new Date().getMonth() + 1),
+    year: searchParams.get('year') ?? String(new Date().getFullYear()),
+  })
+  if (!parsed.success) return NextResponse.json({ error: 'Invalid month or year' }, { status: 400 })
 
-  const expenses = await getExpenses(session.user.id, month, year)
+  const expenses = await getExpenses(session.user.id, parsed.data.month, parsed.data.year)
   return NextResponse.json({ expenses })
 }
 

@@ -30,7 +30,7 @@ const TYPE_META: Record<ParsedAction['type'], { icon: React.ReactNode; color: st
 
 const QUICK_CAPTURES = [
   { id: 'q1', icon: Clock,         label: 'Task',     prompt: 'Remind me to ',          type: 'task'    },
-  { id: 'q2', icon: ShoppingCart,  label: 'Expense',  prompt: 'I spent ₹',              type: 'expense' },
+  { id: 'q2', icon: ShoppingCart,  label: 'Expense',  prompt: 'I spent ',               type: 'expense' },
   { id: 'q3', icon: Heart,         label: 'Mood',     prompt: 'Feeling ',               type: 'mood'    },
   { id: 'q4', icon: Lightbulb,     label: 'Idea',     prompt: 'Note: ',                 type: 'note'    },
   { id: 'q5', icon: MessageSquare, label: 'Ask AI',   prompt: 'Help me think through ', type: 'chat'    },
@@ -38,11 +38,11 @@ const QUICK_CAPTURES = [
 
 const EXAMPLE_PROMPTS = [
   'Remind me to call mom tomorrow at 6pm',
-  'I spent ₹450 on lunch',
+  'I spent 450 on lunch',
   'Feeling stressed about the Q2 deadline',
   'Note: try the new coffee shop near office',
   'What should I prioritise this afternoon?',
-  'I spent ₹1,200 on groceries today',
+  'I spent 1,200 on groceries today',
   "Book Tanish's dentist appointment this week",
   'Idea: start a reading habit before bed',
 ]
@@ -88,7 +88,7 @@ export default function CapturePage() {
     if (!Ctor) { inputRef.current?.focus(); return }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const rec = new Ctor() as any
-    rec.lang = 'en-IN'
+    rec.lang = (typeof navigator !== 'undefined' && navigator.language) || 'en'
     rec.onstart = () => setListening(true)
     rec.onend   = () => setListening(false)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

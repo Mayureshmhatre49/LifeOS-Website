@@ -29,11 +29,22 @@ export async function POST(req: NextRequest) {
   if (!table) return NextResponse.json({ error: 'Unknown kind' }, { status: 400 })
 
   const db = getSupabaseAdmin()
+
+  if (kind === 'maintenance' && payload.asset_id) {
+    const { data: asset } = await db
+      .from('home_assets')
+      .select('id')
+      .eq('id', payload.asset_id)
+      .eq('user_id', session.user.id)
+      .maybeSingle()
+    if (!asset) return NextResponse.json({ error: 'Asset not found' }, { status: 404 })
+  }
+
   const { data, error } = await db
     .from(table)
     .insert({ ...stripServerFields(payload), user_id: session.user.id })
     .select().single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) return NextResponse.json({ error: 'Database operation failed' }, { status: 500 })
   return NextResponse.json({ record: data }, { status: 201 })
 }
 
@@ -50,12 +61,23 @@ export async function PATCH(req: NextRequest) {
 
   const db = getSupabaseAdmin()
   if (!id || typeof id !== 'string') return NextResponse.json({ error: 'Missing id' }, { status: 400 })
+
+  if (kind === 'maintenance' && patch.asset_id) {
+    const { data: asset } = await db
+      .from('home_assets')
+      .select('id')
+      .eq('id', patch.asset_id)
+      .eq('user_id', session.user.id)
+      .maybeSingle()
+    if (!asset) return NextResponse.json({ error: 'Asset not found' }, { status: 404 })
+  }
+
   const { data, error } = await db
     .from(table)
     .update(stripServerFields(patch))
     .eq('id', id).eq('user_id', session.user.id)
     .select().single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) return NextResponse.json({ error: 'Database operation failed' }, { status: 500 })
   return NextResponse.json({ record: data })
 }
 

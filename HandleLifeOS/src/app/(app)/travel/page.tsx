@@ -83,7 +83,7 @@ export default function TravelPage() {
           </div>
           <p className="text-sm text-gray-400 ml-10">Plan trips · pack smart · spend mindfully</p>
         </div>
-        <button onClick={() => setShowForm(true)} className="px-3 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 flex items-center gap-1.5">
+        <button data-testid="new-trip-btn" onClick={() => setShowForm(true)} className="px-3 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 flex items-center gap-1.5">
           <Plus className="h-3.5 w-3.5" />Plan trip
         </button>
       </div>
@@ -141,6 +141,11 @@ export default function TravelPage() {
   )
 }
 
+function fmt(n: number, cur: string) {
+  try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: cur, maximumFractionDigits: 0 }).format(n) }
+  catch { return `${cur} ${n.toLocaleString()}` }
+}
+
 function TripCard({ trip, onDelete }: { trip: Trip; onDelete: () => void }) {
   const cfg = STATUS_CFG[trip.status]
   const days = trip.start_date && trip.end_date ? Math.ceil((new Date(trip.end_date).getTime() - new Date(trip.start_date).getTime()) / 86_400_000) + 1 : null
@@ -166,7 +171,7 @@ function TripCard({ trip, onDelete }: { trip: Trip; onDelete: () => void }) {
             )}
             {trip.travellers > 1 && <span className="flex items-center gap-1"><Users className="h-2.5 w-2.5" />{trip.travellers}</span>}
             {trip.budget_total && (
-              <span className="flex items-center gap-1"><Wallet className="h-2.5 w-2.5" />₹{trip.spent_total}/{trip.budget_total}</span>
+              <span className="flex items-center gap-1"><Wallet className="h-2.5 w-2.5" />{fmt(trip.spent_total, trip.currency)}{trip.budget_total != null ? `/${fmt(trip.budget_total, trip.currency)}` : ''}</span>
             )}
           </div>
           {daysUntil != null && daysUntil >= 0 && daysUntil <= 60 && trip.status !== 'completed' && (

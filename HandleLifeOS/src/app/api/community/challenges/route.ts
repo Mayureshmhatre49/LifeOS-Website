@@ -110,6 +110,6 @@ export async function PATCH(req: NextRequest) {
     .update(patch)
     .eq('id', participant_id).eq('user_id', session.user.id)
     .select().single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) return NextResponse.json({ error: 'Database operation failed' }, { status: 500 })
   return NextResponse.json({ participant: data })
 }

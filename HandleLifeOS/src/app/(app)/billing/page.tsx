@@ -104,8 +104,8 @@ function BillingContent() {
           <div className="text-sm text-gray-500 space-y-1">
             <p>
               {sub.cancelAtPeriodEnd
-                ? `Cancels on ${new Date(sub.currentPeriodEnd).toLocaleDateString('en-IN', { dateStyle: 'long' })}`
-                : `Renews on ${new Date(sub.currentPeriodEnd).toLocaleDateString('en-IN', { dateStyle: 'long' })}`}
+                ? `Cancels on ${new Date(sub.currentPeriodEnd).toLocaleDateString(undefined, { dateStyle: 'long' })}`
+                : `Renews on ${new Date(sub.currentPeriodEnd).toLocaleDateString(undefined, { dateStyle: 'long' })}`}
             </p>
             {sub.cancelAtPeriodEnd && (
               <div className="flex items-center gap-1.5 text-amber-600">

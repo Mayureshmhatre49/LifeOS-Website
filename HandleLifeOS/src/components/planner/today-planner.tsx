@@ -106,7 +106,7 @@ export function TodayPlanner() {
             <Sparkles className="h-3.5 w-3.5" />
             AI
           </Button>
-          <Button size="sm" onClick={() => { setEditTask(null); setModalOpen(true) }}>
+          <Button size="sm" data-testid="add-task-btn" onClick={() => { setEditTask(null); setModalOpen(true) }}>
             <Plus className="h-4 w-4" />
             Add
           </Button>

@@ -64,7 +64,7 @@ export async function getLastIncompleteSession(userId: string): Promise<FocusSes
     .eq('abandoned', false)
     .order('started_at', { ascending: false })
     .limit(1)
-    .single()
+    .maybeSingle()
   return data as FocusSession | null
 }
 
@@ -73,7 +73,7 @@ export async function getLastIncompleteSession(userId: string): Promise<FocusSes
 export async function getFocusPreferences(userId: string): Promise<FocusPreferences | null> {
   if (!isSupabaseConfigured()) return null
   const db = getSupabaseAdmin()
-  const { data } = await db.from('focus_preferences').select('*').eq('user_id', userId).single()
+  const { data } = await db.from('focus_preferences').select('*').eq('user_id', userId).maybeSingle()
   return data as FocusPreferences | null
 }
 

@@ -54,7 +54,7 @@ export const DEFAULT_PREFERENCES: Omit<PersonalisationPreferences, 'user_id' | '
   interests: [],
   priority_modules: [],
   language: 'en',
-  currency: 'INR',
+  currency: 'USD',
   timezone: null,
   learning_enabled: true,
   notes: null,

@@ -146,6 +146,7 @@ export default function VaultPage() {
         <input
           ref={fileRef}
           type="file"
+          data-testid="vault-file-input"
           onChange={onPick}
           accept=".pdf,.png,.jpg,.jpeg,.heic,.doc,.docx,.xls,.xlsx,.txt"
           className="block w-full text-xs text-gray-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200"

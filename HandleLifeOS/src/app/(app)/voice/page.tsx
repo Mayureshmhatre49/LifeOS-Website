@@ -1,10 +1,11 @@
-import { VoiceInterface } from '@/components/voice/voice-interface'
+import type { Metadata } from 'next'
+import { VoicePageClient } from '@/components/voice/VoicePageClient'
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Voice Mode — Life OS',
   description: 'Hands-free access to Life OS via voice.',
 }
 
 export default function VoicePage() {
-  return <VoiceInterface className="h-full" />
+  return <VoicePageClient />
 }

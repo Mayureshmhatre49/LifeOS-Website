@@ -14,8 +14,9 @@ const TYPE_ICON = {
   transfer: { icon: ArrowLeftRight,  color: 'text-indigo-500',  bg: 'bg-indigo-50'  },
 }
 
-function fmt(n: number) {
-  return `₹${n.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+function fmt(n: number, cur: string) {
+  try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: cur, maximumFractionDigits: 0 }).format(n) }
+  catch { return `${cur} ${n.toLocaleString()}` }
 }
 
 function categoryLabel(cat: string, type: TransactionType) {
@@ -28,14 +29,19 @@ export default function TransactionsPage() {
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<TransactionType | 'all'>('all')
   const [search, setSearch] = useState('')
+  const [currency, setCurrency] = useState('USD')
 
   const load = useCallback(async () => {
     setLoading(true)
     const params = new URLSearchParams({ limit: '100' })
     if (filter !== 'all') params.set('type', filter)
-    const res = await fetch(`/api/money/transactions?${params}`)
+    const [res, p] = await Promise.all([
+      fetch(`/api/money/transactions?${params}`),
+      fetch('/api/profile').then(r => r.json()).catch(() => ({})),
+    ])
     const data = await res.json()
     setTransactions(Array.isArray(data) ? data : [])
+    if (p?.currency) setCurrency(p.currency)
     setLoading(false)
   }, [filter])
 
@@ -72,11 +78,11 @@ export default function TransactionsPage() {
       <div className="grid grid-cols-2 gap-2">
         <div className="rounded-2xl bg-emerald-50 border border-emerald-100 p-3 text-center">
           <p className="text-[10px] font-semibold text-emerald-600 uppercase tracking-wider">Income</p>
-          <p className="text-lg font-black text-emerald-700 mt-0.5">{fmt(incomeTotal)}</p>
+          <p className="text-lg font-black text-emerald-700 mt-0.5">{fmt(incomeTotal, currency)}</p>
         </div>
         <div className="rounded-2xl bg-rose-50 border border-rose-100 p-3 text-center">
           <p className="text-[10px] font-semibold text-rose-600 uppercase tracking-wider">Expenses</p>
-          <p className="text-lg font-black text-rose-700 mt-0.5">{fmt(expenseTotal)}</p>
+          <p className="text-lg font-black text-rose-700 mt-0.5">{fmt(expenseTotal, currency)}</p>
         </div>
       </div>
 
@@ -146,7 +152,7 @@ export default function TransactionsPage() {
                   'text-sm font-bold shrink-0',
                   txn.type === 'income' ? 'text-emerald-600' : txn.type === 'expense' ? 'text-rose-600' : 'text-indigo-600',
                 )}>
-                  {txn.type === 'income' ? '+' : txn.type === 'expense' ? '-' : ''}{fmt(txn.amount)}
+                  {txn.type === 'income' ? '+' : txn.type === 'expense' ? '-' : ''}{fmt(txn.amount, currency)}
                 </p>
                 <button
                   onClick={() => deleteItem(txn.id)}

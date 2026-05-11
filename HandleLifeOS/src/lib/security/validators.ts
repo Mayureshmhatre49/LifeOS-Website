@@ -30,8 +30,6 @@ export const signupSchema = z.object({
   name: nameSchema,
   email: emailSchema,
   password: passwordSchema,
-  // Honeypot — must be empty; bots fill hidden fields
-  website: z.string().max(0, 'Bot detected').optional(),
 })
 
 export const loginSchema = z.object({

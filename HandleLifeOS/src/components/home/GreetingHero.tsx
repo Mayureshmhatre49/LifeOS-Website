@@ -113,6 +113,7 @@ export function GreetingHero({ data, userImage }: Props) {
   const stats = buildStats(data)
   const engaged = isEngaged(data)
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+  const displayName = data.userName || session?.user?.name || session?.user?.email?.split('@')[0] || 'there'
 
   return (
     <div className="space-y-5">
@@ -121,7 +122,7 @@ export function GreetingHero({ data, userImage }: Props) {
         <div className="min-w-0">
           <p className="text-[12px] font-medium text-[var(--color-text-tertiary)]">{today}</p>
           <h1 className="mt-0.5 truncate">
-            {greeting}, {data.userName}.
+            {greeting}, {displayName}.
           </h1>
         </div>
 

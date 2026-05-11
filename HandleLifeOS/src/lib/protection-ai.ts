@@ -54,7 +54,7 @@ Common patterns to check: urgent pressure, request for OTP/password/money transf
 export async function analyzeQuote(
   content: string,
   amount?: number,
-  currency = 'INR',
+  currency = 'USD',
   category = 'service',
   region = 'India',
   userContext?: string
@@ -130,7 +130,7 @@ Note: safe_to_sign should almost always be null — you can't determine this wit
 
 export async function analyzeSubscriptions(
   content: string,
-  currency = 'INR',
+  currency = 'USD',
   userContext?: string
 ): Promise<SubscriptionAnalysisResult> {
   if (isMockMode()) return mockSubscriptions()
@@ -204,7 +204,7 @@ export async function generateNegotiationScript(
   negotiationType: string,
   tone: NegotiationTone = 'polite',
   amount?: number,
-  currency = 'INR',
+  currency = 'USD',
   userContext?: string
 ): Promise<NegotiationResult> {
   if (isMockMode()) return mockNegotiation(context, tone)
@@ -217,6 +217,7 @@ export async function generateNegotiationScript(
     polite: 'Use a warm, respectful, and non-confrontational tone. Make it easy for both sides.',
     firm: 'Use a confident, clear, and assertive tone. Polite but direct.',
     professional: 'Use formal, business-appropriate language. Structured and credible.',
+    friendly: 'Use a casual, approachable, and upbeat tone. Keep it conversational and warm.',
   }
 
   const { text: raw } = await generateText({
@@ -255,7 +256,7 @@ function mockScam(content: string): ScamAnalysisResult {
   }
 }
 
-function mockQuote(content: string, amount?: number, currency = 'INR'): QuoteAnalysisResult {
+function mockQuote(content: string, amount?: number, currency = 'USD'): QuoteAnalysisResult {
   return {
     risk_level: 'medium',
     verdict: amount && amount > 50000 ? 'This quote appears higher than typical market rates.' : 'This quote is in a reasonable range.',

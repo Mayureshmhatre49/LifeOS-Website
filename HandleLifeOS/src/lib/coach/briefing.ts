@@ -160,7 +160,7 @@ function buildHighlights(s: RawSignals): BriefingHighlight[] {
   if (s.urgentAuraAlerts > 0) h.push({ label: 'AURA alerts', value: `${s.urgentAuraAlerts} urgent`, link: '/aura', emoji: '👶' })
   if (s.topActiveGoal) h.push({ label: 'Top goal', value: s.topActiveGoal, link: '/career', emoji: '🎯' })
   if (s.upcomingLegalDeadlines.length > 0) h.push({ label: 'Legal deadlines', value: `${s.upcomingLegalDeadlines.length} this week`, link: '/legal', emoji: '⚖️' })
-  if (s.outstandingInvoiceCount > 0) h.push({ label: 'Outstanding invoices', value: `${s.outstandingInvoiceCount} · ₹${Math.round(s.outstandingInvoiceTotal).toLocaleString('en-IN')}`, link: '/business', emoji: '🧾' })
+  if (s.outstandingInvoiceCount > 0) h.push({ label: 'Outstanding invoices', value: `${s.outstandingInvoiceCount} · ${Math.round(s.outstandingInvoiceTotal).toLocaleString()}`, link: '/business', emoji: '🧾' })
   if (s.todayMealsPlanned > 0) h.push({ label: 'Meals planned', value: `${s.todayMealsPlanned} today`, link: '/nutrition', emoji: '🥗' })
   return h
 }
@@ -188,14 +188,14 @@ async function generateBriefingMarkdown(s: RawSignals, userId: string, userName?
   if (s.journalDaysAgo != null) lines.push(`Last journal: ${s.journalDaysAgo} days ago`)
   if (s.birthdaysThisWeek.length) lines.push(`Birthdays this week: ${s.birthdaysThisWeek.map(b => b.name).join(', ')}`)
   if (s.followUpsThisWeek.length) lines.push(`Follow-ups due: ${s.followUpsThisWeek.map(f => f.name).join(', ')}`)
-  if (s.upcomingSIPs.length) lines.push(`SIPs due this week: ${s.upcomingSIPs.map(p => `${p.name} ₹${p.amount}`).join(', ')}`)
+  if (s.upcomingSIPs.length) lines.push(`SIPs due this week: ${s.upcomingSIPs.map(p => `${p.name} (${p.amount})`).join(', ')}`)
   if (s.upcomingMaintenance.length) lines.push(`Home maintenance due: ${s.upcomingMaintenance.map(m => m.title).join(', ')}`)
   if (s.unpaidBills > 0) lines.push(`${s.unpaidBills} unpaid utility bills`)
   if (s.activeTrip) lines.push(`Active trip: ${s.activeTrip}`)
   if (s.urgentAuraAlerts) lines.push(`${s.urgentAuraAlerts} urgent AURA alerts (children)`)
   if (s.topActiveGoal) lines.push(`Top career goal: ${s.topActiveGoal}`)
   if (s.upcomingLegalDeadlines.length) lines.push(`Legal/tax deadlines: ${s.upcomingLegalDeadlines.map(d => d.title).join(', ')}`)
-  if (s.outstandingInvoiceCount > 0) lines.push(`Outstanding invoices: ${s.outstandingInvoiceCount} totalling ₹${Math.round(s.outstandingInvoiceTotal)}`)
+  if (s.outstandingInvoiceCount > 0) lines.push(`Outstanding invoices: ${s.outstandingInvoiceCount} totalling ${Math.round(s.outstandingInvoiceTotal)}`)
   if (s.todayMealsPlanned > 0) lines.push(`Meals planned today: ${s.todayMealsPlanned}`)
 
   const systemPrompt = `You are a warm, calm, slightly poetic morning briefing assistant inside a personal life OS.

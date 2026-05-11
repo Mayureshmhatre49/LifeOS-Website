@@ -29,7 +29,7 @@ export default function QuoteCheckerPage() {
         <CheckInput
           type="quote"
           title="Describe the quote or paste it"
-          placeholder={`Examples:\n"Painter quoted ₹25,000 for a 2BHK — labour + materials"\n"Plumber wants ₹8,000 to fix a tap leak"\n"Freelancer quoted ₹50,000 for a website"`}
+          placeholder={`Examples:\n"Painter quoted 2,500 for a 2-bed flat — labour + materials"\n"Plumber wants 800 to fix a tap leak"\n"Freelancer quoted 5,000 for a website"`}
           icon="💰"
           showAmount
           showCategory

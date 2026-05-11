@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { TrendingUp, Plus, Trash2, X, ArrowUpRight, ArrowDownRight, Calendar, IndianRupee } from 'lucide-react'
+import { TrendingUp, Plus, Trash2, X, ArrowUpRight, ArrowDownRight, Calendar, Coins } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 type InvType = 'mutual_fund' | 'stock' | 'etf' | 'fd' | 'rd' | 'ppf' | 'epf' | 'nps' | 'gold' | 'real_estate' | 'crypto' | 'bond' | 'other'
@@ -37,6 +37,10 @@ const INV_TYPE_LABELS: Record<InvType, { label: string; color: string; emoji: st
   other:        { label: 'Other',        color: 'text-gray-700',    emoji: '💼' },
 }
 
+function fmt(n: number, cur: string) {
+  return new Intl.NumberFormat(undefined, { style: 'currency', currency: cur, maximumFractionDigits: 0 }).format(n)
+}
+
 export default function InvestmentsPage() {
   const [inv, setInv] = useState<Investment[]>([])
   const [sips, setSips] = useState<SIPPlan[]>([])
@@ -45,30 +49,35 @@ export default function InvestmentsPage() {
   const [showInv, setShowInv] = useState(false)
   const [showSip, setShowSip] = useState(false)
   const [editing, setEditing] = useState<Investment | null>(null)
+  const [currency, setCurrency] = useState('USD')
 
   // forms
   const [invF, setInvF] = useState<Partial<Investment>>({ type: 'mutual_fund', invested_amount: 0, current_value: 0 })
   const [sipF, setSipF] = useState<Partial<SIPPlan>>({ frequency: 'monthly', amount: 0 })
 
   async function load() {
-    const r = await fetch('/api/investments').then(r => r.json())
+    const [r, p] = await Promise.all([
+      fetch('/api/investments').then(r => r.json()),
+      fetch('/api/profile').then(r => r.json()).catch(() => ({})),
+    ])
     setInv(r.investments ?? []); setSips(r.sips ?? [])
+    if (p?.currency) setCurrency(p.currency)
   }
   useEffect(() => { load().finally(() => setLoading(false)) }, [])
 
   async function saveInv() {
     if (!invF.name?.trim()) return
-    if (editing) {
-      await fetch('/api/investments', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: 'investment', id: editing.id, ...invF }) })
-    } else {
-      await fetch('/api/investments', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: 'investment', ...invF }) })
-    }
+    const res = editing
+      ? await fetch('/api/investments', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: 'investment', id: editing.id, ...invF }) })
+      : await fetch('/api/investments', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: 'investment', ...invF }) })
+    if (!res.ok) return
     setShowInv(false); setInvF({ type: 'mutual_fund', invested_amount: 0, current_value: 0 }); setEditing(null); load()
   }
 
   async function saveSip() {
     if (!sipF.name?.trim() || !sipF.amount || !sipF.start_date) return
-    await fetch('/api/investments', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: 'sip', ...sipF, next_date: sipF.next_date ?? sipF.start_date }) })
+    const res = await fetch('/api/investments', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: 'sip', ...sipF, next_date: sipF.next_date ?? sipF.start_date }) })
+    if (!res.ok) return
     setShowSip(false); setSipF({ frequency: 'monthly', amount: 0 }); load()
   }
 
@@ -117,15 +126,15 @@ export default function InvestmentsPage() {
       {/* Portfolio summary */}
       <div className="rounded-3xl bg-gradient-to-br from-emerald-500 via-green-600 to-teal-600 text-white p-6 shadow-md shadow-emerald-200">
         <p className="text-xs font-bold uppercase tracking-widest text-white/70 mb-1">Total portfolio value</p>
-        <p className="text-3xl font-bold">₹{totalCurrent.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
+        <p className="text-3xl font-bold">{fmt(totalCurrent, currency)}</p>
         <div className="flex items-center gap-2 mt-1 text-sm">
           {totalGain >= 0 ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
-          <span className="font-bold">₹{Math.abs(totalGain).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
+          <span className="font-bold">{fmt(Math.abs(totalGain), currency)}</span>
           <span className="text-white/80">({gainPct >= 0 ? '+' : ''}{gainPct.toFixed(1)}%)</span>
-          <span className="text-white/60 text-xs ml-2">on ₹{totalInvested.toLocaleString('en-IN', { maximumFractionDigits: 0 })} invested</span>
+          <span className="text-white/60 text-xs ml-2">on {fmt(totalInvested, currency)} invested</span>
         </div>
         {monthlyCommit > 0 && (
-          <p className="text-xs text-white/70 mt-3">SIP commitment: ₹{Math.round(monthlyCommit).toLocaleString('en-IN')}/month</p>
+          <p className="text-xs text-white/70 mt-3">SIP commitment: {fmt(Math.round(monthlyCommit), currency)}/month</p>
         )}
       </div>
 
@@ -238,13 +247,13 @@ export default function InvestmentsPage() {
                       </div>
                       {i.account && <p className="text-[10px] text-gray-400 mt-0.5">{i.account}</p>}
                       <div className="flex items-baseline gap-2 mt-1">
-                        <p className="text-base font-bold text-gray-800">₹{Number(i.current_value).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
+                        <p className="text-base font-bold text-gray-800">{fmt(Number(i.current_value), currency)}</p>
                         <span className={cn('text-xs font-bold flex items-center gap-0.5', gain >= 0 ? 'text-emerald-600' : 'text-rose-600')}>
                           {gain >= 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
                           {gainPct.toFixed(1)}%
                         </span>
                       </div>
-                      <p className="text-[10px] text-gray-400">Invested ₹{Number(i.invested_amount).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
+                      <p className="text-[10px] text-gray-400">Invested {fmt(Number(i.invested_amount), currency)}</p>
                     </div>
                     <button onClick={() => { setEditing(i); setInvF(i); setShowInv(true) }} className="p-1.5 rounded-lg text-gray-400 hover:text-emerald-600 text-[10px]">edit</button>
                     <button onClick={() => delInv(i.id)} className="p-1 rounded text-gray-300 hover:text-red-400"><Trash2 className="h-3 w-3" /></button>
@@ -267,11 +276,11 @@ export default function InvestmentsPage() {
               return (
                 <div key={s.id} className="rounded-2xl bg-white/80 backdrop-blur border border-white/60 shadow-sm p-3 flex items-center gap-3">
                   <div className="h-9 w-9 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
-                    <IndianRupee className="h-4 w-4 text-emerald-600" />
+                    <Coins className="h-4 w-4 text-emerald-600" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-gray-800">{s.name}</p>
-                    <p className="text-[11px] text-gray-500">₹{Number(s.amount).toLocaleString('en-IN')} · {s.frequency}</p>
+                    <p className="text-[11px] text-gray-500">{fmt(Number(s.amount), currency)} · {s.frequency}</p>
                     <p className={cn('text-[10px] font-semibold mt-0.5', daysUntil <= 7 ? 'text-amber-700' : 'text-gray-400')}>
                       Next: {new Date(s.next_date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       {daysUntil >= 0 && ` (in ${daysUntil}d)`}

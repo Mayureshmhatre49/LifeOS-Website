@@ -7,10 +7,9 @@ import { MoneyNavBar } from '@/components/money/MoneyNavBar'
 import type { Liability, LiabilityType, CreateLiabilityInput } from '@/types/money'
 import { LIABILITY_TYPE_LABELS } from '@/types/money'
 
-function fmt(n: number) {
-  if (n >= 100_000) return `₹${(n / 100_000).toFixed(1)}L`
-  if (n >= 1_000)   return `₹${(n / 1_000).toFixed(0)}k`
-  return `₹${n}`
+function fmt(n: number, cur: string) {
+  try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: cur, maximumFractionDigits: 0 }).format(n) }
+  catch { return `${cur} ${n.toLocaleString()}` }
 }
 
 const TYPE_COLORS: Record<LiabilityType, string> = {
@@ -34,11 +33,16 @@ export default function LiabilitiesPage() {
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState<CreateLiabilityInput>(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
+  const [currency, setCurrency] = useState('USD')
 
   const load = useCallback(async () => {
-    const res = await fetch('/api/money/liabilities')
+    const [res, p] = await Promise.all([
+      fetch('/api/money/liabilities'),
+      fetch('/api/profile').then(r => r.json()).catch(() => ({})),
+    ])
     const data = await res.json()
     setLiabilities(Array.isArray(data) ? data : [])
+    if (p?.currency) setCurrency(p.currency)
     setLoading(false)
   }, [])
 
@@ -94,11 +98,11 @@ export default function LiabilitiesPage() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="text-[10px] font-bold text-white/70 uppercase tracking-wider">Total Outstanding</p>
-              <p className="text-2xl font-black mt-1">{fmt(totalOutstanding)}</p>
+              <p className="text-2xl font-black mt-1">{fmt(totalOutstanding, currency)}</p>
             </div>
             <div>
               <p className="text-[10px] font-bold text-white/70 uppercase tracking-wider">Monthly EMI</p>
-              <p className="text-2xl font-black mt-1">{fmt(totalEMI)}</p>
+              <p className="text-2xl font-black mt-1">{fmt(totalEMI, currency)}</p>
             </div>
           </div>
           <p className="text-[11px] text-white/60 mt-2">{liabilities.length} active {liabilities.length === 1 ? 'liability' : 'liabilities'}</p>
@@ -133,7 +137,7 @@ export default function LiabilitiesPage() {
               </select>
             </div>
             <div>
-              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Principal (₹)</label>
+              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Principal</label>
               <input
                 type="number"
                 value={form.principal || ''}
@@ -142,7 +146,7 @@ export default function LiabilitiesPage() {
               />
             </div>
             <div>
-              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Outstanding (₹)</label>
+              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Outstanding</label>
               <input
                 type="number"
                 value={form.outstanding || ''}
@@ -151,7 +155,7 @@ export default function LiabilitiesPage() {
               />
             </div>
             <div>
-              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Monthly EMI (₹)</label>
+              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Monthly EMI</label>
               <input
                 type="number"
                 value={form.emi || ''}
@@ -249,7 +253,7 @@ export default function LiabilitiesPage() {
                     <TrendingDown className="h-3 w-3 text-rose-400" />
                     <p className="text-[9px] text-gray-400 uppercase font-semibold">Outstanding</p>
                   </div>
-                  <p className="text-sm font-bold text-rose-600">{fmt(lib.outstanding)}</p>
+                  <p className="text-sm font-bold text-rose-600">{fmt(lib.outstanding, currency)}</p>
                 </div>
                 {lib.emi && (
                   <div>
@@ -257,7 +261,7 @@ export default function LiabilitiesPage() {
                       <Calendar className="h-3 w-3 text-gray-400" />
                       <p className="text-[9px] text-gray-400 uppercase font-semibold">EMI</p>
                     </div>
-                    <p className="text-sm font-bold text-gray-700">{fmt(lib.emi)}/mo</p>
+                    <p className="text-sm font-bold text-gray-700">{fmt(lib.emi, currency)}/mo</p>
                     {lib.due_day && (
                       <p className="text-[9px] text-gray-400">Due on {lib.due_day}th</p>
                     )}

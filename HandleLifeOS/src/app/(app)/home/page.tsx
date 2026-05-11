@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react'
 import {
   Home as HomeIcon, Wrench, Lightbulb, Plus, Trash2, X, Calendar, AlertCircle,
-  Check, Box, Car as CarIcon, Sofa, Building, Receipt,
+  Check, Box, Car as CarIcon, Sofa, Building, Receipt, Monitor,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface HomeAsset {
-  id: string; name: string; type: 'appliance' | 'furniture' | 'vehicle' | 'property' | 'other';
+  id: string; name: string; type: 'appliance' | 'furniture' | 'vehicle' | 'property' | 'electronics' | 'other';
   brand: string | null; model: string | null; serial_no: string | null;
   purchased_at: string | null; warranty_until: string | null; cost: number | null; notes: string | null;
   created_at: string;
@@ -25,7 +25,7 @@ interface Bill {
   bill_date: string; due_date: string | null; is_paid: boolean; account_no: string | null; notes: string | null;
 }
 
-const ASSET_ICONS = { appliance: Box, furniture: Sofa, vehicle: CarIcon, property: Building, other: Box } as const
+const ASSET_ICONS = { appliance: Box, furniture: Sofa, vehicle: CarIcon, property: Building, electronics: Monitor, other: Box } as const
 
 export default function HomePage() {
   const [assets, setAssets] = useState<HomeAsset[]>([])
@@ -35,10 +35,15 @@ export default function HomePage() {
   const [tab, setTab] = useState<'maintenance' | 'bills' | 'assets'>('maintenance')
   const [showForm, setShowForm] = useState<'asset' | 'maintenance' | 'bill' | null>(null)
   const [f, setF] = useState<Record<string, string | number | boolean>>({})
+  const [currency, setCurrency] = useState('USD')
 
   async function load() {
-    const r = await fetch('/api/home').then(r => r.json())
+    const [r, p] = await Promise.all([
+      fetch('/api/home').then(r => r.json()),
+      fetch('/api/profile').then(r => r.json()).catch(() => ({})),
+    ])
     setAssets(r.assets ?? []); setMaint(r.maintenance ?? []); setBills(r.bills ?? [])
+    if (p?.currency) setCurrency(p.currency)
   }
   useEffect(() => { load().finally(() => setLoading(false)) }, [])
 
@@ -97,7 +102,7 @@ export default function HomePage() {
             <p className="text-xs font-bold text-amber-800">Needs attention</p>
           </div>
           {overdueMaint.length > 0 && <p className="text-xs text-amber-700 pl-6">{overdueMaint.length} overdue maintenance task{overdueMaint.length === 1 ? '' : 's'}</p>}
-          {unpaidBills.length > 0 && <p className="text-xs text-amber-700 pl-6">{unpaidBills.length} unpaid bill{unpaidBills.length === 1 ? '' : 's'} (₹{unpaidBills.reduce((s, b) => s + Number(b.amount), 0).toLocaleString('en-IN')})</p>}
+          {unpaidBills.length > 0 && <p className="text-xs text-amber-700 pl-6">{unpaidBills.length} unpaid bill{unpaidBills.length === 1 ? '' : 's'} ({fmt(unpaidBills.reduce((s, b) => s + Number(b.amount), 0), currency)})</p>}
           {expiringWarranties.length > 0 && <p className="text-xs text-amber-700 pl-6">{expiringWarranties.length} warranty expiring in 60 days</p>}
         </div>
       )}
@@ -121,8 +126,8 @@ export default function HomePage() {
 
       {loading ? <div className="flex items-center justify-center py-8"><div className="animate-spin h-5 w-5 rounded-full border-2 border-teal-500 border-t-transparent" /></div> : (
         <>
-          {tab === 'maintenance' && <MaintenanceList items={maint} onPatch={(id, p) => patch('maintenance', id, p)} onDelete={(id) => del('maintenance', id)} />}
-          {tab === 'bills' && <BillsList bills={bills} onPatch={(id, p) => patch('bill', id, p)} onDelete={(id) => del('bill', id)} />}
+          {tab === 'maintenance' && <MaintenanceList items={maint} currency={currency} onPatch={(id, p) => patch('maintenance', id, p)} onDelete={(id) => del('maintenance', id)} />}
+          {tab === 'bills' && <BillsList bills={bills} currency={currency} onPatch={(id, p) => patch('bill', id, p)} onDelete={(id) => del('bill', id)} />}
           {tab === 'assets' && <AssetsList assets={assets} onDelete={(id) => del('asset', id)} />}
         </>
       )}
@@ -130,7 +135,7 @@ export default function HomePage() {
   )
 }
 
-function MaintenanceList({ items, onPatch, onDelete }: { items: Maintenance[]; onPatch: (id: string, p: Record<string, unknown>) => void; onDelete: (id: string) => void }) {
+function MaintenanceList({ items, currency, onPatch, onDelete }: { items: Maintenance[]; currency: string; onPatch: (id: string, p: Record<string, unknown>) => void; onDelete: (id: string) => void }) {
   if (items.length === 0) return <Empty msg="No maintenance scheduled. Add: AC service every 6mo, water tank cleaning, pest control…" />
   const today = new Date().toISOString().slice(0, 10)
   return (
@@ -156,7 +161,7 @@ function MaintenanceList({ items, onPatch, onDelete }: { items: Maintenance[]; o
                 )}
                 {m.recurrence_months && <span className="ml-2">· every {m.recurrence_months}mo</span>}
               </p>
-              {m.vendor && <p className="text-[10px] text-gray-400 mt-0.5">{m.vendor}{m.cost && ` · ₹${m.cost}`}</p>}
+              {m.vendor && <p className="text-[10px] text-gray-400 mt-0.5">{m.vendor}{m.cost && ` · ${fmt(m.cost, currency)}`}</p>}
             </div>
             <button
               onClick={() => {
@@ -178,7 +183,7 @@ function MaintenanceList({ items, onPatch, onDelete }: { items: Maintenance[]; o
   )
 }
 
-function BillsList({ bills, onPatch, onDelete }: { bills: Bill[]; onPatch: (id: string, p: Record<string, unknown>) => void; onDelete: (id: string) => void }) {
+function BillsList({ bills, currency, onPatch, onDelete }: { bills: Bill[]; currency: string; onPatch: (id: string, p: Record<string, unknown>) => void; onDelete: (id: string) => void }) {
   if (bills.length === 0) return <Empty msg="No utility bills logged." />
   return (
     <div className="space-y-2">
@@ -190,7 +195,7 @@ function BillsList({ bills, onPatch, onDelete }: { bills: Bill[]; onPatch: (id: 
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold text-gray-800 capitalize">{b.utility}{b.provider && ` · ${b.provider}`}</p>
             <p className="text-[11px] text-gray-500">
-              ₹{Number(b.amount).toLocaleString('en-IN')}
+              {fmt(Number(b.amount), currency)}
               {b.due_date && <span className={cn('ml-2', !b.is_paid && b.due_date < new Date().toISOString().slice(0, 10) && 'text-rose-700 font-bold')}>
                 Due {new Date(b.due_date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
               </span>}
@@ -261,7 +266,7 @@ function FormPanel({ kind, f, setF, onSave, onCancel, assets }: {
         <>
           <input value={String(f.name ?? '')} onChange={e => setF({ ...f, name: e.target.value })} placeholder="Name (e.g., LG fridge)" className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm" />
           <select value={String(f.type ?? 'appliance')} onChange={e => setF({ ...f, type: e.target.value })} className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
-            <option value="appliance">Appliance</option><option value="furniture">Furniture</option><option value="vehicle">Vehicle</option><option value="property">Property</option><option value="other">Other</option>
+            <option value="appliance">Appliance</option><option value="furniture">Furniture</option><option value="vehicle">Vehicle</option><option value="property">Property</option><option value="electronics">Electronics</option><option value="other">Other</option>
           </select>
           <div className="grid grid-cols-2 gap-2">
             <input value={String(f.brand ?? '')} onChange={e => setF({ ...f, brand: e.target.value })} placeholder="Brand" className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm" />
@@ -306,6 +311,11 @@ function FormPanel({ kind, f, setF, onSave, onCancel, assets }: {
       </div>
     </div>
   )
+}
+
+function fmt(n: number, cur: string) {
+  try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: cur, maximumFractionDigits: 0 }).format(n) }
+  catch { return `${cur} ${n.toLocaleString()}` }
 }
 
 function Stat({ icon: Icon, color, value, label }: { icon: typeof Wrench; color: string; value: string; label: string }) {

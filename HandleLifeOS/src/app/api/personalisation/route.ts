@@ -73,7 +73,7 @@ export async function PATCH(req: NextRequest) {
     .upsert({ user_id: session.user.id, ...safe }, { onConflict: 'user_id' })
     .select()
     .single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) return NextResponse.json({ error: 'Database operation failed' }, { status: 500 })
 
   return NextResponse.json({ preferences: data })
 }

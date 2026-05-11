@@ -32,19 +32,19 @@ interface LegalCompliance {
 type Tab = 'deadlines' | 'documents' | 'compliance'
 
 const DEADLINE_TYPE_LABEL: Record<DeadlineType, string> = {
-  itr: 'ITR Filing', gst: 'GST Return', advance_tax: 'Advance Tax', tds: 'TDS',
+  itr: 'Income Tax Return', gst: 'Sales Tax / VAT', advance_tax: 'Advance Tax', tds: 'Withholding Tax',
   property_tax: 'Property Tax', renewal: 'Renewal', court: 'Court Hearing', other: 'Other',
 }
 
 const STARTER_COMPLIANCE: { item: string; category: string; frequency: string }[] = [
-  { item: 'PAN-Aadhaar linked',                category: 'personal', frequency: 'one-time' },
   { item: 'Nominee added to bank accounts',    category: 'personal', frequency: 'one-time' },
   { item: 'Nominee added to investments',      category: 'personal', frequency: 'one-time' },
-  { item: 'KYC updated for mutual funds',      category: 'personal', frequency: 'annual' },
-  { item: 'Filed ITR for last FY',             category: 'tax',      frequency: 'annual' },
-  { item: 'Form 26AS reviewed',                category: 'tax',      frequency: 'annual' },
-  { item: 'Will / nominee updated',            category: 'personal', frequency: 'annual' },
+  { item: 'Emergency fund documented',         category: 'personal', frequency: 'one-time' },
+  { item: 'Will / estate documents updated',   category: 'personal', frequency: 'annual' },
+  { item: 'Annual tax return filed',           category: 'tax',      frequency: 'annual' },
   { item: 'Insurance premiums paid',           category: 'personal', frequency: 'annual' },
+  { item: 'Identity / KYC documents current',  category: 'personal', frequency: 'annual' },
+  { item: 'Business licenses renewed',         category: 'business', frequency: 'annual' },
 ]
 
 export default function LegalPage() {
@@ -55,6 +55,8 @@ export default function LegalPage() {
   const [loading, setLoading] = useState(true)
   const [showDForm, setShowDForm] = useState(false)
   const [showSimplify, setShowSimplify] = useState(false)
+  const [showAddCompliance, setShowAddCompliance] = useState(false)
+  const [newItem, setNewItem] = useState({ item: '', category: 'personal', frequency: 'one-time' })
 
   async function refresh() {
     const r = await fetch('/api/legal').then(r => r.json())
@@ -259,10 +261,35 @@ export default function LegalPage() {
                   <button onClick={() => del('compliance', c.id)} className="p-1 text-gray-300 hover:text-red-400"><Trash2 className="h-3 w-3" /></button>
                 </div>
               ))}
-              <button onClick={() => add('compliance', { item: 'New item', category: 'personal', frequency: 'one-time' })}
-                className="w-full py-2 rounded-xl border border-dashed border-gray-200 text-xs text-gray-500 hover:bg-gray-50">
-                + Add custom item
-              </button>
+              {showAddCompliance ? (
+                <div className="rounded-xl bg-white border border-gray-200 p-3 space-y-2">
+                  <input value={newItem.item} onChange={e => setNewItem({ ...newItem, item: e.target.value })} autoFocus placeholder="Item description" className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm" />
+                  <div className="grid grid-cols-2 gap-2">
+                    <select value={newItem.category} onChange={e => setNewItem({ ...newItem, category: e.target.value })} className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs">
+                      <option value="personal">Personal</option>
+                      <option value="tax">Tax</option>
+                      <option value="business">Business</option>
+                      <option value="property">Property</option>
+                      <option value="other">Other</option>
+                    </select>
+                    <select value={newItem.frequency} onChange={e => setNewItem({ ...newItem, frequency: e.target.value })} className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs">
+                      <option value="one-time">One-time</option>
+                      <option value="monthly">Monthly</option>
+                      <option value="quarterly">Quarterly</option>
+                      <option value="annual">Annual</option>
+                      <option value="none">None</option>
+                    </select>
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => { if (newItem.item.trim()) { add('compliance', newItem); setShowAddCompliance(false); setNewItem({ item: '', category: 'personal', frequency: 'one-time' }) } }} disabled={!newItem.item.trim()} className="flex-1 py-1.5 rounded-lg bg-amber-600 text-white text-xs font-bold disabled:opacity-40">Save</button>
+                    <button onClick={() => setShowAddCompliance(false)} className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs text-gray-500">Cancel</button>
+                  </div>
+                </div>
+              ) : (
+                <button onClick={() => setShowAddCompliance(true)} className="w-full py-2 rounded-xl border border-dashed border-gray-200 text-xs text-gray-500 hover:bg-gray-50">
+                  + Add custom item
+                </button>
+              )}
             </div>
           )}
         </>
@@ -291,7 +318,7 @@ function DeadlineRow({ d, overdue, onPatch, onDel }: { d: LegalDeadline; overdue
           <p className="text-sm font-bold text-gray-800 truncate">{d.title}</p>
           <p className="text-[11px] text-gray-500">
             {DEADLINE_TYPE_LABEL[d.type]}
-            {d.amount && ` · ₹${d.amount.toLocaleString('en-IN')}`}
+            {d.amount && ` · ${fmtAmount(d.amount, d.currency)}`}
             {' · '}
             <span className={overdue ? 'text-red-700 font-bold' : ''}>
               {overdue ? `${Math.abs(days)}d overdue` : days === 0 ? 'due today' : `in ${days}d`}
@@ -300,7 +327,7 @@ function DeadlineRow({ d, overdue, onPatch, onDel }: { d: LegalDeadline; overdue
           {d.authority && <p className="text-[10px] text-gray-400">{d.authority}</p>}
         </div>
         <div className="flex items-center gap-1">
-          <button onClick={() => onPatch({ status: d.type === 'itr' || d.type === 'gst' ? 'filed' : 'paid' })} className="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-[10px] font-bold uppercase tracking-wider">
+          <button onClick={() => onPatch({ status: ['itr', 'gst', 'advance_tax', 'tds'].includes(d.type) ? 'filed' : 'paid' })} className="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-[10px] font-bold uppercase tracking-wider">
             Done
           </button>
           <button onClick={onDel} className="p-1 text-gray-300 hover:text-red-400"><Trash2 className="h-3 w-3" /></button>
@@ -331,7 +358,7 @@ function DeadlineForm({ onSave, onCancel }: { onSave: (d: Record<string, unknown
         <input type="date" value={date} onChange={e => setDate(e.target.value)} className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm" />
       </div>
       <div className="grid grid-cols-2 gap-2">
-        <input value={amount} onChange={e => setAmount(e.target.value)} type="number" min={0} step="0.01" placeholder="Amount (₹)" className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm" />
+        <input value={amount} onChange={e => setAmount(e.target.value)} type="number" min={0} step="0.01" placeholder="Amount (optional)" className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm" />
         <input value={authority} onChange={e => setAuthority(e.target.value)} placeholder="Authority (optional)" className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm" />
       </div>
       <button onClick={() => title.trim() && date && onSave({ title: title.trim(), type, due_date: date, amount: amount ? Number(amount) : null, authority: authority.trim() || null })}
@@ -420,6 +447,11 @@ function SimplifyForm({ onSaved, onCancel }: { onSaved: () => void; onCancel: ()
       )}
     </div>
   )
+}
+
+function fmtAmount(n: number, cur: string) {
+  try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: cur, maximumFractionDigits: 0 }).format(n) }
+  catch { return `${cur} ${n.toLocaleString()}` }
 }
 
 function simpleMd(md: string): string {

@@ -1,6 +1,34 @@
 import { auth } from '@/auth'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { Ratelimit } from '@upstash/ratelimit'
+import { Redis } from '@upstash/redis'
+
+// ── Edge-compatible rate limiters ─────────────────────────────────────────────
+// Initialized once per cold start — Upstash uses HTTP so it runs in Edge runtime.
+const _upstashUrl = process.env.UPSTASH_REDIS_REST_URL
+const _upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN
+
+let _globalApiLimiter: Ratelimit | null = null
+let _billingLimiter: Ratelimit | null = null
+
+if (_upstashUrl && _upstashToken) {
+  const _redis = new Redis({ url: _upstashUrl, token: _upstashToken })
+  // 200 authenticated API calls / 60 s per user — safety net for all routes
+  _globalApiLimiter = new Ratelimit({
+    redis: _redis,
+    limiter: Ratelimit.slidingWindow(200, '60s'),
+    prefix: '@lifeos/rl:api_global',
+    analytics: false,
+  })
+  // Billing: 10 requests / hour per user — fraud prevention
+  _billingLimiter = new Ratelimit({
+    redis: _redis,
+    limiter: Ratelimit.slidingWindow(10, '3600s'),
+    prefix: '@lifeos/rl:billing',
+    analytics: false,
+  })
+}
 
 // ── Public paths (no auth required) ──────────────────────────────────────────
 const PUBLIC_PATHS = [
@@ -175,8 +203,6 @@ export default auth(async function proxy(req: NextRequest & { auth: unknown }) {
   }
 
   // ── 5b. Email verification gate ──────────────────────────────────────────────
-  // Logged-in users who haven't verified their email are redirected to the
-  // verify-email page. API routes are excluded (they return 401 if needed).
   if (
     session?.user?.id &&
     session.user.email_verified === false &&
@@ -186,6 +212,50 @@ export default auth(async function proxy(req: NextRequest & { auth: unknown }) {
     pathname !== '/logout'
   ) {
     return NextResponse.redirect(new URL('/verify-email?status=pending', req.url))
+  }
+
+  // ── 5c. Global rate limiting for all authenticated API calls ──────────────────
+  // Provides defence-in-depth for routes that have no individual rate-limit calls.
+  if (session?.user?.id && pathname.startsWith('/api/') && !pathname.startsWith('/api/v1/')) {
+    const userId = session.user.id
+
+    // Billing: 10 requests / hour (tighter limit — fraud prevention)
+    if (
+      _billingLimiter &&
+      pathname.startsWith('/api/billing/') &&
+      pathname !== '/api/billing/plans'
+    ) {
+      const result = await _billingLimiter.limit(userId)
+      if (!result.success) {
+        return NextResponse.json(
+          { error: 'Too many billing requests. Please try again later.' },
+          {
+            status: 429,
+            headers: {
+              'X-RateLimit-Remaining': '0',
+              'Retry-After': String(Math.ceil((result.reset - Date.now()) / 1000)),
+            },
+          }
+        )
+      }
+    }
+
+    // All other authenticated API routes: 200 requests / 60 s
+    if (_globalApiLimiter) {
+      const result = await _globalApiLimiter.limit(userId)
+      if (!result.success) {
+        return NextResponse.json(
+          { error: 'Rate limit exceeded. Please slow down.' },
+          {
+            status: 429,
+            headers: {
+              'X-RateLimit-Remaining': '0',
+              'Retry-After': String(Math.ceil((result.reset - Date.now()) / 1000)),
+            },
+          }
+        )
+      }
+    }
   }
 
   // ── 6. Generate per-request nonce, set strict CSP & tracing headers ──────────

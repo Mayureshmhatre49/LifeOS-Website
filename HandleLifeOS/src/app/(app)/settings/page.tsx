@@ -156,6 +156,7 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between mb-1">
                   <h2 className="text-base font-semibold text-gray-900">Memory</h2>
                   <button
+                    data-testid="memory-toggle"
                     onClick={handleToggleMemory}
                     disabled={savingToggle}
                     className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
@@ -163,6 +164,7 @@ export default function SettingsPage() {
                     }`}
                     role="switch"
                     aria-checked={memoryEnabled}
+                    aria-label="Toggle memory"
                   >
                     <span
                       className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${

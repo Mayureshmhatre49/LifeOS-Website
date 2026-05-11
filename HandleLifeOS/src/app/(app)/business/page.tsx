@@ -11,7 +11,7 @@ import { toast } from '@/components/ui/toast'
 
 type ProjectStatus = 'lead' | 'active' | 'on_hold' | 'done' | 'cancelled'
 type InvoiceStatus = 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled'
-type ExpenseCategory = 'software' | 'hardware' | 'travel' | 'office' | 'marketing' | 'professional_fees' | 'utilities' | 'tax' | 'other'
+type ExpenseCategory = 'software' | 'hardware' | 'travel' | 'office' | 'marketing' | 'professional_fees' | 'utilities' | 'tax' | 'meals' | 'education' | 'other'
 
 interface Client { id: string; name: string; company: string | null; email: string | null; phone: string | null; gst_no: string | null; pan_no: string | null; address: string | null; currency: string; notes: string | null; archived: boolean; created_at: string; updated_at: string }
 interface Project { id: string; client_id: string | null; name: string; status: ProjectStatus; start_date: string | null; end_date: string | null; fee: number | null; currency: string; hourly_rate: number | null; notes: string | null; created_at: string; updated_at: string }
@@ -40,7 +40,11 @@ const PROJECT_CHIP: Record<ProjectStatus, string> = {
 const EXPENSE_LABEL: Record<ExpenseCategory, string> = {
   software: 'Software', hardware: 'Hardware', travel: 'Travel', office: 'Office',
   marketing: 'Marketing', professional_fees: 'Professional Fees', utilities: 'Utilities',
-  tax: 'Tax', other: 'Other',
+  tax: 'Tax', meals: 'Meals', education: 'Education', other: 'Other',
+}
+
+function fmt(n: number, cur: string, dec = 0) {
+  return new Intl.NumberFormat(undefined, { style: 'currency', currency: cur, maximumFractionDigits: dec, minimumFractionDigits: dec }).format(n)
 }
 
 export default function BusinessPage() {
@@ -52,10 +56,15 @@ export default function BusinessPage() {
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState<null | 'client' | 'project' | 'invoice' | 'expense'>(null)
   const [showGstCalc, setShowGstCalc] = useState(false)
+  const [currency, setCurrency] = useState('USD')
 
   async function refresh() {
-    const r = await fetch('/api/business').then(r => r.json())
+    const [r, p] = await Promise.all([
+      fetch('/api/business').then(r => r.json()),
+      fetch('/api/profile').then(r => r.json()).catch(() => ({})),
+    ])
     setClients(r.clients ?? []); setProjects(r.projects ?? []); setInvoices(r.invoices ?? []); setExpenses(r.expenses ?? [])
+    if (p?.currency) setCurrency(p.currency)
   }
   useEffect(() => { refresh().finally(() => setLoading(false)) }, [])
 
@@ -110,7 +119,7 @@ export default function BusinessPage() {
           <p className="text-sm text-gray-400 ml-10">Clients · projects · invoices · P&L</p>
         </div>
         <button onClick={() => setShowGstCalc(true)} className="px-3 py-2 rounded-xl border border-indigo-100 text-indigo-700 text-xs font-bold hover:bg-indigo-50 flex items-center gap-1.5">
-          <Calculator className="h-3.5 w-3.5" /> GST
+          <Calculator className="h-3.5 w-3.5" /> Tax
         </button>
       </div>
 
@@ -126,10 +135,10 @@ export default function BusinessPage() {
       {tab === 'overview' && (
         <>
           <div className="grid grid-cols-2 gap-2">
-            <BigStat label="Revenue YTD"      value={`₹${ytdRevenue.toLocaleString('en-IN')}`}     Icon={TrendingUp} color="emerald" />
-            <BigStat label="Expenses YTD"     value={`₹${ytdExpenses.toLocaleString('en-IN')}`}     Icon={Wallet}     color="rose" />
-            <BigStat label={profit >= 0 ? 'Profit YTD' : 'Loss YTD'} value={`₹${Math.abs(profit).toLocaleString('en-IN')}`} Icon={TrendingUp} color={profit >= 0 ? 'emerald' : 'rose'} />
-            <BigStat label="Outstanding"      value={`₹${outstandingTotal.toLocaleString('en-IN')}`} Icon={Send}       color="amber" />
+            <BigStat label="Revenue YTD"      value={fmt(ytdRevenue, currency)}     Icon={TrendingUp} color="emerald" />
+            <BigStat label="Expenses YTD"     value={fmt(ytdExpenses, currency)}     Icon={Wallet}     color="rose" />
+            <BigStat label={profit >= 0 ? 'Profit YTD' : 'Loss YTD'} value={fmt(Math.abs(profit), currency)} Icon={TrendingUp} color={profit >= 0 ? 'emerald' : 'rose'} />
+            <BigStat label="Outstanding"      value={fmt(outstandingTotal, currency)} Icon={Send}       color="amber" />
           </div>
 
           <div className="rounded-2xl bg-white/80 border border-white/60 shadow-sm p-4">
@@ -152,7 +161,7 @@ export default function BusinessPage() {
                       <Receipt className="h-4 w-4 text-amber-500 shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-gray-800 truncate">{i.invoice_no}</p>
-                        <p className="text-[10px] text-gray-500">{c?.name ?? '—'} · ₹{i.total.toLocaleString('en-IN')}</p>
+                        <p className="text-[10px] text-gray-500">{c?.name ?? '—'} · {fmt(i.total, i.currency)}</p>
                       </div>
                       <span className={cn('text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider font-bold', STATUS_CHIP[i.status])}>{i.status}</span>
                       <ArrowRight className="h-3 w-3 text-gray-300" />
@@ -214,7 +223,7 @@ export default function BusinessPage() {
                       <FolderKanban className="h-4 w-4 text-indigo-500 mt-1 shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-bold text-gray-800 truncate">{p.name}</p>
-                        <p className="text-[11px] text-gray-500">{c?.name ?? '—'}{p.fee ? ` · ₹${p.fee.toLocaleString('en-IN')}` : ''}</p>
+                        <p className="text-[11px] text-gray-500">{c?.name ?? '—'}{p.fee ? ` · ${fmt(p.fee, p.currency)}` : ''}</p>
                       </div>
                       <select value={p.status} onChange={e => patch('project', p.id, { status: e.target.value })}
                         className={cn('text-[10px] font-bold rounded-full px-2 py-0.5 border-0 cursor-pointer', PROJECT_CHIP[p.status])}>
@@ -233,7 +242,7 @@ export default function BusinessPage() {
       {tab === 'invoices' && (
         <>
           {showForm === 'invoice'
-            ? <InvoiceForm clients={clients} projects={projects} onSave={async (d) => { await add('invoice', d); setShowForm(null) }} onCancel={() => setShowForm(null)} />
+            ? <InvoiceForm clients={clients} projects={projects} currency={currency} onSave={async (d) => { await add('invoice', d); setShowForm(null) }} onCancel={() => setShowForm(null)} />
             : <button onClick={() => setShowForm('invoice')} className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-blue-700 text-white text-sm font-bold shadow-md hover:shadow-lg">
                 <Plus className="h-4 w-4" /> New invoice
               </button>}
@@ -250,7 +259,7 @@ export default function BusinessPage() {
                       <Receipt className="h-4 w-4 text-indigo-500 mt-1 shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-bold text-gray-800 truncate">{i.invoice_no}</p>
-                        <p className="text-[11px] text-gray-500">{c?.name ?? '—'} · ₹{i.total.toLocaleString('en-IN')}{i.due_at ? ` · due ${i.due_at}` : ''}</p>
+                        <p className="text-[11px] text-gray-500">{c?.name ?? '—'} · {fmt(i.total, i.currency)}{i.due_at ? ` · due ${i.due_at}` : ''}</p>
                       </div>
                       <span className={cn('text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider font-bold', STATUS_CHIP[overdue ? 'overdue' : i.status])}>
                         {overdue ? 'overdue' : i.status}
@@ -283,7 +292,7 @@ export default function BusinessPage() {
                     <p className="text-sm font-medium text-gray-800 truncate">{e.description ?? e.vendor ?? EXPENSE_LABEL[e.category]}</p>
                     <p className="text-[10px] text-gray-500">{EXPENSE_LABEL[e.category]} · {e.occurred_at}{e.is_billable ? ' · billable' : ''}</p>
                   </div>
-                  <span className="text-sm font-bold text-rose-700">₹{e.amount.toLocaleString('en-IN')}</span>
+                  <span className="text-sm font-bold text-rose-700">{fmt(e.amount, e.currency)}</span>
                   <button onClick={() => del('expense', e.id)} className="p-1 text-gray-300 hover:text-red-400"><Trash2 className="h-3 w-3" /></button>
                 </div>
               ))}
@@ -292,7 +301,7 @@ export default function BusinessPage() {
         </>
       )}
 
-      {showGstCalc && <GstCalculator onClose={() => setShowGstCalc(false)} />}
+      {showGstCalc && <TaxCalculator currency={currency} onClose={() => setShowGstCalc(false)} />}
     </div>
   )
 }
@@ -364,14 +373,14 @@ function ProjectForm({ clients, onSave, onCancel }: { clients: Client[]; onSave:
         <input type="date" value={start} onChange={e => setStart(e.target.value)} className={inputCls} />
         <input type="date" value={end} onChange={e => setEnd(e.target.value)} className={inputCls} />
       </div>
-      <input type="number" value={fee} onChange={e => setFee(e.target.value)} placeholder="Total fee (₹)" className={inputCls} />
+      <input type="number" value={fee} onChange={e => setFee(e.target.value)} placeholder="Total fee" className={inputCls} />
       <SaveBtn disabled={!name.trim()} onClick={() => onSave({ name: name.trim(), client_id: clientId || null, start_date: start || null, end_date: end || null, fee: fee ? Number(fee) : null })} />
     </FormShell>
   )
 }
 
-function InvoiceForm({ clients, projects, onSave, onCancel }: {
-  clients: Client[]; projects: Project[];
+function InvoiceForm({ clients, projects, currency, onSave, onCancel }: {
+  clients: Client[]; projects: Project[]; currency: string;
   onSave: (d: Record<string, unknown>) => Promise<void>; onCancel: () => void
 }) {
   const [clientId, setClientId] = useState('')
@@ -429,7 +438,7 @@ function InvoiceForm({ clients, projects, onSave, onCancel }: {
               <input value={it.description} onChange={e => updateItem(i, { description: e.target.value })} placeholder="Description" className={cn(inputCls, 'col-span-6')} />
               <input type="number" min={0} step="0.01" value={it.qty} onChange={e => updateItem(i, { qty: Math.max(0, Number(e.target.value) || 0) })} placeholder="Qty" className={cn(inputCls, 'col-span-2')} />
               <input type="number" min={0} step="0.01" value={it.rate} onChange={e => updateItem(i, { rate: Math.max(0, Number(e.target.value) || 0) })} placeholder="Rate" className={cn(inputCls, 'col-span-2')} />
-              <span className="col-span-1 text-xs text-gray-700 font-bold text-right">₹{it.amount.toFixed(0)}</span>
+              <span className="col-span-1 text-xs text-gray-700 font-bold text-right">{fmt(it.amount, currency, 0)}</span>
               <button onClick={() => setItems(items.filter((_, idx) => idx !== i))} className="col-span-1 p-1 text-gray-300 hover:text-red-400"><X className="h-3 w-3" /></button>
             </div>
           ))}
@@ -438,9 +447,9 @@ function InvoiceForm({ clients, projects, onSave, onCancel }: {
       </div>
       <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="Notes / payment instructions" className={inputCls} />
       <div className="rounded-xl bg-indigo-50 p-3 text-xs text-indigo-900">
-        <div className="flex justify-between"><span>Subtotal</span><span className="font-bold">₹{subtotal.toFixed(2)}</span></div>
-        <div className="flex justify-between"><span>Tax ({taxPct}%)</span><span className="font-bold">₹{taxAmt.toFixed(2)}</span></div>
-        <div className="flex justify-between mt-1 pt-1 border-t border-indigo-200"><span className="font-bold">Total</span><span className="font-bold text-base">₹{total.toFixed(2)}</span></div>
+        <div className="flex justify-between"><span>Subtotal</span><span className="font-bold">{fmt(subtotal, currency, 2)}</span></div>
+        <div className="flex justify-between"><span>Tax ({taxPct}%)</span><span className="font-bold">{fmt(taxAmt, currency, 2)}</span></div>
+        <div className="flex justify-between mt-1 pt-1 border-t border-indigo-200"><span className="font-bold">Total</span><span className="font-bold text-base">{fmt(total, currency, 2)}</span></div>
       </div>
       <SaveBtn disabled={!clientId || items.every(i => !i.description.trim())} onClick={() => onSave({ client_id: clientId, project_id: projectId || null, issued_at: issued, due_at: due || null, tax_pct: taxPct, items: items.filter(i => i.description.trim()), notes: notes.trim() || null })} />
     </FormShell>
@@ -461,7 +470,7 @@ function ExpenseForm({ projects, onSave, onCancel }: { projects: Project[]; onSa
         <select value={category} onChange={e => setCategory(e.target.value as ExpenseCategory)} className={inputCls}>
           {Object.entries(EXPENSE_LABEL).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
         </select>
-        <input type="number" value={amount} onChange={e => setAmount(e.target.value)} autoFocus placeholder="Amount (₹) *" className={inputCls} />
+        <input type="number" value={amount} onChange={e => setAmount(e.target.value)} autoFocus placeholder="Amount *" className={inputCls} />
       </div>
       <div className="grid grid-cols-2 gap-2">
         <input value={vendor} onChange={e => setVendor(e.target.value)} placeholder="Vendor" className={inputCls} />
@@ -480,7 +489,7 @@ function ExpenseForm({ projects, onSave, onCancel }: { projects: Project[]; onSa
   )
 }
 
-function GstCalculator({ onClose }: { onClose: () => void }) {
+function TaxCalculator({ currency, onClose }: { currency: string; onClose: () => void }) {
   const [amount, setAmount] = useState(1000)
   const [rate, setRate] = useState(18)
   const [mode, setMode] = useState<'add' | 'extract'>('add')
@@ -497,12 +506,12 @@ function GstCalculator({ onClose }: { onClose: () => void }) {
     <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-4" onClick={onClose}>
       <div className="w-full max-w-sm rounded-3xl bg-white p-5 space-y-3" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between">
-          <p className="text-sm font-bold text-gray-800 flex items-center gap-1.5"><Calculator className="h-4 w-4 text-indigo-500" /> GST Calculator</p>
+          <p className="text-sm font-bold text-gray-800 flex items-center gap-1.5"><Calculator className="h-4 w-4 text-indigo-500" /> Tax Calculator</p>
           <button onClick={onClose} className="text-gray-400 p-1"><X className="h-4 w-4" /></button>
         </div>
         <div className="flex rounded-xl bg-gray-100 p-0.5">
-          <button onClick={() => setMode('add')} className={cn('flex-1 py-1.5 rounded-lg text-xs font-bold', mode === 'add' ? 'bg-white text-indigo-700 shadow-sm' : 'text-gray-500')}>Add GST</button>
-          <button onClick={() => setMode('extract')} className={cn('flex-1 py-1.5 rounded-lg text-xs font-bold', mode === 'extract' ? 'bg-white text-indigo-700 shadow-sm' : 'text-gray-500')}>Extract GST</button>
+          <button onClick={() => setMode('add')} className={cn('flex-1 py-1.5 rounded-lg text-xs font-bold', mode === 'add' ? 'bg-white text-indigo-700 shadow-sm' : 'text-gray-500')}>Add Tax</button>
+          <button onClick={() => setMode('extract')} className={cn('flex-1 py-1.5 rounded-lg text-xs font-bold', mode === 'extract' ? 'bg-white text-indigo-700 shadow-sm' : 'text-gray-500')}>Extract Tax</button>
         </div>
         <input type="number" value={amount} onChange={e => setAmount(Number(e.target.value) || 0)} placeholder="Amount" className={inputCls} />
         <div className="grid grid-cols-4 gap-1">
@@ -511,9 +520,9 @@ function GstCalculator({ onClose }: { onClose: () => void }) {
           ))}
         </div>
         <div className="rounded-xl bg-indigo-50 p-3 text-sm">
-          <div className="flex justify-between text-gray-700"><span>Base</span><span>₹{result.base.toFixed(2)}</span></div>
-          <div className="flex justify-between text-gray-700"><span>GST ({rate}%)</span><span>₹{result.tax.toFixed(2)}</span></div>
-          <div className="flex justify-between font-bold text-indigo-900 mt-1 pt-1 border-t border-indigo-200"><span>Total</span><span>₹{result.total.toFixed(2)}</span></div>
+          <div className="flex justify-between text-gray-700"><span>Base</span><span>{fmt(result.base, currency, 2)}</span></div>
+          <div className="flex justify-between text-gray-700"><span>Tax ({rate}%)</span><span>{fmt(result.tax, currency, 2)}</span></div>
+          <div className="flex justify-between font-bold text-indigo-900 mt-1 pt-1 border-t border-indigo-200"><span>Total</span><span>{fmt(result.total, currency, 2)}</span></div>
         </div>
       </div>
     </div>

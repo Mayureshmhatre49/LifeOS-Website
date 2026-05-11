@@ -90,7 +90,7 @@ export async function updateFamily(familyId: string, patch: { name?: string }): 
     .update(patch)
     .eq('id', familyId)
     .select()
-    .single()
+    .maybeSingle()
   return data
 }
 

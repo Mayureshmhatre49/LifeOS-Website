@@ -134,8 +134,8 @@ export default function InvoiceDetailPage() {
                   <tr key={i} className="border-b border-gray-50">
                     <td className="py-3 text-gray-800">{it.description}</td>
                     <td className="py-3 text-right text-gray-700">{it.qty}</td>
-                    <td className="py-3 text-right text-gray-700">₹{it.rate.toLocaleString('en-IN')}</td>
-                    <td className="py-3 text-right font-bold text-gray-800">₹{it.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                    <td className="py-3 text-right text-gray-700">{fmt(it.rate, invoice.currency)}</td>
+                    <td className="py-3 text-right font-bold text-gray-800">{fmt(it.amount, invoice.currency)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -145,12 +145,12 @@ export default function InvoiceDetailPage() {
           {/* Totals */}
           <div className="flex justify-end">
             <div className="w-72 space-y-1.5">
-              <div className="flex justify-between text-sm text-gray-600"><span>Subtotal</span><span>₹{invoice.subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span></div>
-              {invoice.discount_amt > 0 && <div className="flex justify-between text-sm text-gray-600"><span>Discount</span><span>-₹{invoice.discount_amt.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span></div>}
-              {invoice.tax_pct > 0 && <div className="flex justify-between text-sm text-gray-600"><span>Tax ({invoice.tax_pct}%)</span><span>₹{invoice.tax_amt.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span></div>}
+              <div className="flex justify-between text-sm text-gray-600"><span>Subtotal</span><span>{fmt(invoice.subtotal, invoice.currency)}</span></div>
+              {invoice.discount_amt > 0 && <div className="flex justify-between text-sm text-gray-600"><span>Discount</span><span>-{fmt(invoice.discount_amt, invoice.currency)}</span></div>}
+              {invoice.tax_pct > 0 && <div className="flex justify-between text-sm text-gray-600"><span>Tax ({invoice.tax_pct}%)</span><span>{fmt(invoice.tax_amt, invoice.currency)}</span></div>}
               <div className="flex justify-between text-base font-bold text-gray-900 border-t-2 border-gray-200 pt-2 mt-2">
                 <span>Total</span>
-                <span>₹{invoice.total.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                <span>{fmt(invoice.total, invoice.currency)}</span>
               </div>
               {invoice.paid_at && (
                 <div className="flex justify-between text-xs text-emerald-700 mt-2 pt-2 border-t border-emerald-100">
@@ -189,4 +189,9 @@ export default function InvoiceDetailPage() {
       `}</style>
     </div>
   )
+}
+
+function fmt(n: number, cur: string) {
+  try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: cur, minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n) }
+  catch { return `${cur} ${n.toFixed(2)}` }
 }

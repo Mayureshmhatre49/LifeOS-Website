@@ -127,6 +127,7 @@ export function LeftRail() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  aria-current={active ? 'page' : undefined}
                   className={cn(
                     'group flex items-center gap-3 rounded-lg px-3 py-1.5 text-[13px] font-medium transition-colors duration-[var(--duration-fast)]',
                     active
@@ -180,7 +181,7 @@ export function LeftRail() {
             </div>
             <button
               onClick={() => signOut({ callbackUrl: '/' })}
-              title="Sign out"
+              aria-label="Sign out"
               className="h-7 w-7 flex items-center justify-center rounded-md text-[var(--color-text-tertiary)] hover:text-[var(--color-danger-700)] hover:bg-[var(--color-danger-50)] transition-colors shrink-0"
             >
               <LogOut className="h-[14px] w-[14px]" strokeWidth={1.75} />

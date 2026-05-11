@@ -141,7 +141,7 @@ export default function ApiSettingsPage() {
                 <p className="text-xs font-mono text-gray-400">{key.keyPrefix}…</p>
                 <p className="text-xs text-gray-300 mt-0.5">
                   {key.requestCount.toLocaleString()} requests
-                  {key.lastUsedAt && ` · last used ${new Date(key.lastUsedAt).toLocaleDateString('en-IN')}`}
+                  {key.lastUsedAt && ` · last used ${new Date(key.lastUsedAt).toLocaleDateString(undefined)}`}
                 </p>
               </div>
               <button

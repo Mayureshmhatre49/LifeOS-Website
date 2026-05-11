@@ -139,6 +139,7 @@ export default function PersonalisationPage() {
           options={TONE_OPTIONS}
           onChange={(v) => save({ tone: v })}
           disabled={state.saving}
+          testIdPrefix="personality-tone"
         />
       </Section>
 
@@ -149,6 +150,7 @@ export default function PersonalisationPage() {
           options={VERBOSITY_OPTIONS}
           onChange={(v) => save({ verbosity: v })}
           disabled={state.saving}
+          testIdPrefix="personality-verbosity"
         />
       </Section>
 
@@ -159,6 +161,7 @@ export default function PersonalisationPage() {
           options={PROACTIVITY_OPTIONS}
           onChange={(v) => save({ proactivity: v })}
           disabled={state.saving}
+          testIdPrefix="personality-proactivity"
         />
       </Section>
 
@@ -285,12 +288,13 @@ function Section({ eyebrow, title, hint, children }: { eyebrow: string; title: s
 }
 
 function Choices<T extends string>({
-  value, options, onChange, disabled,
+  value, options, onChange, disabled, testIdPrefix,
 }: {
   value: T
   options: { id: T; label: string; hint: string }[]
   onChange: (v: T) => void
   disabled?: boolean
+  testIdPrefix?: string
 }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5">
@@ -299,6 +303,7 @@ function Choices<T extends string>({
         return (
           <button
             key={o.id}
+            data-testid={testIdPrefix ? `${testIdPrefix}-${o.id}` : undefined}
             disabled={disabled}
             onClick={() => onChange(o.id)}
             className={cn(

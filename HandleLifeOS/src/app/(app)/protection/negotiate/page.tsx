@@ -24,7 +24,7 @@ export default function NegotiationCoachPage() {
         <CheckInput
           type="subscription"
           title="Describe your negotiation situation"
-          placeholder={`Examples:\n"I want to ask my landlord to reduce rent by ₹2,000. We've been tenants for 3 years."\n"Need to negotiate salary — currently offered ₹8L but market rate is ₹10L"\n"Vendor sent wrong product, want a full refund"`}
+          placeholder={`Examples:\n"I want to ask my landlord to reduce rent by $200. We've been tenants for 3 years."\n"Need to negotiate salary — currently offered $60k but market rate is $75k"\n"Vendor sent wrong product, want a full refund"`}
           icon="🤝"
           showAmount
           showTone

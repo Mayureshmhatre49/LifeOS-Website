@@ -109,7 +109,7 @@ export async function getExpenseSummary(
     total += e.amount
     by_category[e.category] = (by_category[e.category] ?? 0) + e.amount
   }
-  return { total, by_category, currency: expenses[0]?.currency ?? 'INR', month, year }
+  return { total, by_category, currency: expenses[0]?.currency ?? 'USD', month, year }
 }
 
 // ── Savings Goals ─────────────────────────────────────────────────────────────

@@ -3,6 +3,7 @@ import { auth } from '@/auth'
 import { z } from 'zod'
 import { isSupabaseConfigured, getSupabaseAdmin } from '@/lib/db/client'
 import { validateUpload, sanitizeFilename } from '@/lib/security/file-upload'
+import { checkUploadRateLimit, rateLimitHeaders } from '@/lib/security/rate-limit'
 
 const BUCKET = 'aura-documents'
 const MAX_BYTES = 10 * 1024 * 1024 // 10 MB
@@ -38,6 +39,14 @@ export async function POST(req: NextRequest) {
   const session = await auth()
   if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   if (!isSupabaseConfigured()) return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
+
+  const uploadLimit = await checkUploadRateLimit(session.user.id)
+  if (!uploadLimit.success) {
+    return NextResponse.json(
+      { error: 'Upload limit reached. Try again later.' },
+      { status: 429, headers: rateLimitHeaders(uploadLimit.remaining, uploadLimit.resetIn) }
+    )
+  }
 
   const form = await req.formData().catch(() => null)
   if (!form) return NextResponse.json({ error: 'Invalid form data' }, { status: 400 })
@@ -103,7 +112,7 @@ export async function POST(req: NextRequest) {
   if (error) {
     // best-effort cleanup
     await db.storage.from(BUCKET).remove([storagePath]).catch(() => {})
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: 'Database operation failed' }, { status: 500 })
   }
 
   return NextResponse.json({ document: data }, { status: 201 })

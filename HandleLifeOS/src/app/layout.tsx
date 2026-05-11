@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { SessionProvider } from 'next-auth/react'
+import { headers } from 'next/headers'
+import { Suspense } from 'react'
 import './globals.css'
 import { generatePageMeta } from '@/lib/seo/metadata'
 import { organizationSchema, webSiteSchema, softwareApplicationSchema } from '@/lib/seo/json-ld'
@@ -24,9 +26,22 @@ function safeJsonLd(data: object): string {
   return JSON.stringify(data).replace(/</g, '\\u003c')
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+const RTL_LANGS = new Set(['ar', 'he', 'fa', 'ur', 'dv', 'ps', 'yi', 'sd'])
+
+function resolveLocale(acceptLang: string): { lang: string; dir: 'ltr' | 'rtl' } {
+  const primary = acceptLang.split(',')[0].trim().split(';')[0].trim()
+  const base = primary.split('-')[0].toLowerCase()
+  return { lang: primary || 'en', dir: RTL_LANGS.has(base) ? 'rtl' : 'ltr' }
+}
+
+// Isolated async component so headers() is read inside Suspense,
+// preventing it from blocking the entire route stream.
+async function HtmlShell({ children }: { children: React.ReactNode }) {
+  const hdrs = await headers()
+  const { lang, dir } = resolveLocale(hdrs.get('accept-language') ?? 'en')
+
   return (
-    <html lang="en-IN" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
+    <html lang={lang} dir={dir} className={`${geistSans.variable} ${geistMono.variable} h-full`}>
       <head>
         <script
           type="application/ld+json"
@@ -48,5 +63,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </SessionProvider>
       </body>
     </html>
+  )
+}
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={
+      <html lang="en" dir="ltr" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
+        <body className="h-full antialiased" />
+      </html>
+    }>
+      <HtmlShell>{children}</HtmlShell>
+    </Suspense>
   )
 }

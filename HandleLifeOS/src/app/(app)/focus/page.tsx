@@ -18,13 +18,15 @@ export default function FocusPage() {
   const [lastSession, setLastSession] = useState<FocusSession | null>(null)
 
   useEffect(() => {
-    // Load last incomplete session for resume prompt
-    fetch('/api/focus/sessions')
+    const controller = new AbortController()
+    fetch('/api/focus/sessions', { signal: controller.signal })
       .then((r) => r.ok ? r.json() : [])
       .then((sessions: FocusSession[]) => {
         const incomplete = sessions.find((s) => !s.completed && !s.abandoned)
         if (incomplete) setLastSession(incomplete)
       })
+      .catch(() => {/* aborted or network error — ignore */})
+    return () => controller.abort()
   }, [])
 
   function handleSessionStart(session: FocusSession) {
@@ -75,15 +77,15 @@ export default function FocusPage() {
         {phase === 'start' && (
           <div className="space-y-5">
             <div>
-              <h1 className="text-xl font-semibold text-gray-900">Focus</h1>
-              <p className="text-sm text-gray-400 mt-0.5">One task. One session. Real progress.</p>
+              <h1 className="text-xl font-semibold text-[var(--color-text-primary)]">Focus</h1>
+              <p className="text-sm text-[var(--color-text-tertiary)] mt-0.5">One task. One session. Real progress.</p>
             </div>
             <StartFocusCard onSessionStart={handleSessionStart} lastSession={lastSession} />
 
             {/* Quick breakdown for top task */}
             {activeSession?.task_title && (
               <div className="space-y-2">
-                <p className="text-xs font-medium text-gray-500">Break it down</p>
+                <p className="text-xs font-medium text-[var(--color-text-secondary)]">Break it down</p>
                 <TaskBreakdown taskTitle={activeSession.task_title} />
               </div>
             )}
@@ -93,10 +95,10 @@ export default function FocusPage() {
         {phase === 'session' && activeSession && (
           <div className="space-y-5">
             <div className="flex items-center justify-between">
-              <h1 className="text-xl font-semibold text-gray-900">In session</h1>
+              <h1 className="text-xl font-semibold text-[var(--color-text-primary)]">In session</h1>
               <button
                 onClick={() => setPhase('start')}
-                className="text-xs text-gray-400 hover:text-gray-600"
+                className="text-xs text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]"
               >
                 ← Back
               </button>

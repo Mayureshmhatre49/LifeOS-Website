@@ -6,15 +6,25 @@ import { MoneyNavBar } from '@/components/money/MoneyNavBar'
 import { SavingsGoalList } from '@/components/money/savings-goal-card'
 import type { SavingsGoal } from '@/types/money'
 
+function fmt(n: number, cur: string) {
+  try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: cur, maximumFractionDigits: 0 }).format(n) }
+  catch { return `${cur} ${n.toLocaleString()}` }
+}
+
 export default function GoalsPage() {
   const [goals, setGoals] = useState<SavingsGoal[]>([])
   const [loading, setLoading] = useState(true)
   const [showAdd, setShowAdd] = useState(false)
+  const [currency, setCurrency] = useState('USD')
 
   const load = useCallback(async () => {
-    const res = await fetch('/api/money/savings')
+    const [res, p] = await Promise.all([
+      fetch('/api/money/savings'),
+      fetch('/api/profile').then(r => r.json()).catch(() => ({})),
+    ])
     const data = await res.json()
     setGoals(Array.isArray(data) ? data : [])
+    if (p?.currency) setCurrency(p.currency)
     setLoading(false)
   }, [])
 
@@ -72,11 +82,11 @@ export default function GoalsPage() {
               <p className="text-[10px] text-gray-400">Active</p>
             </div>
             <div>
-              <p className="text-base font-black text-amber-600">₹{totalCurrent.toLocaleString('en-IN')}</p>
+              <p className="text-base font-black text-amber-600">{fmt(totalCurrent, currency)}</p>
               <p className="text-[10px] text-gray-400">Saved</p>
             </div>
             <div>
-              <p className="text-base font-black text-gray-500">₹{(totalTarget - totalCurrent).toLocaleString('en-IN')}</p>
+              <p className="text-base font-black text-gray-500">{fmt(totalTarget - totalCurrent, currency)}</p>
               <p className="text-[10px] text-gray-400">Remaining</p>
             </div>
           </div>
@@ -106,7 +116,7 @@ export default function GoalsPage() {
                 <Trophy className="h-5 w-5 text-emerald-500 shrink-0" />
                 <div className="flex-1">
                   <p className="text-sm font-bold text-gray-800">{g.title}</p>
-                  <p className="text-xs text-emerald-600 font-semibold">₹{g.target_amount.toLocaleString('en-IN')} achieved!</p>
+                  <p className="text-xs text-emerald-600 font-semibold">{fmt(g.target_amount, currency)} achieved!</p>
                 </div>
               </div>
             ))}

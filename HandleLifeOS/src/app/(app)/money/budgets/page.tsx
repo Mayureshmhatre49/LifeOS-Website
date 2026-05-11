@@ -7,6 +7,11 @@ import { BudgetGrid } from '@/components/money/BudgetGrid'
 import { BarChart3 } from 'lucide-react'
 import type { Budget, ExpenseSummary } from '@/types/money'
 
+function fmt(n: number, cur: string) {
+  try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: cur, maximumFractionDigits: 0 }).format(n) }
+  catch { return `${cur} ${n.toLocaleString()}` }
+}
+
 export default function BudgetsPage() {
   const [budget, setBudget] = useState<Budget | null>(null)
   const [expSummary, setExpSummary] = useState<ExpenseSummary | null>(null)
@@ -56,7 +61,8 @@ export default function BudgetsPage() {
   const savings = budget?.savings_target ?? 0
   const usable  = income - savings
   const pct     = usable > 0 ? Math.min(100, Math.round((spent / usable) * 100)) : 0
-  const monthName = new Date(year, month - 1).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })
+  const monthName = new Date(year, month - 1).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })
+  const currency = expSummary?.currency ?? budget?.currency ?? 'USD'
 
   return (
     <div className="min-h-full px-4 py-5 md:px-6 max-w-2xl mx-auto space-y-5">
@@ -86,15 +92,15 @@ export default function BudgetsPage() {
           </div>
           <div className="grid grid-cols-3 gap-2 text-center">
             <div>
-              <p className="text-base font-black text-gray-900">₹{income.toLocaleString('en-IN')}</p>
+              <p className="text-base font-black text-gray-900">{fmt(income, currency)}</p>
               <p className="text-[10px] text-gray-400">Income</p>
             </div>
             <div>
-              <p className="text-base font-black text-rose-600">₹{spent.toLocaleString('en-IN')}</p>
+              <p className="text-base font-black text-rose-600">{fmt(spent, currency)}</p>
               <p className="text-[10px] text-gray-400">Spent</p>
             </div>
             <div>
-              <p className="text-base font-black text-emerald-600">₹{Math.max(0, usable - spent).toLocaleString('en-IN')}</p>
+              <p className="text-base font-black text-emerald-600">{fmt(Math.max(0, usable - spent), currency)}</p>
               <p className="text-[10px] text-gray-400">Remaining</p>
             </div>
           </div>

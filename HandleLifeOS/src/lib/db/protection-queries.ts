@@ -73,7 +73,7 @@ export async function saveQuote(
   const db = getSupabaseAdmin()
   const { data, error } = await db
     .from('saved_quotes')
-    .insert({ user_id: userId, currency: 'INR', category: 'other', risk_level: 'unknown', ...input })
+    .insert({ user_id: userId, currency: 'USD', category: 'other', risk_level: 'unknown', ...input })
     .select()
     .single()
   if (error) throw error

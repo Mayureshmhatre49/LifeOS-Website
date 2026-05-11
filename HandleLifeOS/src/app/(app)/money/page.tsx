@@ -41,6 +41,7 @@ export default async function MoneyPage() {
     subscriptions,
     month,
     year,
+    currency: budget?.currency ?? 'USD',
   })
 
   return (

@@ -16,7 +16,7 @@ import type {
 export async function getProfile(userId: string): Promise<UserProfile | null> {
   if (!isSupabaseConfigured()) return null
   const db = getSupabaseAdmin()
-  const { data } = await db.from('profiles').select('*').eq('id', userId).single()
+  const { data } = await db.from('profiles').select('*').eq('id', userId).maybeSingle()
   return data as UserProfile | null
 }
 
@@ -83,7 +83,7 @@ export async function getMemoryItemByKey(
     .select('*')
     .eq('user_id', userId)
     .eq('key', key)
-    .single()
+    .maybeSingle()
   return data as MemoryItem | null
 }
 

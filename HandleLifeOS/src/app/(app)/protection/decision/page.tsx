@@ -24,7 +24,7 @@ export default function DecisionCheckerPage() {
         <CheckInput
           type="decision"
           title="Describe your situation"
-          placeholder={`Examples:\n"Should I pay ₹10,000 advance to a contractor I just met?"\n"Is this investment plan too good to be true? Returns 3% per month"\n"Should I sign a 2-year lease on this apartment?"\n"Should I trust this online seller? No reviews but great price"`}
+          placeholder={`Examples:\n"Should I pay a large advance to a contractor I just met?"\n"Is this investment plan too good to be true? Returns 3% per month"\n"Should I sign a 2-year lease on this apartment?"\n"Should I trust this online seller? No reviews but great price"`}
           icon="🤔"
         />
       </div>

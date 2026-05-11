@@ -1,6 +1,6 @@
 export type ProtectionCheckType = 'scam' | 'quote' | 'contract' | 'decision' | 'subscription'
 export type RiskLevel = 'low' | 'medium' | 'high' | 'unknown'
-export type NegotiationTone = 'polite' | 'firm' | 'professional'
+export type NegotiationTone = 'polite' | 'firm' | 'professional' | 'friendly'
 
 export interface RiskCheck {
   id: string

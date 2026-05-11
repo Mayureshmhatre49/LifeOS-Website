@@ -2,17 +2,22 @@ import type { SmartAlert, Expense, SavingsGoal, MoneySubscription, Liability } f
 import type { ExpenseSummary } from '@/types/money'
 
 interface InsightInput {
-  budget: { monthly_income: number; savings_target: number } | null
+  budget: { monthly_income: number; savings_target: number; currency?: string } | null
   expenseSummary: ExpenseSummary | null
   liabilities: Liability[]
   goals: SavingsGoal[]
   subscriptions: MoneySubscription[]
   month: number
   year: number
+  currency?: string
 }
 
 function pct(part: number, whole: number) {
   return whole > 0 ? Math.round((part / whole) * 100) : 0
+}
+
+function fmtAmt(n: number, cur: string) {
+  return new Intl.NumberFormat(undefined, { style: 'currency', currency: cur, maximumFractionDigits: 0 }).format(n)
 }
 
 function daysUntil(day: number): number {
@@ -25,6 +30,7 @@ function daysUntil(day: number): number {
 export function generateSmartAlerts(input: InsightInput): SmartAlert[] {
   const alerts: SmartAlert[] = []
   const { budget, expenseSummary, liabilities, goals, subscriptions } = input
+  const cur = input.currency ?? budget?.currency ?? 'USD'
 
   // ── Budget alerts ──────────────────────────────────────────────────────────
   if (budget && expenseSummary) {
@@ -38,7 +44,7 @@ export function generateSmartAlerts(input: InsightInput): SmartAlert[] {
         severity: 'danger',
         icon: '🔴',
         title: `${spentPct}% of monthly budget used`,
-        body: `You've spent ₹${spent.toLocaleString('en-IN')} of ₹${usable.toLocaleString('en-IN')} spendable budget.`,
+        body: `You've spent ${fmtAmt(spent, cur)} of ${fmtAmt(usable, cur)} spendable budget.`,
         href: '/money/budgets',
       })
     } else if (spentPct >= 75) {
@@ -62,7 +68,7 @@ export function generateSmartAlerts(input: InsightInput): SmartAlert[] {
             severity: 'warning',
             icon: '📊',
             title: `${cat.charAt(0).toUpperCase() + cat.slice(1)} spend is ${catPct}% of budget`,
-            body: `₹${(amount as number).toLocaleString('en-IN')} on ${cat} this month — consider a review.`,
+            body: `${fmtAmt(amount as number, cur)} on ${cat} this month — consider a review.`,
             href: '/money/transactions',
           })
           break // one category alert max
@@ -81,7 +87,7 @@ export function generateSmartAlerts(input: InsightInput): SmartAlert[] {
           severity: days <= 2 ? 'danger' : 'warning',
           icon: '💳',
           title: `${lib.name} EMI due in ${days} day${days === 1 ? '' : 's'}`,
-          body: `₹${lib.emi.toLocaleString('en-IN')} due on the ${lib.due_day}${ordinal(lib.due_day)}.`,
+          body: `${fmtAmt(lib.emi, cur)} due on the ${lib.due_day}${ordinal(lib.due_day)}.`,
           href: '/money/liabilities',
         })
       }
@@ -101,7 +107,7 @@ export function generateSmartAlerts(input: InsightInput): SmartAlert[] {
           severity: 'info',
           icon: '🔄',
           title: `${sub.name} renews in ${days === 0 ? 'today' : `${days}d`}`,
-          body: `₹${sub.amount.toLocaleString('en-IN')} will be charged.`,
+          body: `${fmtAmt(sub.amount, cur)} will be charged.`,
           href: '/money',
         })
       }
@@ -122,7 +128,7 @@ export function generateSmartAlerts(input: InsightInput): SmartAlert[] {
           severity: 'warning',
           icon: '🎯',
           title: `"${goal.title}" deadline in ${daysLeft} days`,
-          body: `₹${remaining.toLocaleString('en-IN')} still needed.`,
+          body: `${fmtAmt(remaining, cur)} still needed.`,
           href: '/money/goals',
         })
       }
@@ -138,7 +144,7 @@ export function generateSmartAlerts(input: InsightInput): SmartAlert[] {
         severity: 'info',
         icon: '✅',
         title: "You're on track to hit your savings target",
-        body: `₹${surplus.toLocaleString('en-IN')} surplus — great discipline this month!`,
+        body: `${fmtAmt(surplus, cur)} surplus — great discipline this month!`,
         href: '/money/goals',
       })
     }

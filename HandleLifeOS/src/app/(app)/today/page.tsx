@@ -2,6 +2,7 @@ import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import { getDashboardData } from '@/lib/dashboard/getDashboardData'
+import { getProfile } from '@/lib/db/memory-queries'
 import { Sun, CalendarDays, Wallet, Brain, ArrowRight, CheckCircle2, Clock, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
@@ -20,14 +21,22 @@ function fmtTime(time: string | undefined | null): string {
 
 const DOT_COLORS = ['bg-indigo-400', 'bg-violet-400', 'bg-sky-400', 'bg-emerald-400', 'bg-amber-400']
 
+function fmt(n: number, cur: string) {
+  return new Intl.NumberFormat(undefined, { style: 'currency', currency: cur, maximumFractionDigits: 0 }).format(n)
+}
+
 export default async function TodayPage() {
   const session = await auth()
   if (!session?.user?.id) redirect('/login')
 
-  const data = await getDashboardData(session.user.id, session.user.name)
+  const [data, profile] = await Promise.all([
+    getDashboardData(session.user.id, session.user.name),
+    getProfile(session.user.id),
+  ])
+  const currency = profile?.currency ?? 'USD'
 
   const date = new Date()
-  const dateStr = date.toLocaleDateString('en-IN', {
+  const dateStr = date.toLocaleDateString(undefined, {
     weekday: 'long', day: 'numeric', month: 'long',
   })
 
@@ -156,7 +165,7 @@ export default async function TodayPage() {
             <AlertCircle className="h-4 w-4 text-amber-600 shrink-0" />
             <div className="flex-1">
               <p className="text-sm font-semibold text-gray-800">
-                ₹{data.upcomingBills.toLocaleString('en-IN')} in bills upcoming
+                {fmt(data.upcomingBills, currency)} in bills upcoming
               </p>
               <p className="text-xs text-gray-500 mt-0.5">Tap to review and plan</p>
             </div>

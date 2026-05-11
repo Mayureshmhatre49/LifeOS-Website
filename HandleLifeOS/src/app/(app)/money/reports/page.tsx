@@ -2,6 +2,7 @@ import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 import { getBudget, getExpenses, getExpenseSummary, getSavingsGoals } from '@/lib/db/money-queries'
 import { getLiabilities } from '@/lib/db/liabilities-queries'
+import { getProfile } from '@/lib/db/memory-queries'
 import { detectLeaks } from '@/lib/money/generateInsights'
 import { MoneyNavBar } from '@/components/money/MoneyNavBar'
 import { EXPENSE_CATEGORY_LABELS, EXPENSE_CATEGORY_COLORS } from '@/types/money'
@@ -9,10 +10,8 @@ import { Receipt, TrendingUp, TrendingDown, AlertTriangle, Sparkles } from 'luci
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
-function fmt(n: number) {
-  if (n >= 100_000) return `₹${(n / 100_000).toFixed(1)}L`
-  if (n >= 1_000)   return `₹${(n / 1_000).toFixed(0)}k`
-  return `₹${Math.round(n)}`
+function fmt(n: number, cur: string) {
+  return new Intl.NumberFormat(undefined, { style: 'currency', currency: cur, maximumFractionDigits: 0 }).format(n)
 }
 
 export default async function ReportsPage() {
@@ -25,14 +24,16 @@ export default async function ReportsPage() {
   const prevMonth = month === 1 ? 12 : month - 1
   const prevYear  = month === 1 ? year - 1 : year
 
-  const [budget, expSummary, goals, liabilities, expenses, prevExpenses] = await Promise.all([
+  const [budget, expSummary, goals, liabilities, expenses, prevExpenses, profile] = await Promise.all([
     getBudget(session.user.id, month, year),
     getExpenseSummary(session.user.id, month, year),
     getSavingsGoals(session.user.id),
     getLiabilities(session.user.id),
     getExpenses(session.user.id, month, year),
     getExpenses(session.user.id, prevMonth, prevYear),
+    getProfile(session.user.id),
   ])
+  const currency = budget?.currency ?? profile?.currency ?? 'USD'
 
   const leaks = detectLeaks(expenses, prevExpenses)
 
@@ -52,7 +53,7 @@ export default async function ReportsPage() {
     .sort(([, a], [, b]) => (b as number) - (a as number))
   const maxCat = categoryEntries[0]?.[1] as number ?? 1
 
-  const monthName = new Date(year, month - 1).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })
+  const monthName = new Date(year, month - 1).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })
 
   return (
     <div className="min-h-full px-4 py-5 md:px-6 max-w-2xl mx-auto space-y-5">
@@ -72,7 +73,7 @@ export default async function ReportsPage() {
       <div className="grid grid-cols-2 gap-2">
         {[
           { label: 'Saving Rate', value: `${savingRate}%`, sub: savingRate >= 20 ? 'Excellent' : savingRate >= 10 ? 'Good' : 'Needs work', good: savingRate >= 20, icon: TrendingUp },
-          { label: 'Surplus', value: fmt(Math.max(0, surplus)), sub: surplus < 0 ? 'Overspent!' : 'Available', good: surplus >= 0, icon: surplus >= 0 ? TrendingUp : TrendingDown },
+          { label: 'Surplus', value: fmt(Math.max(0, surplus), currency), sub: surplus < 0 ? 'Overspent!' : 'Available', good: surplus >= 0, icon: surplus >= 0 ? TrendingUp : TrendingDown },
           { label: 'Debt/Income', value: `${debtToIncome}%`, sub: debtToIncome < 36 ? 'Healthy' : 'High debt', good: debtToIncome < 36, icon: debtToIncome < 36 ? TrendingUp : TrendingDown },
           { label: 'Goals Progress', value: totalGoalsTarget > 0 ? `${Math.round((totalGoalsSaved / totalGoalsTarget) * 100)}%` : 'N/A', sub: `${goals.filter(g => !g.is_completed).length} active`, good: true, icon: TrendingUp },
         ].map(m => {
@@ -103,7 +104,7 @@ export default async function ReportsPage() {
                 <div key={cat}>
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-[11px] font-semibold text-gray-700">{label}</span>
-                    <span className="text-[11px] font-bold text-gray-600">{fmt(amount as number)}</span>
+                    <span className="text-[11px] font-bold text-gray-600">{fmt(amount as number, currency)}</span>
                   </div>
                   <div className="h-2 w-full rounded-full bg-gray-100 overflow-hidden">
                     <div
@@ -133,7 +134,7 @@ export default async function ReportsPage() {
                   <span className="text-xs font-black text-rose-600">+{leak.changePct}%</span>
                 </div>
                 <p className="text-xs text-gray-500 mt-0.5">
-                  {fmt(leak.thisMonth)} this month vs {fmt(leak.lastMonth)} last month
+                  {fmt(leak.thisMonth, currency)} this month vs {fmt(leak.lastMonth, currency)} last month
                 </p>
               </div>
             ))}

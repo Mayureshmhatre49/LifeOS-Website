@@ -96,7 +96,7 @@ export default function TripDetailPage() {
       <div className="grid grid-cols-3 gap-2">
         <Stat value={`${items.length}`} label="Itinerary items" />
         <Stat value={`${packed}/${packing.length}`} label="Packed" />
-        <Stat value={trip.budget_total ? `₹${totalCost}/${trip.budget_total}` : `₹${totalCost}`} label="Spending" />
+        <Stat value={trip ? (trip.budget_total ? `${fmt(totalCost, trip.currency)}/${fmt(trip.budget_total, trip.currency)}` : fmt(totalCost, trip.currency)) : '—'} label="Spending" />
       </div>
 
       <div className="flex rounded-xl bg-gray-100 p-0.5">
@@ -131,7 +131,7 @@ export default function TripDetailPage() {
                     <Icon className="h-4 w-4 text-blue-500 shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className={cn('text-sm font-semibold text-gray-800', item.is_done && 'line-through')}>{item.title}</p>
-                      <p className="text-[10px] text-gray-500 capitalize">{item.type}{item.cost ? ` · ₹${item.cost}` : ''}</p>
+                      <p className="text-[10px] text-gray-500 capitalize">{item.type}{item.cost && trip ? ` · ${fmt(item.cost, trip.currency)}` : ''}</p>
                     </div>
                     <button onClick={() => delItem(item.id)} className="p-1 rounded text-gray-300 hover:text-red-400"><Trash2 className="h-3 w-3" /></button>
                   </div>
@@ -184,6 +184,11 @@ export default function TripDetailPage() {
       )}
     </div>
   )
+}
+
+function fmt(n: number, cur: string) {
+  try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: cur, maximumFractionDigits: 0 }).format(n) }
+  catch { return `${cur} ${n.toLocaleString()}` }
 }
 
 function Stat({ value, label }: { value: string; label: string }) {

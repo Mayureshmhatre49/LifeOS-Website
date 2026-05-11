@@ -77,8 +77,10 @@ export function NotificationBell() {
   return (
     <div ref={ref} className="relative">
       <button
+        data-testid="notification-bell"
         onClick={() => setOpen(v => !v)}
         title="Notifications"
+        aria-label="Notifications"
         className="relative h-9 w-9 rounded-xl bg-white/80 backdrop-blur border border-white/60 shadow-sm hover:shadow-md hover:bg-indigo-50 flex items-center justify-center transition-all"
       >
         <Bell className={cn('h-4 w-4', unreadCount > 0 ? 'text-indigo-600' : 'text-gray-500')} />

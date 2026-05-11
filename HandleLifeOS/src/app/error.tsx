@@ -17,12 +17,12 @@ export default function Error({
   }, [error])
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 text-center">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--color-surface)] px-4 text-center">
       <Logo className="mb-8" />
-      <h1 className="text-6xl font-bold text-gray-900 mb-2">500</h1>
-      <p className="text-gray-500 mb-2 max-w-xs">Something went wrong on our end.</p>
+      <h1 className="text-6xl font-bold text-[var(--color-text-primary)] mb-2">Oops</h1>
+      <p className="text-[var(--color-text-secondary)] mb-2 max-w-xs">Something hiccupped on our end. Your data is safe — let's get you back on track.</p>
       {error.digest && (
-        <p className="text-xs text-gray-400 mb-6 font-mono">Error ID: {error.digest}</p>
+        <p className="text-xs text-[var(--color-text-tertiary)] mb-6 font-mono">Ref: {error.digest}</p>
       )}
       <div className="flex gap-3">
         <Button onClick={reset}>Try again</Button>

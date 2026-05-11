@@ -101,11 +101,11 @@ function buildMockData(firstName: string): DashboardData {
       { id: 'mt3', title: "Book Tanish's dentist appointment", priority: 'high',   category: 'health' },
     ],
 
-    // Money — income ₹2,80,000; budget ₹1,60,000; spent ₹52,000; headroom ₹1,08,000 → "Save ₹1.1L"
+    // Money — income 2800; budget 1600; spent 520; headroom 1080
     monthlySpend: 52000,
     monthlyBudget: 160000,
     monthlyIncome: 280000,
-    currency: 'INR',
+    currency: 'USD',
 
     totalBalance: 228000,      // income − spend
     upcomingBills: 31500,      // rent + utilities + subscriptions
@@ -402,8 +402,8 @@ export async function getDashboardData(
   const monthlySpend = expenses.reduce((s, e) => s + e.amount, 0)
   const monthlyIncome = budget?.monthly_income ?? 0
   const savingsTarget = budget?.savings_target ?? 0
-  const monthlyBudget = monthlyIncome > 0 ? monthlyIncome - savingsTarget : 0
-  const currency = budget?.currency ?? expenses[0]?.currency ?? 'INR'
+  const monthlyBudget = monthlyIncome > 0 ? Math.max(0, monthlyIncome - savingsTarget) : 0
+  const currency = budget?.currency ?? expenses[0]?.currency ?? 'USD'
 
   const totalBalance = monthlyIncome > 0 ? monthlyIncome - monthlySpend : 0
   const upcomingBills = Math.round(monthlyBudget * 0.4) || monthlySpend

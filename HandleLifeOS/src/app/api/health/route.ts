@@ -2,19 +2,28 @@ import { NextResponse } from 'next/server'
 import { isSupabaseConfigured } from '@/lib/db/client'
 import { Redis } from '@upstash/redis'
 
+interface HealthChecks {
+  uptime: number
+  timestamp: string
+  database: string
+  redis: string
+  ai: { configured: boolean }
+  latency_ms: number
+}
+
 export async function GET() {
   const start = Date.now()
-  
-  const checks: Record<string, any> = {
+
+  const checks: Partial<HealthChecks> = {
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
-    env: process.env.NODE_ENV,
+    // NODE_ENV intentionally omitted — reduces information disclosure
   }
 
   // 1. Database Check (Supabase)
   try {
     checks.database = isSupabaseConfigured() ? 'configured' : 'missing'
-  } catch (e) {
+  } catch {
     checks.database = 'error'
   }
 
@@ -30,14 +39,17 @@ export async function GET() {
     } else {
       checks.redis = 'not_configured'
     }
-  } catch (e) {
+  } catch {
     checks.redis = 'error'
   }
 
-  // 3. AI Providers Check (Config check)
+  // 3. AI Provider — report only whether any provider is configured, not which one
   checks.ai = {
-    anthropic: !!process.env.ANTHROPIC_API_KEY,
-    openai: !!process.env.OPENAI_API_KEY,
+    configured: !!(
+      process.env.ANTHROPIC_API_KEY ||
+      process.env.OPENAI_API_KEY ||
+      process.env.GOOGLE_GEMINI_API_KEY
+    ),
   }
 
   const duration = Date.now() - start

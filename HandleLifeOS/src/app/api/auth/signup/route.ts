@@ -34,19 +34,11 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json()
-    const parsed = signupSchema.safeParse(body)
-
-    if (!parsed.success) {
-      return NextResponse.json(
-        { error: 'Validation failed', details: parsed.error.flatten().fieldErrors },
-        { status: 400 }
-      )
-    }
 
     // ── Honeypot: bots fill the hidden `website` field ────────────────────────
-    // Normalize timing to match the success path (bcrypt cost ~250ms) so timing
-    // analysis can't distinguish honeypot trigger from legitimate signup.
-    if (parsed.data.website !== undefined && parsed.data.website !== '') {
+    // Check BEFORE schema validation so the timing-matched bcrypt response is
+    // reachable regardless of what the schema allows.
+    if (body?.website) {
       writeSecurityEvent({
         type: 'unusual_activity',
         severity: 'info',
@@ -55,7 +47,16 @@ export async function POST(req: NextRequest) {
       })
       // Dummy bcrypt of equal cost to match real-signup timing
       await bcrypt.hash('honeypot-' + Date.now(), 12)
-      return NextResponse.json({ id: 'bot', email: parsed.data.email }, { status: 201 })
+      return NextResponse.json({ id: 'bot', email: body.email ?? '' }, { status: 201 })
+    }
+
+    const parsed = signupSchema.safeParse(body)
+
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: 'Validation failed', details: parsed.error.flatten().fieldErrors },
+        { status: 400 }
+      )
     }
 
     const { email, password, name } = parsed.data

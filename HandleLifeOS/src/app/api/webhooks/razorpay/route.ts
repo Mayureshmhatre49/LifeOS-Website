@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
   }
 
   const event = JSON.parse(rawBody) as {
+    event_id?: string
     event: string
     payload: {
       payment?: { entity?: { order_id?: string; id?: string; notes?: Record<string, string> } }
@@ -25,6 +26,38 @@ export async function POST(req: NextRequest) {
   }
 
   const db = getSupabaseAdmin()
+
+  // Idempotency guard: skip already-processed events using the payment/subscription ID
+  // as a natural dedup key (Razorpay retries deliver the same payload ID).
+  const dedupeId =
+    event.payload.payment?.entity?.id ??
+    event.payload.subscription?.entity?.id ??
+    event.event_id
+
+  if (dedupeId) {
+    const { data: existing } = await db
+      .from('webhook_events')
+      .select('id')
+      .eq('provider', 'razorpay')
+      .eq('event_id', dedupeId)
+      .maybeSingle()
+
+    if (existing) {
+      return NextResponse.json({ received: true, skipped: true })
+    }
+
+    // Record this event before processing to prevent race conditions
+    try {
+      await db.from('webhook_events').insert({
+        provider: 'razorpay',
+        event_id: dedupeId,
+        event_type: event.event,
+      })
+    } catch {
+      // Unique constraint violation means another request is already processing this event
+      return NextResponse.json({ received: true, skipped: true })
+    }
+  }
 
   switch (event.event) {
     case 'payment.captured': {

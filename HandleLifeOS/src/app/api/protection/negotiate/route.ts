@@ -9,7 +9,7 @@ import { z } from 'zod'
 const negotiateSchema = z.object({
   context: z.string().min(10).max(2000).trim(),
   type: z.string().min(1).max(50).trim(),
-  tone: z.enum(['polite', 'firm', 'professional']).optional(),
+  tone: z.enum(['polite', 'firm', 'professional', 'friendly']).optional(),
   amount: z.number().positive().optional(),
   currency: z.string().max(10).optional(),
   save: z.boolean().optional(),

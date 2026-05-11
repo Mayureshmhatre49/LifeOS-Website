@@ -42,6 +42,6 @@ export async function POST(req: NextRequest) {
     .from('trips')
     .insert({ ...stripServerFields(parsed.data), user_id: session.user.id })
     .select().single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) return NextResponse.json({ error: 'Database operation failed' }, { status: 500 })
   return NextResponse.json({ trip: data }, { status: 201 })
 }

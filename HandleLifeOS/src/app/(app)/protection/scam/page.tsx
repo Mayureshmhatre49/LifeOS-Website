@@ -24,7 +24,7 @@ export default function ScamCheckPage() {
         <CheckInput
           type="scam"
           title="Paste message, email, or offer"
-          placeholder={`Examples:\n"Congratulations! You've won ₹50,000. Click here to claim..."\n"Urgent: Your account will be closed. Share OTP immediately."\n"Job offer: Work from home, earn ₹50K/month, no experience needed."`}
+          placeholder={`Examples:\n"Congratulations! You've won a cash prize. Click here to claim..."\n"Urgent: Your account will be closed. Share OTP immediately."\n"Job offer: Work from home, earn big salary, no experience needed."`}
           icon="🛡️"
         />
       </div>

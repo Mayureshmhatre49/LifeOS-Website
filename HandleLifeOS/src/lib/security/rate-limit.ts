@@ -10,7 +10,8 @@ const LIMITS = {
   voice:          { max: 20,  window: '60s' },
   api_v1:         { max: 100, window: '60s' },
   password_reset: { max: 3,   window: '3600s' },
-  whatsapp:       { max: 20,  window: '60s' },   // 20 msg/min per phone number
+  whatsapp:       { max: 20,  window: '60s' },
+  upload:         { max: 20,  window: '3600s' }, // 20 uploads/hour per user
 } as const
 
 type LimitKey = keyof typeof LIMITS
@@ -116,6 +117,10 @@ export async function checkAuthRateLimit(ip: string) {
 }
 
 export async function checkSignupRateLimit(ip: string) {
+  // Allow unlimited signups in E2E test mode from localhost IPs
+  if (process.env.E2E_MODE === 'true' && (ip === '127.0.0.1' || ip === '::1' || ip === 'unknown')) {
+    return { success: true, remaining: 999, resetIn: 0 }
+  }
   return check('signup', ip)
 }
 
@@ -133,6 +138,10 @@ export async function checkPasswordResetRateLimit(email: string) {
 
 export async function checkWhatsAppRateLimit(phoneNumber: string) {
   return check('whatsapp', phoneNumber)
+}
+
+export async function checkUploadRateLimit(userId: string) {
+  return check('upload', userId)
 }
 
 export function rateLimitHeaders(remaining: number, resetIn: number): Record<string, string> {

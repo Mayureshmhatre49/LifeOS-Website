@@ -39,7 +39,7 @@ const securityHeaders = [
   { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
   { key: 'Cross-Origin-Embedder-Policy', value: 'unsafe-none' }, // relaxed — Razorpay iframe needs it
 
-  // Note: Content-Security-Policy is set dynamically per-request in src/proxy.ts (nonce-based)
+  // Note: Content-Security-Policy is set dynamically per-request in src/middleware.ts (nonce-based)
 ]
 
 const nextConfig: NextConfig = {

@@ -134,6 +134,7 @@ export default function HabitsPage() {
         <AddHabitForm onAdd={handleAdd} onCancel={() => setShowForm(false)} />
       ) : (
         <button
+          data-testid="add-habit-btn"
           onClick={() => setShowForm(true)}
           className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl border-2 border-dashed border-violet-200 bg-violet-50/50 text-violet-600 text-sm font-semibold hover:bg-violet-50"
         >

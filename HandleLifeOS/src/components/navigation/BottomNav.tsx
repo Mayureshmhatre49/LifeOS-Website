@@ -33,6 +33,7 @@ export function BottomNav() {
             return (
               <div key="fab" className="flex flex-1 items-center justify-center py-2">
                 <button
+                  data-testid="capture-pill"
                   onClick={() => setCaptureOpen(true)}
                   className="h-11 w-11 rounded-full bg-[var(--color-gray-900)] flex items-center justify-center shadow-[var(--shadow-md)] active:scale-95 transition-transform duration-[var(--duration-fast)] -mt-5 ring-4 ring-[var(--color-surface-overlay)]"
                   aria-label="Quick capture"
@@ -50,6 +51,8 @@ export function BottomNav() {
             <Link
               key={item.href}
               href={item.href!}
+              aria-label={item.label}
+              aria-current={active ? 'page' : undefined}
               className={cn(
                 'relative flex flex-1 flex-col items-center justify-center gap-1 py-2.5 text-[10px] font-medium transition-colors duration-[var(--duration-fast)]',
                 active

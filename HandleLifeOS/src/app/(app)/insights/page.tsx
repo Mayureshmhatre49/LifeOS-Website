@@ -46,7 +46,7 @@ const AI_PATTERNS = [
     color: 'text-rose-500',
     bg: 'bg-rose-50',
     title: 'Weekend spending spikes +68%',
-    body: '₹12,000 spent last Saturday alone. Setting a weekend budget could save ₹8,400/month.',
+    body: 'Big spending spike last Saturday. Setting a daily cap could significantly cut monthly costs.',
     href: '/money',
     cta: 'Set a weekend budget',
   },
@@ -228,8 +228,8 @@ export default async function InsightsPage() {
           </div>
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[11px] font-semibold text-gray-500">Daily Spend (₹)</span>
-              <span className="text-[11px] font-bold text-emerald-600">₹42,600 total</span>
+              <span className="text-[11px] font-semibold text-gray-500">Daily Spend</span>
+              <span className="text-[11px] font-bold text-emerald-600">42,600 total</span>
             </div>
             <MiniBar values={WEEKLY_SPEND} color="bg-emerald-400" />
           </div>

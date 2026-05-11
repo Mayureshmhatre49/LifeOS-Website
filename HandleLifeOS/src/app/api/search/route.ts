@@ -162,14 +162,14 @@ export async function POST(req: NextRequest) {
       if (!e.description) continue
       results.push({
         type: 'expense', module: 'money', id: e.id,
-        title: e.description, snippet: `${e.category} · ₹${e.amount}`,
+        title: e.description, snippet: `${e.category} · ${e.amount}`,
         link: '/money', score: scoreText(q, e.description, null), date: e.expense_date,
       })
     }
     for (const s of (savings.data ?? []) as { id: string; title: string; target_amount: number; current_amount: number }[]) {
       results.push({
         type: 'savings_goal', module: 'money', id: s.id,
-        title: s.title, snippet: `Savings goal · ₹${s.current_amount}/${s.target_amount}`,
+        title: s.title, snippet: `Savings goal · ${s.current_amount}/${s.target_amount}`,
         link: '/money', score: scoreText(q, s.title, null),
       })
     }

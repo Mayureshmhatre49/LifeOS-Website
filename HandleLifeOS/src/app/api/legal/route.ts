@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
     .from(table)
     .insert({ ...stripServerFields(payload), user_id: session.user.id })
     .select().single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) return NextResponse.json({ error: 'Database operation failed' }, { status: 500 })
   return NextResponse.json({ record: data }, { status: 201 })
 }
 
@@ -66,7 +66,7 @@ export async function PATCH(req: NextRequest) {
     .update(stripServerFields(patch))
     .eq('id', id).eq('user_id', session.user.id)
     .select().single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) return NextResponse.json({ error: 'Database operation failed' }, { status: 500 })
   return NextResponse.json({ record: data })
 }
 

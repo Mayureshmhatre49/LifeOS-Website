@@ -1,9 +1,11 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Mic, ArrowUp, Plus, Paperclip } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useVoiceInput } from '@/hooks/use-voice-input'
+import { useState } from 'react'
 
 const QUICK_PROMPTS = [
   'Plan my week',
@@ -15,7 +17,6 @@ const QUICK_PROMPTS = [
 export function PremiumInputBar() {
   const router = useRouter()
   const [text, setText] = useState('')
-  const [listening, setListening] = useState(false)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
   function submit(value: string) {
@@ -25,6 +26,13 @@ export function PremiumInputBar() {
     setText('')
   }
 
+  const { state: voiceState, isSupported: voiceSupported, start: startVoice, stop: stopVoice } = useVoiceInput({
+    onFinalTranscript: submit,
+    language: 'en-IN',
+    continuous: false,
+  })
+  const listening = voiceState === 'listening'
+
   function handleKey(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
@@ -33,25 +41,12 @@ export function PremiumInputBar() {
   }
 
   function handleVoice() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const Ctor = (window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition
-    if (!Ctor) {
+    if (!voiceSupported) {
       inputRef.current?.focus()
       return
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const recognition = new Ctor() as any
-    recognition.lang = 'en-IN'
-    recognition.interimResults = false
-    recognition.onstart = () => setListening(true)
-    recognition.onend = () => setListening(false)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    recognition.onresult = (e: any) => {
-      const transcript = e.results[0][0].transcript
-      submit(transcript)
-    }
-    recognition.onerror = () => setListening(false)
-    recognition.start()
+    if (listening) stopVoice()
+    else startVoice()
   }
 
   // Auto-resize the textarea up to 6 lines

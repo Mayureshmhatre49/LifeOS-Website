@@ -10,7 +10,7 @@ import { NotificationBell } from '@/components/notifications/NotificationBell'
 import { ToastProvider } from '@/components/ui/toast'
 
 const RailFallback = () => (
-  <div className="h-full w-full bg-white border-r border-gray-100" />
+  <div className="h-full w-full bg-[var(--color-surface-raised)] border-r border-[var(--color-border-soft)]" />
 )
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -50,7 +50,7 @@ function AppLayoutInner({ children }: { children: React.ReactNode }) {
             </Suspense>
             <button
               onClick={() => setMenuOpen(false)}
-              className="absolute top-4 right-3 h-7 w-7 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+              className="absolute top-4 right-3 h-7 w-7 flex items-center justify-center rounded-lg bg-[var(--color-gray-100)] text-[var(--color-text-secondary)] hover:bg-[var(--color-gray-200)] transition-colors"
               aria-label="Close menu"
             >
               <X className="h-4 w-4" />

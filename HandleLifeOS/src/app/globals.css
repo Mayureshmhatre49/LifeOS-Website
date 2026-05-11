@@ -115,8 +115,12 @@
     -webkit-text-size-adjust: 100%;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     tab-size: 4;
-    scroll-behavior: smooth;
     text-rendering: optimizeLegibility;
+  }
+
+  /* Apply smooth scroll on containers, not <html>, to avoid Next.js scroll-restoration warning */
+  .scroll-smooth-container {
+    scroll-behavior: smooth;
   }
 
   body {

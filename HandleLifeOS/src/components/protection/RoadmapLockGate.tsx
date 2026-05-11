@@ -10,13 +10,11 @@ export function RoadmapLockGate({ children }: { children: React.ReactNode }) {
   const [unlocked, setUnlocked] = useState(false)
   const [pin, setPin] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && sessionStorage.getItem(SESSION_KEY) === '1') {
+    if (sessionStorage.getItem(SESSION_KEY) === '1') {
       setUnlocked(true)
     }
-    setLoading(false)
   }, [])
 
   function handleUnlock(e: React.FormEvent) {
@@ -29,8 +27,6 @@ export function RoadmapLockGate({ children }: { children: React.ReactNode }) {
       setPin('')
     }
   }
-
-  if (loading) return null
 
   if (unlocked) {
     return <>{children}</>

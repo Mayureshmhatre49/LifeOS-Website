@@ -24,7 +24,7 @@ export default function SubscriptionsPage() {
         <CheckInput
           type="subscription"
           title="List your subscriptions and bills"
-          placeholder={`List your monthly subscriptions and bills:\nNetflix ₹649\nPrime ₹1499/year\nGym ₹2000\nSpotify ₹119\nSwiggy One ₹299\nDomain renewal ₹800\nMobile plan ₹399\n...`}
+          placeholder={`List your monthly subscriptions and bills:\nNetflix $15.99\nSpotify $9.99\nGym $50\nCloud storage $9.99/year\nDomain renewal $15\nMobile plan $30\n...`}
           icon="💸"
         />
       </div>

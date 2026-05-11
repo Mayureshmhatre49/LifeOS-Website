@@ -35,7 +35,7 @@ export async function PATCH(
 
   const db = getSupabaseAdmin()
   const { data, error } = await db.from('contacts').update(parsed.data).eq('id', id).eq('user_id', session.user.id).select().single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) return NextResponse.json({ error: 'Database operation failed' }, { status: 500 })
   return NextResponse.json({ contact: data })
 }
 

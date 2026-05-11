@@ -50,6 +50,6 @@ export async function POST(req: NextRequest) {
 
   const db = getSupabaseAdmin()
   const { data, error } = await db.from('contacts').insert({ user_id: session.user.id, ...normalize(parsed.data) }).select().single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) return NextResponse.json({ error: 'Database operation failed' }, { status: 500 })
   return NextResponse.json({ contact: data }, { status: 201 })
 }

@@ -38,7 +38,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         } catch { /* ignore */ }
 
         // ── Account lockout check ──────────────────────────────────────────────
-        const lockout = checkLockout(email)
+        const lockout = await checkLockout(email)
         if (lockout.locked) {
           const mins = Math.ceil(lockout.remainingMs / 60000)
           recordLoginAttempt({ email, ip_address: ip, success: false, failure_reason: 'account_locked', user_agent: ua })
@@ -55,13 +55,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // ── Demo account (only when DEMO_MODE=true in env) ───────────────────
         if (process.env.DEMO_MODE === 'true' &&
             email === 'demo@lifeos.app' && password === 'Demo1234!') {
-          clearLockout(email)
+          await clearLockout(email)
           return { id: 'demo', email: 'demo@lifeos.app', name: 'Demo User', email_verified: true }
         }
 
         // ── No database — reject non-demo logins ──────────────────────────────
         if (!isSupabaseConfigured()) {
-          recordFailure(email)
+          await recordFailure(email)
           return null
         }
 
@@ -69,7 +69,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const user = await getUserByEmail(email)
 
         if (!user || !user.password_hash) {
-          const status = recordFailure(email)
+          const status = await recordFailure(email)
           recordLoginAttempt({ email, ip_address: ip, success: false, failure_reason: 'user_not_found', user_agent: ua })
           if (status.locked) {
             writeAuditLog({ action: 'user.account_locked', ip_address: ip, metadata: { email }, severity: 'warning' })
@@ -80,7 +80,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const valid = await bcrypt.compare(password, user.password_hash)
 
         if (!valid) {
-          const status = recordFailure(email)
+          const status = await recordFailure(email)
           recordLoginAttempt({ email, ip_address: ip, success: false, failure_reason: 'wrong_password', user_agent: ua })
           if (status.locked) {
             writeAuditLog({
@@ -102,7 +102,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         // ── Success ────────────────────────────────────────────────────────────
-        clearLockout(email)
+        await clearLockout(email)
         recordLoginAttempt({ email, ip_address: ip, success: true, user_agent: ua })
         writeAuditLog({
           action: 'user.login',
@@ -162,4 +162,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   secret: process.env.NEXTAUTH_SECRET,
   useSecureCookies: process.env.NODE_ENV === 'production',
+  trustHost: true,
 })

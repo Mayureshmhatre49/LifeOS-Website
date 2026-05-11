@@ -22,7 +22,8 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   }
   const { id } = await params
   const body = await req.json().catch(() => ({}))
-  const { favorite } = z.object({ favorite: z.boolean() }).parse(body)
-  await toggleFavorite(id, session.user.id, favorite)
+  const parsed = z.object({ favorite: z.boolean() }).safeParse(body)
+  if (!parsed.success) return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
+  await toggleFavorite(id, session.user.id, parsed.data.favorite)
   return NextResponse.json({ success: true })
 }

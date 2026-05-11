@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
   if (!table) return NextResponse.json({ error: 'Unknown kind' }, { status: 400 })
 
   const { data, error } = await db.from(table).insert({ ...safe, user_id: session.user.id }).select().single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) return NextResponse.json({ error: 'Database operation failed' }, { status: 500 })
   const responseKey = kind === 'goal' ? 'goal' : kind === 'skill' ? 'skill' : 'resource'
   return NextResponse.json({ [responseKey]: data }, { status: 201 })
 }
@@ -60,7 +60,7 @@ export async function PATCH(req: NextRequest) {
     .update(stripServerFields(patch))
     .eq('id', id).eq('user_id', session.user.id)
     .select().single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) return NextResponse.json({ error: 'Database operation failed' }, { status: 500 })
   return NextResponse.json({ record: data })
 }
 
