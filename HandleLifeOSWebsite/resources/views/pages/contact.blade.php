@@ -116,14 +116,11 @@
             {{-- Sidebar --}}
             <div class="space-y-10 lg:pt-2">
                 <div>
-                    <h2 class="eyebrow mb-6">Global support</h2>
+                    <h2 class="eyebrow mb-6">Where we are</h2>
                     <div class="space-y-5">
                         @foreach([
-                            ['region' => 'North America',      'location' => 'San Francisco, CA'],
-                            ['region' => 'Europe',             'location' => 'London, UK'],
-                            ['region' => 'South Asia',         'location' => 'Bangalore, IN'],
-                            ['region' => 'Middle East & Africa', 'location' => 'Dubai, UAE'],
-                            ['region' => 'East Asia & Pacific', 'location' => 'Singapore, SG'],
+                            ['region' => 'Founding team',       'location' => 'Bangalore, India'],
+                            ['region' => 'Globally distributed', 'location' => 'Serving users in 190+ countries'],
                         ] as $office)
                             <div class="flex items-start gap-4">
                                 <div class="w-1.5 h-1.5 bg-teal-500 rounded-full mt-2 flex-shrink-0" aria-hidden="true"></div>
@@ -141,10 +138,10 @@
                     <p class="text-slate-400 text-sm leading-relaxed mb-6">
                         For investor relations or media inquiries, please reach out directly to our global communications team.
                     </p>
-                    <a href="mailto:comms@handlelife.os"
+                    <a href="{{ route('contact') }}"
                        class="inline-flex items-center gap-2 text-teal-400 hover:text-teal-300 transition-colors text-sm font-semibold"
-                       aria-label="Email our communications team">
-                        Email comms team
+                       aria-label="Contact our communications team via this form">
+                        Use the contact form
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                     </a>
                 </div>

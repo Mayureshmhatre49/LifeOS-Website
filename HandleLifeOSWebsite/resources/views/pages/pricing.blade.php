@@ -100,7 +100,8 @@
                     {{-- PLAN 1: FREE --}}
                     <div class="flex flex-col bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-sm hover:shadow-xl hover:border-teal-100 transition-all duration-500 group">
                         <div class="mb-8">
-                            <h3 class="text-slate-500 text-xs font-bold uppercase tracking-[0.2em] mb-4">Start Better</h3>
+                            <h3 class="text-slate-500 text-xs font-bold uppercase tracking-[0.2em] mb-1">Start Better</h3>
+                            <span class="inline-block px-2 py-0.5 bg-slate-100 text-slate-400 text-[9px] font-bold rounded-md uppercase tracking-widest mb-3">Free tier</span>
                             <div class="flex items-baseline gap-1">
                                 <span class="text-4xl font-black text-slate-900" data-price-inr="0">₹0</span>
                                 <span class="text-slate-400 text-sm font-medium">/forever</span>
@@ -137,7 +138,8 @@
                             <span class="px-4 py-1.5 bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-widest rounded-full border border-slate-200 whitespace-nowrap">Most Popular for Individuals</span>
                         </div>
                         <div class="mb-8 mt-2">
-                            <h3 class="text-teal-600 text-xs font-bold uppercase tracking-[0.2em] mb-4">Personal Growth</h3>
+                            <h3 class="text-teal-600 text-xs font-bold uppercase tracking-[0.2em] mb-1">Personal Growth</h3>
+                            <span class="inline-block px-2 py-0.5 bg-teal-50 text-teal-400 text-[9px] font-bold rounded-md uppercase tracking-widest mb-3">Lite plan</span>
                             <div class="flex items-baseline gap-1">
                                 <span class="text-4xl font-black text-slate-900 price-value" data-price-inr="199" data-monthly-inr="199" data-yearly-inr="1999">₹199</span>
                                 <span class="text-slate-400 text-sm font-medium period-value">/month</span>
@@ -174,7 +176,8 @@
                             <span class="px-5 py-2 bg-gradient-to-r from-teal-500 to-emerald-500 text-white text-[11px] font-black uppercase tracking-[0.15em] rounded-full shadow-lg shadow-teal-500/30 whitespace-nowrap">Best Value</span>
                         </div>
                         <div class="mb-8 mt-2">
-                            <h3 class="text-teal-400 text-xs font-bold uppercase tracking-[0.2em] mb-4">Life Manager</h3>
+                            <h3 class="text-teal-400 text-xs font-bold uppercase tracking-[0.2em] mb-1">Life Manager</h3>
+                            <span class="inline-block px-2 py-0.5 bg-teal-500/15 text-teal-400 text-[9px] font-bold rounded-md uppercase tracking-widest mb-3">Plus plan</span>
                             <div class="flex items-baseline gap-1">
                                 <span class="text-4xl font-black text-white price-value" data-price-inr="499" data-monthly-inr="499" data-yearly-inr="4999">₹499</span>
                                 <span class="text-slate-500 text-sm font-medium period-value">/month</span>
@@ -213,7 +216,8 @@
                             <span class="px-4 py-1.5 bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-widest rounded-full border border-slate-200 whitespace-nowrap">For Households</span>
                         </div>
                         <div class="mb-8 mt-2">
-                            <h3 class="text-indigo-600 text-xs font-bold uppercase tracking-[0.2em] mb-4">Household OS</h3>
+                            <h3 class="text-indigo-600 text-xs font-bold uppercase tracking-[0.2em] mb-1">Household OS</h3>
+                            <span class="inline-block px-2 py-0.5 bg-indigo-50 text-indigo-400 text-[9px] font-bold rounded-md uppercase tracking-widest mb-3">Family plan</span>
                             <div class="flex items-baseline gap-1">
                                 <span class="text-4xl font-black text-slate-900 price-value" data-price-inr="999" data-monthly-inr="999" data-yearly-inr="9999">₹999</span>
                                 <span class="text-slate-400 text-sm font-medium period-value">/month</span>

@@ -29,7 +29,7 @@
         'contactPoint' => [
             '@type'         => 'ContactPoint',
             'contactType'   => 'customer support',
-            'email'         => 'hello@handlelife.os',
+            'url'           => $base . '/contact',
             'availableLanguage' => ['English', 'Spanish', 'French', 'German', 'Portuguese', 'Hindi', 'Arabic', 'Chinese', 'Japanese'],
             'areaServed'    => 'Worldwide',
         ],

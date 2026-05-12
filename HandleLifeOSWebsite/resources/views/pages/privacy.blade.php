@@ -89,10 +89,28 @@
                     </div>
                 </div>
 
+                <div class="mb-16" id="cookies">
+                    <h2 class="text-3xl font-black font-heading text-slate-950 mb-6 uppercase tracking-tight">6. Cookies &amp; Local Storage</h2>
+                    <p class="text-slate-600 font-medium leading-relaxed mb-6">
+                        We use the minimum necessary browser storage to make the service work. We have no advertising cookies, no third-party tracking pixels, and no analytics cookies.
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-6 mb-4">
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200">
+                            <h4 class="font-bold text-slate-950 mb-2">Essential Session Cookie</h4>
+                            <p class="text-sm text-slate-500">A CSRF security token set by Laravel to protect form submissions. Required for the site to function. Expires with your browser session.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200">
+                            <h4 class="font-bold text-slate-950 mb-2">Language &amp; Preference Storage</h4>
+                            <p class="text-sm text-slate-500">Your language and currency preferences are saved in localStorage — on your device only, never transmitted to our servers.</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-500 text-sm font-medium">Google Fonts is loaded from <code class="text-xs bg-slate-100 px-1.5 py-0.5 rounded">fonts.googleapis.com</code> but does not set cookies (changed by Google in 2022). No other third-party cookies are set.</p>
+                </div>
+
                 <div>
-                    <h2 class="text-3xl font-black font-heading text-slate-950 mb-6 uppercase tracking-tight">6. Contact Privacy Team</h2>
+                    <h2 class="text-3xl font-black font-heading text-slate-950 mb-6 uppercase tracking-tight">7. Contact Privacy Team</h2>
                     <p class="text-slate-600 font-medium leading-relaxed">
-                        Questions about your data? Reach out to our privacy officer at <a href="mailto:privacy@handlelife.os" class="text-teal-600 font-bold hover:underline">privacy@handlelife.os</a>.
+                        Questions about your data? Reach out via our <a href="/contact" class="text-teal-600 font-bold hover:underline">contact form</a> and select <em>General inquiry</em> — our privacy team responds within one business day.
                     </p>
                 </div>
             </div>

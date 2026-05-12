@@ -54,9 +54,12 @@
                     </div>
                 </article>
             @empty
-                <div class="col-span-full py-20 text-center border-2 border-dashed border-slate-200 rounded-[3rem]">
-                    <div class="text-4xl mb-6 grayscale opacity-50">✍️</div>
-                    <p class="text-slate-400 font-bold uppercase tracking-widest text-sm">No stories yet. Let’s make today lighter together.</p>
+                <div class="col-span-full py-24 text-center border-2 border-dashed border-slate-200 rounded-[3rem]">
+                    <div class="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-6 text-slate-300" aria-hidden="true">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                    </div>
+                    <p class="text-slate-900 font-bold text-lg mb-2">First stories coming soon.</p>
+                    <p class="text-slate-400 text-sm max-w-xs mx-auto">Subscribe below to be notified when we publish our first insights on life, money, and clarity.</p>
                 </div>
             @endforelse
         </div>
@@ -74,7 +77,11 @@
             <h2 class="text-3xl font-black font-heading text-slate-950 mb-8">Get life insights delivered.</h2>
             <form action="{{ route('waitlist.store') }}" method="POST" class="max-w-md mx-auto relative">
                 @csrf
-                <input type="email" name="email" required placeholder="name@email.com" class="w-full bg-white border border-slate-200 rounded-2xl px-6 py-5 focus:ring-2 focus:ring-teal-500 transition-all outline-none">
+                <div style="display:none" aria-hidden="true">
+                    <input type="text" name="_hp_website" value="" tabindex="-1" autocomplete="off">
+                </div>
+                <label for="blog-subscribe-email" class="sr-only">Email address</label>
+                <input id="blog-subscribe-email" type="email" name="email" required placeholder="you@email.com" class="w-full bg-white border border-slate-200 rounded-2xl px-6 py-5 focus:ring-2 focus:ring-teal-500 transition-all outline-none">
                 <button type="submit" class="absolute right-3 top-3 bottom-3 px-6 bg-slate-950 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-teal-600 transition-colors">Join</button>
             </form>
         </div>

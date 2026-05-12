@@ -319,6 +319,18 @@
                 toggle() { this.open = !this.open; }
             }));
 
+            // ── cookieNotice ─────────────────────────────────────────────────
+            Alpine.data('cookieNotice', () => ({
+                accepted: false,
+                init() {
+                    try { this.accepted = localStorage.getItem('hl_cookie') === '1'; } catch(e) {}
+                },
+                accept() {
+                    try { localStorage.setItem('hl_cookie', '1'); } catch(e) {}
+                    this.accepted = true;
+                }
+            }));
+
             // ── useCaseCarousel ─────────────────────────────────────────────
             Alpine.data('useCaseCarousel', (total) => ({
                 active: 0,
@@ -468,6 +480,37 @@
     </div>
 
     @stack('scripts')
+
+    {{-- ── Cookie notice (essential cookies only — no consent gate needed) ── --}}
+    <div x-data="cookieNotice"
+         x-show="!accepted"
+         x-cloak
+         x-transition:enter="transition ease-out duration-500 delay-1000"
+         x-transition:enter-start="opacity-0 translate-y-4"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 translate-y-4"
+         class="fixed bottom-0 inset-x-0 z-[9999] p-4 pointer-events-none"
+         role="region"
+         aria-label="Cookie notice">
+        <div class="max-w-3xl mx-auto bg-slate-950 border border-white/10 rounded-2xl px-5 py-3.5 flex flex-col sm:flex-row items-center gap-4 shadow-2xl pointer-events-auto">
+            <div class="flex items-center gap-3 flex-1 min-w-0">
+                <div class="w-7 h-7 bg-teal-500/15 rounded-lg flex items-center justify-center flex-shrink-0 text-teal-400" aria-hidden="true">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <p class="text-slate-300 text-sm leading-snug">
+                    We use essential cookies only — no ads, no tracking, no profiling.
+                    <a href="/privacy#cookies" class="text-teal-400 font-semibold hover:text-teal-300 underline-offset-2 hover:underline ml-1">Cookie policy</a>
+                </p>
+            </div>
+            <button @click="accept()"
+                    class="flex-shrink-0 px-5 py-2 bg-teal-500 hover:bg-teal-400 text-slate-950 text-sm font-bold rounded-xl transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+                    aria-label="Accept cookie notice">
+                Got it
+            </button>
+        </div>
+    </div>
 
 </body>
 </html>
