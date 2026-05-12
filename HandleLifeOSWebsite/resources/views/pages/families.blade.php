@@ -21,7 +21,7 @@
                     Invisible burdens and household chaos shouldn't be your normal. HandleLife OS acts as your family's intelligent coordinator.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-3">
-                    <x-button href="/waitlist" variant="teal" size="lg" ariaLabel="Start your Family Hub">Start Family Hub</x-button>
+                    <x-button href="/waitlist" variant="teal" size="lg" ariaLabel="Join the Family Hub waitlist">Join Family Waitlist</x-button>
                     <x-button href="/pricing"  variant="outline" size="lg" ariaLabel="View Family Hub pricing">View plan</x-button>
                 </div>
             </div>

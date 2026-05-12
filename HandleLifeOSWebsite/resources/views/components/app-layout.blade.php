@@ -129,6 +129,7 @@
             document.querySelectorAll('[data-price-inr]').forEach(function(el) {
                 var inr = parseFloat(el.getAttribute('data-price-inr'));
                 if (!isNaN(inr)) el.textContent = _formatPrice(inr, lang);
+                el.style.visibility = 'visible';
             });
         }
         document.addEventListener('DOMContentLoaded', _applyPrices);
@@ -302,6 +303,8 @@
                     { text: 'Before HandleLife, I had three apps and still forgot everything. Now I just open one screen and my whole day makes sense.', name: 'Amara K.', location: 'Lagos, Nigeria', initial: 'A' },
                     { text: 'I manage my mother\'s health, my children\'s school, and my own work. HandleLife OS is the first thing that actually understands how much I carry.', name: 'Priya S.', location: 'Mumbai, India', initial: 'P' },
                     { text: 'Finally, something that treats my time and privacy as sacred. This is what technology should have always felt like.', name: 'Carlos R.', location: 'S\u00e3o Paulo, Brazil', initial: 'C' },
+                    { text: 'I run three freelance clients and a side hustle. HandleLife keeps my finances honest and my weeks from completely imploding.', name: 'Reggie T.', location: 'Atlanta, USA', initial: 'R' },
+                    { text: 'I live across four countries \u2014 currencies, time zones, visa deadlines. HandleLife handles the admin so I can actually focus on the work.', name: 'Saskia V.', location: 'Amsterdam \u2192 Bali', initial: 'S' },
                 ],
                 init() {
                     setInterval(() => this.next(), 7000);

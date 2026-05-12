@@ -140,7 +140,7 @@
                     '190+ Countries',
                     'Non-Judgmental AI',
                     'AES-256 Encrypted',
-                    '20+ Languages',
+                    '20 Languages',
                 ] as $trust)
                     <div class="flex items-center gap-2 opacity-50 hover:opacity-80 transition-opacity duration-300">
                         <span class="w-1 h-1 bg-teal-500 rounded-full" aria-hidden="true"></span>
@@ -244,6 +244,91 @@
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </a>
             </div>
+        </div>
+    </x-section>
+
+    {{-- ── WHO IT'S FOR ─────────────────────────────────────────────── --}}
+    <x-section bg="bg-slate-950" padding="py-24 md:py-32">
+        <div class="text-center mb-16">
+            <p class="eyebrow text-teal-400 mb-4">Real people, real life</p>
+            <h2 class="section-heading text-white mb-6">Life doesn't fit a mold.</h2>
+            <p class="section-subheading text-slate-400 max-w-lg mx-auto">
+                HandleLife OS adapts to whoever you are and whatever your day actually looks like.
+            </p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+            {{-- The Exhausted Parent --}}
+            <div class="bg-white/5 border border-white/8 rounded-3xl p-7 hover:bg-white/8 hover:border-teal-500/25 transition-all duration-300 group">
+                <div class="w-12 h-12 bg-teal-500/15 rounded-2xl flex items-center justify-center mb-5 text-teal-300 group-hover:scale-105 transition-transform duration-300" aria-hidden="true">
+                    <x-icon name="users-family" :size="22" :stroke="1.5" />
+                </div>
+                <h3 class="text-lg font-bold text-white mb-2">The Exhausted Parent</h3>
+                <p class="text-slate-400 text-sm leading-relaxed mb-5">Works full-time, raises kids, cares for an ageing parent. Every week is a negotiation with time and energy.</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-2.5 py-1 bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold rounded-lg">Family OS</span>
+                    <span class="px-2.5 py-1 bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold rounded-lg">Daily OS</span>
+                    <span class="px-2.5 py-1 bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold rounded-lg">Financial OS</span>
+                </div>
+            </div>
+
+            {{-- The Freelancer --}}
+            <div class="bg-white/5 border border-white/8 rounded-3xl p-7 hover:bg-white/8 hover:border-teal-500/25 transition-all duration-300 group">
+                <div class="w-12 h-12 bg-emerald-500/15 rounded-2xl flex items-center justify-center mb-5 text-emerald-300 group-hover:scale-105 transition-transform duration-300" aria-hidden="true">
+                    <x-icon name="briefcase" :size="22" :stroke="1.5" />
+                </div>
+                <h3 class="text-lg font-bold text-white mb-2">The Freelancer</h3>
+                <p class="text-slate-400 text-sm leading-relaxed mb-5">Multiple clients, no HR, no safety net. Income that spikes and dips — and admin that never stops piling up.</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-2.5 py-1 bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold rounded-lg">Financial OS</span>
+                    <span class="px-2.5 py-1 bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold rounded-lg">Daily OS</span>
+                    <span class="px-2.5 py-1 bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold rounded-lg">Shield OS</span>
+                </div>
+            </div>
+
+            {{-- The Digital Nomad --}}
+            <div class="bg-white/5 border border-white/8 rounded-3xl p-7 hover:bg-white/8 hover:border-teal-500/25 transition-all duration-300 group">
+                <div class="w-12 h-12 bg-violet-500/15 rounded-2xl flex items-center justify-center mb-5 text-violet-300 group-hover:scale-105 transition-transform duration-300" aria-hidden="true">
+                    <x-icon name="globe" :size="22" :stroke="1.5" />
+                </div>
+                <h3 class="text-lg font-bold text-white mb-2">The Digital Nomad</h3>
+                <p class="text-slate-400 text-sm leading-relaxed mb-5">Laptop, four countries, zero fixed office. Currencies, tax residencies, and time zones shift every few months.</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-2.5 py-1 bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold rounded-lg">Financial OS</span>
+                    <span class="px-2.5 py-1 bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold rounded-lg">20 Languages</span>
+                    <span class="px-2.5 py-1 bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold rounded-lg">Daily OS</span>
+                </div>
+            </div>
+
+            {{-- The Neurodivergent Professional --}}
+            <div class="bg-white/5 border border-white/8 rounded-3xl p-7 hover:bg-white/8 hover:border-teal-500/25 transition-all duration-300 group">
+                <div class="w-12 h-12 bg-amber-500/15 rounded-2xl flex items-center justify-center mb-5 text-amber-300 group-hover:scale-105 transition-transform duration-300" aria-hidden="true">
+                    <x-icon name="sparkles" :size="22" :stroke="1.5" />
+                </div>
+                <h3 class="text-lg font-bold text-white mb-2">The Neurodivergent Professional</h3>
+                <p class="text-slate-400 text-sm leading-relaxed mb-5">Brilliant at deep work. Challenged by admin, transitions, and anything that requires sustained executive function.</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-2.5 py-1 bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold rounded-lg">Daily OS</span>
+                    <span class="px-2.5 py-1 bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold rounded-lg">Focus Mode</span>
+                    <span class="px-2.5 py-1 bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold rounded-lg">AI Coach</span>
+                </div>
+            </div>
+
+            {{-- The Independently Ageing Adult --}}
+            <div class="bg-white/5 border border-white/8 rounded-3xl p-7 hover:bg-white/8 hover:border-teal-500/25 transition-all duration-300 group sm:col-span-2 lg:col-span-1">
+                <div class="w-12 h-12 bg-rose-500/15 rounded-2xl flex items-center justify-center mb-5 text-rose-300 group-hover:scale-105 transition-transform duration-300" aria-hidden="true">
+                    <x-icon name="user-elder" :size="22" :stroke="1.5" />
+                </div>
+                <h3 class="text-lg font-bold text-white mb-2">The Independently Ageing Adult</h3>
+                <p class="text-slate-400 text-sm leading-relaxed mb-5">Capable and independent — and increasingly targeted by scammers who know exactly how to exploit trust and urgency.</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-2.5 py-1 bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold rounded-lg">Shield OS</span>
+                    <span class="px-2.5 py-1 bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold rounded-lg">Family OS</span>
+                    <span class="px-2.5 py-1 bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold rounded-lg">Smart Alerts</span>
+                </div>
+            </div>
+
         </div>
     </x-section>
 

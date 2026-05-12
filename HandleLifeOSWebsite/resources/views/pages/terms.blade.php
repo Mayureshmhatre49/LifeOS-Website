@@ -13,7 +13,7 @@
         <div class="max-w-3xl mt-6">
             <h1 class="text-5xl md:text-7xl font-black font-heading tracking-tight text-slate-950 mb-8 leading-[1.02]">
                 Terms of<br>
-                <span class="text-slate-400">fair use.</span>
+                <span class="text-slate-400">service.</span>
             </h1>
             <p class="text-xl text-slate-500 font-medium leading-relaxed max-w-2xl">
                 Last Updated: April 25, 2026. HandleLife OS is a tool for personal empowerment. These terms ensure a safe and fair experience for everyone.

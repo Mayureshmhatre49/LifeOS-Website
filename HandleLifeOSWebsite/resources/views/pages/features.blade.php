@@ -181,6 +181,40 @@
         </div>
     </x-section>
 
+    {{-- Upcoming capabilities --}}
+    <x-section bg="bg-slate-50 border-y border-slate-100" padding="py-16 md:py-20">
+        <div class="text-center mb-10">
+            <p class="eyebrow mb-3">Expanding with each phase</p>
+            <h2 class="text-2xl md:text-3xl font-bold font-heading text-slate-950">More capabilities launching soon.</h2>
+        </div>
+        <div class="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto">
+            @foreach([
+                ['bolt',          'Voice & WhatsApp',        'Talk or message to control your OS anywhere.'],
+                ['sparkles',      'Focus & Deep Work',       'AI body-doubling, flow timers, distraction blocking.'],
+                ['heart',         'Mental Wellbeing',        'Mood tracking, stress signals, non-judgmental check-ins.'],
+                ['lock',          'Document Vault',          'Contracts, IDs, and policies — private and searchable.'],
+                ['compass',       'Travel Planner',          'Itineraries, visa timelines, and multi-currency budgets.'],
+                ['sprout',        'Habit Builder',           'Micro-habits that actually stick, built around your life.'],
+            ] as [$icon, $label, $desc])
+                <div class="flex items-start gap-3 bg-white border border-slate-200 rounded-2xl px-5 py-4 hover:shadow-card-hover transition-all duration-300 w-full sm:w-auto sm:flex-1 sm:min-w-[200px] sm:max-w-[260px]">
+                    <div class="w-9 h-9 bg-gradient-to-br from-teal-50 to-emerald-50 border border-teal-100 rounded-xl flex items-center justify-center text-teal-600 flex-shrink-0 mt-0.5">
+                        <x-icon :name="$icon" :size="16" :stroke="1.6" />
+                    </div>
+                    <div>
+                        <div class="text-sm font-semibold text-slate-900 mb-0.5">{{ $label }}</div>
+                        <div class="text-xs text-slate-500 leading-snug">{{ $desc }}</div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+        <div class="text-center mt-8">
+            <a href="{{ route('roadmap') }}" class="inline-flex items-center gap-1.5 text-sm font-semibold text-teal-600 hover:text-teal-500 transition-colors">
+                Track the full roadmap
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+    </x-section>
+
     {{-- CTA --}}
     <x-section bg="bg-slate-950" padding="py-24 md:py-28" container="false">
         <div class="section-container text-center">

@@ -58,7 +58,12 @@
       "Bash(curl -s -o /dev/null -w \"XSS param: %{http_code}\\\\n\" \"http://localhost:8000/?q=<script>alert\\(1\\)</script>\")",
       "Bash(curl -s -o /dev/null -w \"SQL injection: %{http_code}\\\\n\" \"http://localhost:8000/?id=1+UNION+SELECT+1,2,3--\")",
       "Bash(curl -s -o /dev/null -w \"Path traversal: %{http_code}\\\\n\" \"http://localhost:8000/?file=../../etc/passwd\")",
-      "Bash(curl -s -o /dev/null -w \"Security headers present: \" http://localhost:8000/ -I)"
+      "Bash(curl -s -o /dev/null -w \"Security headers present: \" http://localhost:8000/ -I)",
+      "Read(//c/Users/fairi/.claude/projects/c--LifeOS/memory/**)",
+      "Bash(git add *)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\fairi\\.claude\\projects\\c--LifeOS\\memory"
     ]
   }
 }

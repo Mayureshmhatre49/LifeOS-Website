@@ -1,5 +1,9 @@
 <x-app-layout :title="$title" :description="$description ?? null" :keywords="$keywords ?? null" :robots="$robots ?? null">
 
+    @push('head')
+    <style>[data-price-inr]{visibility:hidden}</style>
+    @endpush
+
     {{-- ── Per-page Structured Data (Breadcrumb + FAQ + Product) ─────────── --}}
     @push('schema')
         <x-schema type="breadcrumb" :data="[
@@ -14,7 +18,7 @@
             ['q' => 'What currencies does HandleLife OS support?',
              'a' => 'We support USD, EUR, GBP, INR, AED, BRL, CAD, AUD, JPY, and SGD at launch — with more added regularly. Pricing is shown in your local currency at checkout.'],
             ['q' => 'Is HandleLife OS available globally?',
-             'a' => 'Yes. HandleLife OS is available in 190+ countries and supports 20+ languages. Our privacy standards meet GDPR, CCPA, PDPA, and other major data-protection frameworks worldwide.'],
+             'a' => 'Yes. HandleLife OS is available in 190+ countries and supports 20 languages. Our privacy standards meet GDPR, CCPA, PDPA, and other major data-protection frameworks worldwide.'],
             ['q' => 'How is my data protected?',
              'a' => 'All personal data is encrypted with AES-256 end-to-end. We use a zero-knowledge architecture — even our team cannot read your private content. Your data is never sold or used to train models.'],
             ['q' => 'Do you offer a free trial of paid plans?',
@@ -32,12 +36,6 @@
                 'priceCurrency' => 'USD',
                 'offerCount'  => 3,
                 'availability'=> 'https://schema.org/PreOrder',
-            ],
-            'aggregateRating' => [
-                '@type'       => 'AggregateRating',
-                'ratingValue' => '4.9',
-                'reviewCount' => '50000',
-                'bestRating'  => '5',
             ],
         ]" />
     @endpush
@@ -62,7 +60,7 @@
                 </h1>
                 
                 <p class="text-lg md:text-xl text-slate-600 mb-12 max-w-2xl mx-auto leading-relaxed">
-                    From personal growth to family coordination, Handle Life OS gives you clarity, structure, and intelligent support.
+                    From personal growth to family coordination, HandleLife OS gives you clarity, structure, and intelligent support.
                 </p>
 
                 {{-- Toggle --}}
@@ -359,7 +357,7 @@
             <div class="max-w-7xl mx-auto px-6 relative z-10">
                 <div class="flex flex-col lg:flex-row items-center gap-16">
                     <div class="flex-1 text-center lg:text-left">
-                        <h2 class="text-3xl md:text-5xl font-black mb-8 font-heading leading-tight">Why people choose <br><span class="text-teal-400">Handle Life OS</span></h2>
+                        <h2 class="text-3xl md:text-5xl font-black mb-8 font-heading leading-tight">Why people choose <br><span class="text-teal-400">HandleLife OS</span></h2>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-8">
                             @foreach([
                                 'Less mental overload' => 'Free up cognitive bandwidth for what matters.',
@@ -386,12 +384,12 @@
                                     <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                                 @endfor
                             </div>
-                            <p class="text-xl font-medium mb-8 italic">"Handle Life OS completely changed how our family coordinates. The mental load reduction is real."</p>
+                            <p class="text-xl font-medium mb-8 italic">"I manage my mother's health, my children's school, and my own work. HandleLife OS is the first thing that actually understands how much I carry."</p>
                             <div class="flex items-center justify-center gap-4">
-                                <div class="w-12 h-12 rounded-full bg-teal-500/20 border border-teal-500 flex items-center justify-center font-bold text-teal-400">AD</div>
+                                <div class="w-12 h-12 rounded-full bg-teal-500/20 border border-teal-500 flex items-center justify-center font-bold text-teal-400">PS</div>
                                 <div class="text-left">
-                                    <div class="font-bold">Ananya Deshmukh</div>
-                                    <div class="text-xs text-slate-500">Tech Founder & Parent</div>
+                                    <div class="font-bold">Priya S.</div>
+                                    <div class="text-xs text-slate-500">Early Access · Mumbai, India</div>
                                 </div>
                             </div>
                         </div>
@@ -411,7 +409,7 @@
                 <div class="space-y-4">
                     @php
                         $faqs = [
-                            ['q' => 'What are AI credits?', 'a' => 'AI credits power the intelligent features of Handle Life OS. Each interaction with the advisor, planning generation, or decision analysis uses a small amount of credits. Higher plans include more credits for deeper support.'],
+                            ['q' => 'What are AI credits?', 'a' => 'AI credits power the intelligent features of HandleLife OS. Each interaction with the advisor, planning generation, or decision analysis uses a small amount of credits. Higher plans include more credits for deeper support.'],
                             ['q' => 'Can I cancel anytime?', 'a' => 'Absolutely. We don\'t believe in lock-ins. You can cancel your subscription with one click from your dashboard at any time. You\'ll keep access until the end of your billing period.'],
                             ['q' => 'Can I upgrade later?', 'a' => 'Yes! You can upgrade or downgrade your plan at any time. When you upgrade, we prorate the difference for the remainder of your current billing cycle.'],
                             ['q' => 'Is my data private?', 'a' => 'Privacy is our core foundation. Your data is encrypted and we never sell your personal information. Our AI models are designed with strict privacy boundaries.'],
@@ -453,13 +451,13 @@
                         <h2 class="text-3xl md:text-6xl font-black mb-8 font-heading leading-tight">Life gets easier when it runs on a system.</h2>
                         <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
                             <a href="{{ route('waitlist') }}" class="w-full sm:w-auto px-10 py-5 bg-white text-teal-600 font-black rounded-2xl hover:bg-slate-50 transition-all duration-300 shadow-xl hover:-translate-y-1">
-                                Start Free
+                                Join Free
                             </a>
-                            <a href="{{ route('home') }}" class="w-full sm:w-auto px-10 py-5 bg-teal-700/30 backdrop-blur-md text-white border border-white/20 font-black rounded-2xl hover:bg-teal-700/50 transition-all duration-300">
-                                See Demo
+                            <a href="{{ route('features') }}" class="w-full sm:w-auto px-10 py-5 bg-teal-700/30 backdrop-blur-md text-white border border-white/20 font-black rounded-2xl hover:bg-teal-700/50 transition-all duration-300">
+                                See how it works
                             </a>
                         </div>
-                        <p class="mt-12 text-teal-100 text-sm font-medium opacity-80">Join 10,000+ people handling life with clarity.</p>
+                        <p class="mt-12 text-teal-100 text-sm font-medium opacity-80">Join 50,000+ people handling life with clarity.</p>
                     </div>
                 </div>
             </div>

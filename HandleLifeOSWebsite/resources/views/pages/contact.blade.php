@@ -66,9 +66,9 @@
                                        aria-invalid="{{ $errors->has('name') ? 'true' : 'false' }}">
                             </div>
                             <div>
-                                <label for="email" class="label">Work email <span class="text-red-400" aria-hidden="true">*</span></label>
+                                <label for="email" class="label">Email address <span class="text-red-400" aria-hidden="true">*</span></label>
                                 <input type="email" id="email" name="email" required autocomplete="email"
-                                       placeholder="jane@company.com"
+                                       placeholder="you@email.com"
                                        value="{{ old('email') }}"
                                        class="input {{ $errors->has('email') ? 'border-red-300 focus:ring-red-500' : '' }}"
                                        aria-required="true"
@@ -77,9 +77,9 @@
                         </div>
 
                         <div>
-                            <label for="company_name" class="label">Company name <span class="text-slate-300 font-normal normal-case tracking-normal">(optional)</span></label>
+                            <label for="company_name" class="label">Organisation <span class="text-slate-300 font-normal normal-case tracking-normal">(optional)</span></label>
                             <input type="text" id="company_name" name="company_name" autocomplete="organization"
-                                   placeholder="Acme Corp"
+                                   placeholder="Company or team name"
                                    value="{{ old('company_name') }}"
                                    class="input">
                         </div>

@@ -81,8 +81,8 @@
         </div>
         <div class="grid md:grid-cols-3 gap-6 max-w-3xl mx-auto">
             @foreach([
-                ['icon' => 'check-circle', 'title' => 'SOC 2 Type II', 'sub' => 'Certified readiness'],
-                ['icon' => 'globe',        'title' => 'GDPR & CCPA',   'sub' => 'Full compliance'],
+                ['icon' => 'check-circle', 'title' => 'SOC 2 Type II', 'sub' => 'Designing toward'],
+                ['icon' => 'globe',        'title' => 'GDPR & CCPA',   'sub' => 'Aligned'],
                 ['icon' => 'lock',         'title' => 'AES-256 Bit',   'sub' => 'Encrypted endpoints'],
             ] as $s)
                 <div class="bg-white border border-slate-200/70 rounded-2xl p-8 text-center shadow-card hover:shadow-card-hover transition-all duration-300 ease-out group hover:-translate-y-0.5">
