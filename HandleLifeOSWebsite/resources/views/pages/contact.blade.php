@@ -120,7 +120,7 @@
                     <div class="space-y-5">
                         @foreach([
                             ['region' => 'Founding team',       'location' => 'Bangalore, India'],
-                            ['region' => 'Globally distributed', 'location' => 'Serving users in 190+ countries'],
+                            ['region' => 'Globally distributed', 'location' => 'Available worldwide'],
                         ] as $office)
                             <div class="flex items-start gap-4">
                                 <div class="w-1.5 h-1.5 bg-teal-500 rounded-full mt-2 flex-shrink-0" aria-hidden="true"></div>

@@ -48,7 +48,6 @@
                 <h3 class="text-white font-bold text-xs uppercase tracking-[0.18em] mb-5">Company</h3>
                 <ul class="space-y-3 text-sm font-medium" role="list">
                     <li><a href="/about" class="hover:text-white transition-colors duration-150">Our Mission</a></li>
-                    <li><a href="/blog"  class="hover:text-white transition-colors duration-150">Resources</a></li>
                 </ul>
             </div>
 

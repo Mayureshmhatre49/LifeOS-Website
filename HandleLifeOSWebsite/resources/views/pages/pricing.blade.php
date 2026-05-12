@@ -18,7 +18,7 @@
             ['q' => 'What currencies does HandleLife OS support?',
              'a' => 'We support USD, EUR, GBP, INR, AED, BRL, CAD, AUD, JPY, and SGD at launch — with more added regularly. Pricing is shown in your local currency at checkout.'],
             ['q' => 'Is HandleLife OS available globally?',
-             'a' => 'Yes. HandleLife OS is available in 190+ countries and supports 20 languages. Our privacy standards meet GDPR, CCPA, PDPA, and other major data-protection frameworks worldwide.'],
+             'a' => 'Yes. HandleLife OS is available worldwide and supports 20 languages. Our privacy standards meet GDPR, CCPA, PDPA, and other major data-protection frameworks globally.'],
             ['q' => 'How is my data protected?',
              'a' => 'All personal data is encrypted with AES-256 end-to-end. We use a zero-knowledge architecture — even our team cannot read your private content. Your data is never sold or used to train models.'],
             ['q' => 'Do you offer a free trial of paid plans?',

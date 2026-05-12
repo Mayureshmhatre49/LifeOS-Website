@@ -137,7 +137,7 @@
                 @foreach([
                     'Privacy First',
                     'Zero-Knowledge Architecture',
-                    '190+ Countries',
+                    'Available Worldwide',
                     'Non-Judgmental AI',
                     'AES-256 Encrypted',
                     '20 Languages',

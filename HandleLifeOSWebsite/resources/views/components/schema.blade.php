@@ -18,14 +18,7 @@
         'description' => 'AI-powered personal life operating system that reduces mental load and helps people handle everyday life with clarity.',
         'foundingDate' => '2025',
         'slogan'       => 'Handle life with clarity.',
-        'sameAs' => [
-            'https://twitter.com/handlelifeos',
-            'https://x.com/handlelifeos',
-            'https://linkedin.com/company/handlelifeos',
-            'https://www.facebook.com/handlelifeos',
-            'https://www.instagram.com/handlelifeos',
-            'https://www.youtube.com/@handlelifeos',
-        ],
+        // sameAs: add verified social profile URLs here once accounts are live
         'contactPoint' => [
             '@type'         => 'ContactPoint',
             'contactType'   => 'customer support',
