@@ -35,9 +35,9 @@
         ],
         'address' => [
             '@type'           => 'PostalAddress',
-            'addressLocality' => 'San Francisco',
-            'addressRegion'   => 'CA',
-            'addressCountry'  => 'US',
+            'addressLocality' => 'Bangalore',
+            'addressRegion'   => 'Karnataka',
+            'addressCountry'  => 'IN',
         ],
     ];
 
