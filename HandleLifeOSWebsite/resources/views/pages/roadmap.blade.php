@@ -5,6 +5,11 @@
             ['name' => 'Home',    'url' => '/'],
             ['name' => 'Roadmap', 'url' => '/roadmap'],
         ]" />
+        <x-schema type="webpage" :data="[
+            'name'        => 'Product Roadmap — 10 Phases | HandleLife OS',
+            'description' => 'Track HandleLife OS as we build the world\'s most capable personal life AI. 10 phases: from Core Assistant to global Memory Engine. Always shipping in public.',
+            'url'         => url('/roadmap'),
+        ]" />
     @endpush
 
     <main class="min-h-screen bg-slate-950 text-slate-200 pt-32 pb-20">

@@ -81,14 +81,11 @@ class SecurityHeaders
 
         // ── Content Security Policy ───────────────────────────────────
         // 'unsafe-inline' is required for our Alpine.data() bootstrap <script>.
-        // 'unsafe-eval' is required for Google Translate's element.js (it uses
-        // Function() at runtime to inject translation handlers).
-        // GT iframes load from translate.googleusercontent.com, scripts/fonts
-        // pull from www.google.com + *.gstatic.com.
+        // Alpine itself is bundled via Vite (no CDN dependency).
         $cspDirectives = [
             "default-src 'self'",
             // 'unsafe-inline' required for the Alpine.data() bootstrap <script>.
-            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
+            "script-src 'self' 'unsafe-inline'",
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
             "font-src 'self' data: https://fonts.gstatic.com",
             "img-src 'self' data: blob: https:",

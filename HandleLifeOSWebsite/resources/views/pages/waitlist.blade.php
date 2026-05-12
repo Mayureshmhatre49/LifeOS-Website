@@ -5,6 +5,11 @@
             ['name' => 'Home',     'url' => '/'],
             ['name' => 'Waitlist', 'url' => '/waitlist'],
         ]" />
+        <x-schema type="webpage" :data="[
+            'name'        => 'Join the Early Access Waitlist — HandleLife OS',
+            'description' => 'Be among the first 50,000+ to try HandleLife OS. Free early access, no credit card. Built for individuals, families, students, caregivers, and everyone in between.',
+            'url'         => url('/waitlist'),
+        ]" />
     @endpush
 
     {{-- Hero --}}

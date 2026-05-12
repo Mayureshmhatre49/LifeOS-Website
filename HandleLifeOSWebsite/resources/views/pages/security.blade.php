@@ -5,6 +5,11 @@
             ['name' => 'Home',     'url' => '/'],
             ['name' => 'Security', 'url' => '/security'],
         ]" />
+        <x-schema type="webpage" :data="[
+            'name'        => 'Privacy & Security — Zero-Knowledge AI | HandleLife OS',
+            'description' => 'AES-256 encryption. Zero-knowledge architecture. GDPR, CCPA, PDPA compliant. Your personal data never trains models. Your life stays yours — forever.',
+            'url'         => url('/security'),
+        ]" />
     @endpush
 
     {{-- Hero --}}

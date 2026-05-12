@@ -8,7 +8,6 @@
 @foreach($staticPages as $page)
     <url>
         <loc>{{ url($page['path']) }}</loc>
-        <lastmod>{{ now()->format('Y-m-d') }}</lastmod>
         <changefreq>{{ $page['changefreq'] }}</changefreq>
         <priority>{{ $page['priority'] }}</priority>
         @foreach($hreflangs as $lang)

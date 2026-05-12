@@ -5,6 +5,11 @@
             ['name' => 'Home',     'url' => '/'],
             ['name' => 'Features', 'url' => '/features'],
         ]" />
+        <x-schema type="webpage" :data="[
+            'name'        => 'Features — Daily OS, Financial AI & Shield OS | HandleLife OS',
+            'description' => 'Daily planning, financial clarity, scam protection, family coordination, and more. Explore every capability of HandleLife OS — built to handle real life.',
+            'url'         => url('/features'),
+        ]" />
     @endpush
 
     {{-- Hero --}}

@@ -60,7 +60,11 @@
       "Bash(curl -s -o /dev/null -w \"Path traversal: %{http_code}\\\\n\" \"http://localhost:8000/?file=../../etc/passwd\")",
       "Bash(curl -s -o /dev/null -w \"Security headers present: \" http://localhost:8000/ -I)",
       "Read(//c/Users/fairi/.claude/projects/c--LifeOS/memory/**)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(grep -E \"\\\\.php$\")",
+      "Bash(npm --version)",
+      "Bash(npm audit *)",
+      "Bash(python3 -c ' *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\fairi\\.claude\\projects\\c--LifeOS\\memory"

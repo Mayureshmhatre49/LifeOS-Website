@@ -212,9 +212,12 @@
                 <p class="eyebrow text-emerald-700 mb-4">Shield OS</p>
                 <h3 class="text-xl font-bold font-heading text-slate-950 mb-3">Stay protected.<br>Every single day.</h3>
                 <p class="text-slate-500 text-sm leading-relaxed">Scam detection, contract analysis, and real-time alerts — all private, all zero-knowledge.</p>
-                <div class="mt-6 inline-flex items-center gap-2 px-3 py-2 bg-emerald-500/10 border border-emerald-200 rounded-xl">
-                    <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full" aria-hidden="true"></span>
-                    <span class="text-xs font-semibold text-emerald-700">Shield active</span>
+                <div class="mt-6 flex items-center justify-between">
+                    <div class="inline-flex items-center gap-2 px-3 py-2 bg-emerald-500/10 border border-emerald-200 rounded-xl">
+                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full" aria-hidden="true"></span>
+                        <span class="text-xs font-semibold text-emerald-700">Shield active</span>
+                    </div>
+                    <a href="/security" class="text-xs font-semibold text-emerald-700 hover:text-emerald-600 transition-colors">How it works →</a>
                 </div>
             </div>
 
@@ -382,7 +385,10 @@
                 </x-button>
             </div>
             <p class="mt-6 text-xs text-slate-600">
-                Privacy-first · Zero-knowledge · No credit card required
+                <a href="/security" class="hover:text-slate-400 transition-colors">Privacy-first</a> ·
+                <a href="/security" class="hover:text-slate-400 transition-colors">Zero-knowledge</a> ·
+                No credit card required ·
+                <a href="/pricing" class="hover:text-slate-400 transition-colors">See pricing</a>
             </p>
         </div>
     </section>

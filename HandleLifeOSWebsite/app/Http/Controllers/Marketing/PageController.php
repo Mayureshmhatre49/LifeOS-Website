@@ -18,7 +18,7 @@ class PageController extends Controller
     public function features()
     {
         return view('pages.features', [
-            'title'       => 'Features & AI Capabilities',
+            'title'       => 'Features — Daily OS, Financial AI & Shield OS',
             'description' => 'Daily planning, financial clarity, scam protection, family coordination, and more. Explore every capability of HandleLife OS — built to handle real life.',
             'keywords'    => 'AI features, daily planner AI, financial AI, scam detection AI, contract analyzer, smart routines, family sync, household AI, productivity capabilities',
         ]);
@@ -27,8 +27,8 @@ class PageController extends Controller
     public function pricing()
     {
         return view('pages.pricing', [
-            'title'       => 'Pricing & Plans',
-            'description' => 'Free forever to start. Plus, Family Hub, and Enterprise plans available in 10+ currencies and 190+ countries. No credit card required. Cancel anytime.',
+            'title'       => 'Plans & Pricing — Free to Family Hub',
+            'description' => 'Free forever to start. Plus, Family Hub, and Enterprise plans available in 20 currencies worldwide. No credit card required. Cancel anytime.',
             'keywords'    => 'HandleLife OS pricing, AI life assistant pricing, family AI plan, personal AI plan, free AI assistant, subscription plans, monthly pricing, yearly pricing',
         ]);
     }
@@ -55,7 +55,7 @@ class PageController extends Controller
     {
         return view('pages.enterprise', [
             'title'       => 'Enterprise & Partnerships',
-            'description' => 'Bring HandleLife OS to your employees, customers, or members. Enterprise-grade security, SSO, dedicated support, and global rollout in 190+ countries.',
+            'description' => 'Bring HandleLife OS to your employees, customers, or members. Enterprise-grade security, SSO, dedicated support, and global rollout in 100+ countries.',
             'keywords'    => 'enterprise AI, employee wellbeing AI, B2B AI partnerships, white label AI, SSO AI assistant, corporate productivity AI',
         ]);
     }
@@ -73,7 +73,7 @@ class PageController extends Controller
     {
         return view('pages.contact', [
             'title'       => 'Contact Us',
-            'description' => 'Reach the HandleLife OS team for partnerships, demos, sales, support, or general questions. Global support across North America, Europe, India, MEA, APAC.',
+            'description' => 'Reach the HandleLife OS team for partnerships, demos, sales, support, or general questions. We respond within 1 business day.',
             'keywords'    => 'contact HandleLife OS, AI assistant support, partnership inquiry, demo request, sales contact',
         ]);
     }

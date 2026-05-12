@@ -31,10 +31,6 @@
 <meta name="rating" content="general">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="language" content="English">
-<meta name="revisit-after" content="7 days">
-<meta name="distribution" content="global">
-<meta name="HandheldFriendly" content="true">
-<meta name="MobileOptimized" content="320">
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="{{ $displayType }}">
@@ -66,8 +62,6 @@
 
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:site" content="@handlelifeos">
-<meta name="twitter:creator" content="@handlelifeos">
 <meta name="twitter:url" content="{{ $canonical }}">
 <meta name="twitter:title" content="{{ $displayTitle }}">
 <meta name="twitter:description" content="{{ $displayDescription }}">
@@ -79,7 +73,6 @@
 
 <!-- Discoverability -->
 <link rel="sitemap" type="application/xml" title="Sitemap" href="{{ url('/sitemap.xml') }}">
-<link rel="alternate" type="application/rss+xml" title="HandleLife OS Blog" href="{{ url('/blog/feed') }}">
 
 <!-- Structured Data -->
 <x-schema type="organization" />

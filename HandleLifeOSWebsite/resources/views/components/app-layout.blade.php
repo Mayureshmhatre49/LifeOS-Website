@@ -26,7 +26,6 @@
     {{-- DNS prefetch / preconnect for third-party origins --}}
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
     <link rel="dns-prefetch" href="https://translate.googleapis.com">
     <link rel="preconnect" href="https://translate.googleapis.com" crossorigin>
 
@@ -407,13 +406,8 @@
 
     </script>
 
-    <!-- Vite assets -->
+    <!-- Vite assets (includes Alpine CSP-safe build + Collapse plugin, bundled from npm) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <!-- Alpine.js CSP-safe build (no eval — must load AFTER the alpine:init listener above) -->
-    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/csp@3.x.x/dist/cdn.min.js"></script>
-    <!-- Alpine Collapse plugin for smooth accordion animations -->
-    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
 
     <style>
         /* Language dropdown thin scrollbar */

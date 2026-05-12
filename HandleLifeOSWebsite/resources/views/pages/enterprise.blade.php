@@ -5,6 +5,11 @@
             ['name' => 'Home',         'url' => '/'],
             ['name' => 'Partnerships', 'url' => '/enterprise'],
         ]" />
+        <x-schema type="webpage" :data="[
+            'name'        => 'Enterprise & Partnerships — HandleLife OS',
+            'description' => 'Bring HandleLife OS to your employees, customers, or members. Enterprise-grade security, SSO, dedicated support, and global rollout in 100+ countries.',
+            'url'         => url('/enterprise'),
+        ]" />
     @endpush
 
     {{-- Hero --}}

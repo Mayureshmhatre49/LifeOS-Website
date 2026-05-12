@@ -1,3 +1,1 @@
-import axios from 'axios';
-window.axios = axios;
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+// No browser-side HTTP client needed — forms use native POST, translations use fetch().

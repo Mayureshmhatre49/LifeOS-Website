@@ -12,17 +12,17 @@
         ]" />
         <x-schema type="faq" :data="[
             ['q' => 'Is HandleLife OS really free to start?',
-             'a' => 'Yes. The Starter plan is free forever — no credit card required. You can upgrade to Plus or Family Hub anytime.'],
+             'a' => 'Yes. The Free plan is free forever — no credit card required. You can upgrade to Lite, Plus, or Family anytime.'],
             ['q' => 'Can I cancel anytime?',
-             'a' => 'Yes. There are no long-term contracts, no penalties, and no dark patterns. Switch plans or cancel instantly from your account.'],
+             'a' => 'Yes. There are no long-term contracts, no penalties, and no dark patterns. Switch plans or cancel with one click from your dashboard.'],
             ['q' => 'What currencies does HandleLife OS support?',
-             'a' => 'We support USD, EUR, GBP, INR, AED, BRL, CAD, AUD, JPY, and SGD at launch — with more added regularly. Pricing is shown in your local currency at checkout.'],
+             'a' => 'We support 20 currencies at display — including USD, EUR, GBP, INR, AED, BRL, JPY, and more. Pricing is shown in your local currency automatically.'],
             ['q' => 'Is HandleLife OS available globally?',
              'a' => 'Yes. HandleLife OS is available worldwide and supports 20 languages. Our privacy standards meet GDPR, CCPA, PDPA, and other major data-protection frameworks globally.'],
             ['q' => 'How is my data protected?',
              'a' => 'All personal data is encrypted with AES-256 end-to-end. We use a zero-knowledge architecture — even our team cannot read your private content. Your data is never sold or used to train models.'],
-            ['q' => 'Do you offer a free trial of paid plans?',
-             'a' => 'Yes. Every paid plan includes a 14-day money-back guarantee. If HandleLife OS isn\'t right for you, we refund you — no questions asked.'],
+            ['q' => 'Do yearly plans save money?',
+             'a' => 'Yes. Yearly plans offer a 20% discount compared to monthly billing. You keep access for the full period if you decide to cancel.'],
         ]" />
         <x-schema type="product" :data="[
             'name'        => 'HandleLife OS',
@@ -413,12 +413,12 @@
                 <div class="space-y-4">
                     @php
                         $faqs = [
-                            ['q' => 'What are AI credits?', 'a' => 'AI credits power the intelligent features of HandleLife OS. Each interaction with the advisor, planning generation, or decision analysis uses a small amount of credits. Higher plans include more credits for deeper support.'],
-                            ['q' => 'Can I cancel anytime?', 'a' => 'Absolutely. We don\'t believe in lock-ins. You can cancel your subscription with one click from your dashboard at any time. You\'ll keep access until the end of your billing period.'],
-                            ['q' => 'Can I upgrade later?', 'a' => 'Yes! You can upgrade or downgrade your plan at any time. When you upgrade, we prorate the difference for the remainder of your current billing cycle.'],
-                            ['q' => 'Is my data private?', 'a' => 'Privacy is our core foundation. Your data is encrypted and we never sell your personal information. Our AI models are designed with strict privacy boundaries.'],
-                            ['q' => 'Can my family share one plan?', 'a' => 'The Family plan is specifically designed for this. You can invite up to 4 additional members (total 5) who each get their own private space but can access shared household tools.'],
-                            ['q' => 'Do yearly plans save money?', 'a' => 'Yes, our yearly plans offer a 20% discount compared to monthly billing. It\'s the best way to commit to your growth while saving on costs.'],
+                            ['q' => 'Is HandleLife OS really free to start?', 'a' => 'Yes. The Free plan is free forever — no credit card required. You can upgrade to Lite, Plus, or Family anytime.'],
+                            ['q' => 'Can I cancel anytime?', 'a' => 'Yes. There are no long-term contracts, no penalties, and no dark patterns. Switch plans or cancel with one click from your dashboard.'],
+                            ['q' => 'What currencies does HandleLife OS support?', 'a' => 'We support 20 currencies at display — including USD, EUR, GBP, INR, AED, BRL, JPY, and more. Pricing is shown in your local currency automatically.'],
+                            ['q' => 'Is HandleLife OS available globally?', 'a' => 'Yes. HandleLife OS is available worldwide and supports 20 languages. Our privacy standards meet GDPR, CCPA, PDPA, and other major data-protection frameworks globally.'],
+                            ['q' => 'How is my data protected?', 'a' => 'All personal data is encrypted with AES-256 end-to-end. We use a zero-knowledge architecture — even our team cannot read your private content. Your data is never sold or used to train models.'],
+                            ['q' => 'Do yearly plans save money?', 'a' => 'Yes. Yearly plans offer a 20% discount compared to monthly billing. You keep access for the full period if you decide to cancel.'],
                         ];
                     @endphp
                     @foreach($faqs as $faq)

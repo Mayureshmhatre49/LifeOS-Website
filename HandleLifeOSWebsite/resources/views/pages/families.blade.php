@@ -5,6 +5,11 @@
             ['name' => 'Home',     'url' => '/'],
             ['name' => 'Families', 'url' => '/families'],
         ]" />
+        <x-schema type="webpage" :data="[
+            'name'        => 'AI for Families — Shared Coordination | HandleLife OS',
+            'description' => 'End the mental load. HandleLife OS coordinates schedules, chores, eldercare, childcare, and shopping for the whole household. Built for every family.',
+            'url'         => url('/families'),
+        ]" />
     @endpush
 
     {{-- Hero --}}

@@ -18,7 +18,7 @@ class LeadRequest extends FormRequest
             'email'        => ['required', 'email:rfc,dns', 'max:254'],
             'company_name' => ['nullable', 'string', 'max:150', 'regex:/^[\p{L}\p{M}\d\s&\'\-\.,]+$/u'],
             'inquiry_type' => ['required', 'string', 'in:general,demo,sales,partnership'],
-            'message'      => ['nullable', 'string', 'max:2000'],
+            'message'      => ['required', 'string', 'min:10', 'max:2000'],
             '_hp_website'  => ['present', 'max:0'],   // honeypot: must exist and be empty
         ];
     }
