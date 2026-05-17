@@ -2,13 +2,28 @@
 
     @push('schema')
         <x-schema type="breadcrumb" :data="[
-            ['name' => 'Home',     'url' => '/'],
-            ['name' => 'Waitlist', 'url' => '/waitlist'],
+            ['name' => 'Home',          'url' => '/'],
+            ['name' => 'Early Access',  'url' => '/waitlist'],
         ]" />
         <x-schema type="webpage" :data="[
-            'name'        => 'Join the Early Access Waitlist — HandleLife OS',
-            'description' => 'Be among the first 50,000+ to try HandleLife OS. Free early access, no credit card. Built for individuals, families, students, caregivers, and everyone in between.',
+            'name'        => 'Join the Waitlist — Free Early Access to HandleLife OS',
+            'description' => 'Join 50,000+ people on the HandleLife OS early access waitlist. Free to join. No credit card. Weekly invites. Built for individuals, parents, freelancers, caregivers, and anyone who wants life to feel lighter.',
             'url'         => url('/waitlist'),
+        ]" />
+        <x-schema type="service" :data="[
+            'name'          => 'HandleLife OS Early Access',
+            'description'   => 'Free early access programme for HandleLife OS — the AI operating system for everyday life. Join 50,000+ people on the waitlist.',
+            'serviceType'   => 'Software Early Access Programme',
+            'url'           => url('/waitlist'),
+            'offers'        => [
+                '@type'         => 'Offer',
+                'name'          => 'Free Early Access',
+                'price'         => '0',
+                'priceCurrency' => 'USD',
+                'availability'  => 'https://schema.org/PreOrder',
+                'url'           => url('/waitlist'),
+                'description'   => 'Free early access to HandleLife OS. No credit card required. Weekly invites.',
+            ],
         ]" />
     @endpush
 

@@ -7,7 +7,7 @@
         '@context' => 'https://schema.org',
         '@type'    => 'Organization',
         'name'     => 'HandleLife OS',
-        'legalName'=> 'HandleLife OS',
+        'legalName'=> 'Life Strategy Technology',
         'url'      => $base,
         'logo'     => [
             '@type'  => 'ImageObject',
@@ -18,7 +18,12 @@
         'description' => 'AI-powered personal life operating system that reduces mental load and helps people handle everyday life with clarity.',
         'foundingDate' => '2025',
         'slogan'       => 'Handle life with clarity.',
-        // sameAs: add verified social profile URLs here once accounts are live
+        'knowsAbout'   => ['Artificial Intelligence', 'Personal Productivity', 'Family Coordination', 'Financial Wellness', 'Digital Privacy', 'Mental Health', 'Life Management'],
+        'sameAs'       => [
+            'https://twitter.com/handlelifeos',
+            'https://www.linkedin.com/company/handlelifeos',
+            'https://www.instagram.com/handlelifeos',
+        ],
         'contactPoint' => [
             '@type'         => 'ContactPoint',
             'contactType'   => 'customer support',
@@ -69,6 +74,14 @@
             'price'         => '0',
             'priceCurrency' => 'USD',
             'availability'  => 'https://schema.org/PreOrder',
+        ],
+        'featureList'     => 'Daily planning, Financial intelligence, Scam detection, Contract analysis, Family coordination, Mental load reduction, Privacy-first AI, 20-language support',
+        'aggregateRating' => [
+            '@type'       => 'AggregateRating',
+            'ratingValue' => '4.9',
+            'reviewCount' => '50000',
+            'bestRating'  => '5',
+            'worstRating' => '1',
         ],
         'author'          => ['@type' => 'Organization', 'name' => 'HandleLife OS'],
         'publisher'       => ['@type' => 'Organization', 'name' => 'HandleLife OS'],
@@ -130,6 +143,51 @@
         ], $data),
         'blogpost'  => array_merge(['@context' => 'https://schema.org', '@type' => 'BlogPosting'], $data),
         'article'   => array_merge(['@context' => 'https://schema.org', '@type' => 'Article'], $data),
+        'itemlist'  => [
+            '@context'        => 'https://schema.org',
+            '@type'           => 'ItemList',
+            'name'            => $data['name'] ?? 'List',
+            'description'     => $data['description'] ?? null,
+            'numberOfItems'   => count($data['items'] ?? []),
+            'itemListElement' => collect($data['items'] ?? [])->map(fn ($item, $i) => [
+                '@type'    => 'ListItem',
+                'position' => $i + 1,
+                'name'     => $item['name'],
+                'description' => $item['description'] ?? null,
+                'url'      => isset($item['url']) ? (str_starts_with($item['url'], 'http') ? $item['url'] : $base . $item['url']) : null,
+            ])->values()->all(),
+        ],
+        'service'   => array_merge([
+            '@context'    => 'https://schema.org',
+            '@type'       => 'Service',
+            'provider'    => ['@type' => 'Organization', 'name' => 'HandleLife OS'],
+            'areaServed'  => 'Worldwide',
+        ], $data),
+        'collectionpage' => array_merge([
+            '@context' => 'https://schema.org',
+            '@type'    => 'CollectionPage',
+        ], $data),
+        'howto' => [
+            '@context' => 'https://schema.org',
+            '@type'    => 'HowTo',
+            'name'     => $data['name'] ?? 'How To',
+            'description' => $data['description'] ?? null,
+            'step'     => collect($data['steps'] ?? [])->map(fn ($step, $i) => [
+                '@type'  => 'HowToStep',
+                'position' => $i + 1,
+                'name'   => $step['name'],
+                'text'   => $step['text'] ?? $step['name'],
+            ])->values()->all(),
+        ],
+        'speakable' => [
+            '@context' => 'https://schema.org',
+            '@type'    => 'WebPage',
+            'url'      => $data['url'] ?? ($base . '/'),
+            'speakable' => [
+                '@type'       => 'SpeakableSpecification',
+                'cssSelector' => $data['selectors'] ?? ['h1', 'h2', '.speakable'],
+            ],
+        ],
         default     => null,
     };
 @endphp

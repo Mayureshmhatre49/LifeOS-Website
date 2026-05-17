@@ -371,6 +371,74 @@
         </div>
     </x-section>
 
+    {{-- ── FAQ ─────────────────────────────────────────────────────────── --}}
+    @push('schema')
+        <x-schema type="faq" :data="[
+            ['q' => 'What is HandleLife OS?',
+             'a' => 'HandleLife OS is an AI-powered personal life operating system. It manages daily tasks, financial decisions, digital safety (scam and contract protection), and family coordination — all from a single privacy-first platform. It is designed to reduce mental load and help individuals and families handle everyday life with calm and clarity.'],
+            ['q' => 'Is HandleLife OS free?',
+             'a' => 'Yes. HandleLife OS has a free-forever plan that includes 30 AI credits per month and core features. Paid plans — Lite (₹199/month), Plus (₹499/month), and Family (₹999/month) — unlock more credits and advanced features. No credit card is required to join the waitlist or start with the free plan.'],
+            ['q' => 'How does HandleLife OS protect my privacy?',
+             'a' => 'HandleLife OS uses zero-knowledge architecture and AES-256 encryption. This means your private life data — plans, financial records, personal notes — is encrypted with keys only you hold. HandleLife OS staff cannot read your data, cannot sell it to advertisers, and cannot provide it to third parties. The platform is GDPR, CCPA, and DPDPA compliant.'],
+            ['q' => 'Which countries and languages does HandleLife OS support?',
+             'a' => 'HandleLife OS is available worldwide and supports 20 languages including English, Spanish, French, German, Hindi, Arabic, Chinese, Japanese, Portuguese, and more. Pricing is available in 20 currencies. The platform is designed for individuals in 100+ countries.'],
+            ['q' => 'How is HandleLife OS different from other AI assistants?',
+             'a' => 'Unlike general AI assistants (ChatGPT, Gemini, Siri), HandleLife OS is purpose-built for life management. It does not just answer questions — it proactively coordinates your life: managing routines, detecting financial waste, scanning for scams, and syncing your household. It operates on a zero-knowledge privacy model with no ads and no data monetisation.'],
+            ['q' => 'When can I start using HandleLife OS?',
+             'a' => 'HandleLife OS is in early access. Join the waitlist at handlelifeos.com/waitlist for free. Weekly invitations are sent. No credit card required. The platform is progressively rolling out to waitlist members globally.'],
+        ]" />
+    @endpush
+
+    <x-section bg="bg-white border-t border-slate-100" padding="py-24 md:py-32">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16">
+                <p class="eyebrow mb-5">Common questions</p>
+                <h2 class="text-3xl md:text-5xl font-black font-heading text-slate-950 leading-tight tracking-tight">
+                    Everything you need to know.
+                </h2>
+            </div>
+
+            @php
+                $homeFaqs = [
+                    ['q' => 'What is HandleLife OS?',
+                     'a' => 'An AI operating system purpose-built for everyday life. It manages tasks, money, digital safety, and family coordination — from one privacy-first platform. Not a chatbot. Not a to-do app. An OS.'],
+                    ['q' => 'Is it free?',
+                     'a' => 'Yes. The free plan includes 30 AI credits per month and core features — forever. Paid plans unlock more credits and modules. No credit card required to join the waitlist.'],
+                    ['q' => 'How does it protect my privacy?',
+                     'a' => 'Zero-knowledge architecture. AES-256 encryption. We cannot read your data, sell it, or hand it to anyone. GDPR, CCPA, and DPDPA compliant. Your life stays yours.'],
+                    ['q' => 'Which countries is it available in?',
+                     'a' => 'Worldwide. 20 languages. 20 currencies. Designed for life in Lagos, London, Tokyo, Mumbai, São Paulo, and everywhere in between.'],
+                    ['q' => 'How is this different from ChatGPT or Siri?',
+                     'a' => 'Those are general assistants. HandleLife OS is a purpose-built life operating system — it proactively manages your routines, detects financial waste, scans for scams, and coordinates your household. With no ads and no data monetisation.'],
+                    ['q' => 'When can I start?',
+                     'a' => 'Join the waitlist now — it\'s free. Weekly invitations go out. First access goes to waitlist members globally.'],
+                ];
+            @endphp
+
+            <div class="space-y-3" id="faq">
+                @foreach($homeFaqs as $faq)
+                    <div class="faq-item border border-slate-100 rounded-[2rem] overflow-hidden bg-slate-50/50 hover:bg-white transition-colors duration-200">
+                        <button class="faq-trigger w-full flex items-center justify-between px-8 py-6 text-left font-bold text-slate-900 group"
+                                aria-expanded="false">
+                            <span class="trigger-text text-base transition-colors group-hover:text-teal-700">{{ $faq['q'] }}</span>
+                            <svg class="faq-icon w-5 h-5 text-slate-400 flex-shrink-0 ml-4 transition-transform duration-200"
+                                 fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div class="faq-content hidden overflow-hidden">
+                            <p class="px-8 pb-6 text-slate-500 font-medium leading-relaxed">{{ $faq['a'] }}</p>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <div class="text-center mt-12">
+                <a href="/contact" class="text-teal-700 font-bold text-sm hover:underline">Have another question? Talk to us →</a>
+            </div>
+        </div>
+    </x-section>
+
     {{-- ── FINAL CTA ─────────────────────────────────────────────────── --}}
     <section class="bg-slate-950 text-white py-28 md:py-36 relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-tr from-teal-500/15 via-transparent to-transparent pointer-events-none" aria-hidden="true"></div>
@@ -399,4 +467,27 @@
         </div>
     </section>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('#faq .faq-trigger').forEach(function (trigger) {
+                trigger.addEventListener('click', function () {
+                    var content = this.nextElementSibling;
+                    var icon    = this.querySelector('.faq-icon');
+                    var text    = this.querySelector('.trigger-text');
+                    var isOpen  = !content.classList.contains('hidden');
+                    if (isOpen) {
+                        content.classList.add('hidden');
+                        if (icon) icon.classList.remove('rotate-180', 'text-teal-600');
+                        if (text) text.classList.remove('text-teal-700');
+                        this.setAttribute('aria-expanded', 'false');
+                    } else {
+                        content.classList.remove('hidden');
+                        if (icon) icon.classList.add('rotate-180', 'text-teal-600');
+                        if (text) text.classList.add('text-teal-700');
+                        this.setAttribute('aria-expanded', 'true');
+                    }
+                });
+            });
+        });
+    </script>
 </x-app-layout>

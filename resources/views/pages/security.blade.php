@@ -2,13 +2,31 @@
 
     @push('schema')
         <x-schema type="breadcrumb" :data="[
-            ['name' => 'Home',     'url' => '/'],
-            ['name' => 'Security', 'url' => '/security'],
+            ['name' => 'Home',             'url' => '/'],
+            ['name' => 'Privacy & Security', 'url' => '/security'],
         ]" />
-        <x-schema type="webpage" :data="[
-            'name'        => 'Privacy & Security — Zero-Knowledge AI | HandleLife OS',
-            'description' => 'AES-256 encryption. Zero-knowledge architecture. GDPR, CCPA, PDPA compliant. Your personal data never trains models. Your life stays yours — forever.',
-            'url'         => url('/security'),
+        <x-schema type="article" :data="[
+            '@type'         => 'TechArticle',
+            'name'          => 'HandleLife OS Privacy & Security Architecture',
+            'headline'      => 'Zero-Knowledge AI Architecture — How HandleLife OS Protects Your Data',
+            'description'   => 'HandleLife OS uses AES-256 encryption and zero-knowledge architecture. Your data is never sold, never used for AI training, and never visible to us. GDPR, CCPA, and DPDPA compliant.',
+            'url'           => url('/security'),
+            'author'        => ['@type' => 'Organization', 'name' => 'HandleLife OS'],
+            'publisher'     => ['@type' => 'Organization', 'name' => 'HandleLife OS'],
+            'datePublished' => '2025-01-01',
+            'dateModified'  => '2026-04-25',
+            'about'         => [
+                ['@type' => 'Thing', 'name' => 'Zero-Knowledge Encryption'],
+                ['@type' => 'Thing', 'name' => 'AES-256 Encryption'],
+                ['@type' => 'Thing', 'name' => 'GDPR Compliance'],
+                ['@type' => 'Thing', 'name' => 'CCPA Compliance'],
+                ['@type' => 'Thing', 'name' => 'Digital Privacy'],
+                ['@type' => 'Thing', 'name' => 'AI Data Protection'],
+            ],
+        ]" />
+        <x-schema type="speakable" :data="[
+            'url'       => url('/security'),
+            'selectors' => ['h1', 'h2', '.speakable'],
         ]" />
     @endpush
 

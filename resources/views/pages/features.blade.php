@@ -6,9 +6,45 @@
             ['name' => 'Features', 'url' => '/features'],
         ]" />
         <x-schema type="webpage" :data="[
-            'name'        => 'Features — Daily OS, Financial AI & Shield OS | HandleLife OS',
-            'description' => 'Daily planning, financial clarity, scam protection, family coordination, and more. Explore every capability of HandleLife OS — built to handle real life.',
+            'name'        => 'Features — Daily OS, Financial AI & Shield Protection | HandleLife OS',
+            'description' => 'HandleLife OS includes four AI modules: Daily OS for task planning, Financial OS for money clarity, Shield OS for scam and contract protection, and Family OS for household coordination.',
             'url'         => url('/features'),
+        ]" />
+        <x-schema type="itemlist" :data="[
+            'name'        => 'HandleLife OS Features and Capabilities',
+            'description' => 'The four core AI modules of HandleLife OS and their key features.',
+            'items'       => [
+                [
+                    'name'        => 'Daily OS — AI Task and Routine Management',
+                    'description' => 'Smart task sequencing, context-aware reminders, non-judgmental planning, and intelligent routine building. Helps you decide what matters most each day.',
+                    'url'         => '/features#daily-os',
+                ],
+                [
+                    'name'        => 'Financial OS — AI Money Intelligence',
+                    'description' => 'Subscription audit, waste detection, budget forecasting, and financial decision support. Identifies savings and helps you understand where money goes.',
+                    'url'         => '/features#financial-os',
+                ],
+                [
+                    'name'        => 'Shield OS — Scam Detection and Contract Analysis',
+                    'description' => 'Real-time scam and phishing detection, AI contract review, fraud alert, and zero-knowledge privacy protection. Keeps you safe from digital threats.',
+                    'url'         => '/features#shield-os',
+                ],
+                [
+                    'name'        => 'Family OS — Household Coordination AI',
+                    'description' => 'Shared family calendar, chore management, eldercare coordination, childcare scheduling, and household shopping. One AI brain for the whole household.',
+                    'url'         => '/families',
+                ],
+            ],
+        ]" />
+        <x-schema type="howto" :data="[
+            'name'        => 'How HandleLife OS Works',
+            'description' => 'HandleLife OS is an AI operating system that manages daily tasks, money, digital safety, and family coordination from a single privacy-first platform.',
+            'steps'       => [
+                ['name' => 'Join the waitlist',      'text' => 'Sign up for free early access at handlelifeos.com/waitlist. No credit card required. Weekly invites sent.'],
+                ['name' => 'Connect your life',      'text' => 'Tell HandleLife OS about your daily routines, financial goals, family setup, and privacy preferences.'],
+                ['name' => 'Get AI coordination',    'text' => 'HandleLife OS surfaces the right tasks at the right time, flags financial waste, detects threats, and coordinates your household.'],
+                ['name' => 'Stay private',           'text' => 'All your data is encrypted end-to-end. HandleLife OS cannot read your private information. Zero-knowledge by default.'],
+            ],
         ]" />
     @endpush
 

@@ -2,13 +2,34 @@
 
     @push('schema')
         <x-schema type="breadcrumb" :data="[
-            ['name' => 'Home',     'url' => '/'],
-            ['name' => 'Families', 'url' => '/families'],
+            ['name' => 'Home',          'url' => '/'],
+            ['name' => 'Family OS',     'url' => '/families'],
         ]" />
         <x-schema type="webpage" :data="[
-            'name'        => 'AI for Families — Shared Coordination | HandleLife OS',
-            'description' => 'End the mental load. HandleLife OS coordinates schedules, chores, eldercare, childcare, and shopping for the whole household. Built for every family.',
+            'name'        => 'Family OS — Shared AI Coordination for Every Household | HandleLife OS',
+            'description' => 'HandleLife OS Family OS coordinates schedules, chores, shopping, eldercare, and childcare for up to 5 members. One shared AI brain for the whole household.',
             'url'         => url('/families'),
+        ]" />
+        <x-schema type="product" :data="[
+            'name'            => 'HandleLife OS Family Plan',
+            'description'     => 'Shared AI operating system for households. Coordinates schedules, chores, eldercare, childcare, and shopping for up to 5 family members. Privacy-first, available in 20 currencies.',
+            'url'             => url('/families'),
+            'image'           => asset('images/og-main.png'),
+            'brand'           => ['@type' => 'Brand', 'name' => 'HandleLife OS'],
+            'audience'        => [
+                '@type'        => 'PeopleAudience',
+                'audienceType' => 'Families, Parents, Caregivers, Households with children or elderly members',
+            ],
+            'offers'          => [
+                '@type'         => 'Offer',
+                'name'          => 'Family OS Plan',
+                'price'         => '999',
+                'priceCurrency' => 'INR',
+                'availability'  => 'https://schema.org/PreOrder',
+                'url'           => url('/pricing'),
+                'description'   => 'Family OS for up to 5 members. Monthly or yearly billing. Available in 20 currencies.',
+            ],
+            'featureList'     => 'Shared family calendar, Chore management, Eldercare coordination, Childcare scheduling, Household shopping lists, Real-time family sync, Privacy-first architecture',
         ]" />
     @endpush
 

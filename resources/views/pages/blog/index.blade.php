@@ -6,6 +6,13 @@
             ['name' => 'Home', 'url' => '/'],
             ['name' => 'Blog', 'url' => '/blog'],
         ]" />
+        <x-schema type="collectionpage" :data="[
+            'name'        => 'HandleLife OS Blog — Life, Decoded',
+            'description' => 'Insights, guides, and stories about handling life better. Topics: productivity, family coordination, money management, scam protection, AI tools for daily life.',
+            'url'         => url('/blog'),
+            'publisher'   => ['@type' => 'Organization', 'name' => 'HandleLife OS'],
+            'inLanguage'  => 'en',
+        ]" />
     @endpush
 
     <!-- Header -->

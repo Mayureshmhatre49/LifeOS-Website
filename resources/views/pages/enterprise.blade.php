@@ -3,12 +3,38 @@
     @push('schema')
         <x-schema type="breadcrumb" :data="[
             ['name' => 'Home',         'url' => '/'],
-            ['name' => 'Partnerships', 'url' => '/enterprise'],
+            ['name' => 'Enterprise',   'url' => '/enterprise'],
         ]" />
         <x-schema type="webpage" :data="[
-            'name'        => 'Enterprise & Partnerships — HandleLife OS',
-            'description' => 'Bring HandleLife OS to your employees, customers, or members. Enterprise-grade security, SSO, dedicated support, and global rollout in 100+ countries.',
+            'name'        => 'Enterprise Solutions — AI Life Coordination at Scale | HandleLife OS',
+            'description' => 'Partner with HandleLife OS to deliver AI-powered life coordination to employees, customers, and communities. Sectors: Workplace, Finance, Health, Education, Eldercare.',
             'url'         => url('/enterprise'),
+        ]" />
+        <x-schema type="service" :data="[
+            'name'            => 'HandleLife OS Enterprise',
+            'description'     => 'Enterprise AI platform for life coordination. Delivered to workplaces, financial institutions, healthcare providers, schools, and eldercare organisations globally.',
+            'serviceType'     => 'AI Life Operating System — Enterprise Deployment',
+            'url'             => url('/enterprise'),
+            'audience'        => [
+                '@type'        => 'BusinessAudience',
+                'audienceType' => 'Enterprise organisations, HR teams, financial services, healthcare providers, education institutions, eldercare facilities',
+            ],
+            'hasOfferCatalog' => [
+                '@type' => 'OfferCatalog',
+                'name'  => 'Enterprise Plans',
+                'itemListElement' => [
+                    ['@type' => 'Offer', 'name' => 'Workplace Wellness', 'description' => 'Reduce employee burnout with AI mental load management deployed via SSO across entire organisations.'],
+                    ['@type' => 'Offer', 'name' => 'Financial Services', 'description' => 'Embed AI financial intelligence to help customers navigate major life decisions with confidence.'],
+                    ['@type' => 'Offer', 'name' => 'Healthcare Coordination', 'description' => 'Proactive health-adjacent life coordination to reduce claims and improve patient outcomes.'],
+                    ['@type' => 'Offer', 'name' => 'Education & Schools', 'description' => 'Direct parent-school coordination synced through HandleLife OS family hubs.'],
+                    ['@type' => 'Offer', 'name' => 'Eldercare Management', 'description' => 'Precision care coordination for ageing adults and their families, with dignity at the centre.'],
+                ],
+            ],
+            'potentialAction' => [
+                '@type'  => 'RequestQuote',
+                'target' => url('/contact'),
+                'name'   => 'Request Enterprise Demo',
+            ],
         ]" />
     @endpush
 
