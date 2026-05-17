@@ -29,6 +29,7 @@ HandleLifeOS.7z
 # Build artifacts
 **/dist/
 **/build/
+!public/build/
 **/.cache/
 **/coverage/
 
