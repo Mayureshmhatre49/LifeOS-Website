@@ -74,3 +74,4 @@ pnpm-debug.log*
 # Build outputs occasionally captured during runs
 **/build-output.txt
 **/tsc-output.txt
+public/hot
