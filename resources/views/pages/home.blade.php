@@ -338,28 +338,34 @@
     {{-- ── SOCIAL PROOF ─────────────────────────────────────────────── --}}
     <x-section bg="bg-slate-50 border-y border-slate-100" padding="py-20 md:py-28">
         <div class="max-w-4xl mx-auto" x-data="testimonials">
-            <template x-for="(q, i) in quotes" :key="i">
-                <div x-show="active === i"
-                     x-transition:enter="transition ease-out duration-700"
-                     x-transition:enter-start="opacity-0 translate-y-4"
-                     x-transition:enter-end="opacity-100 translate-y-0"
-                     x-transition:leave="transition ease-in duration-400"
-                     x-transition:leave-start="opacity-100 translate-y-0"
-                     x-transition:leave-end="opacity-0 -translate-y-4"
-                     class="text-center">
-                    <blockquote class="text-2xl md:text-3xl font-bold font-heading text-slate-950 leading-snug mb-8 text-balance" x-text="'&ldquo;' + q.text + '&rdquo;'"></blockquote>
-                    <div class="flex items-center justify-center gap-3">
-                        <div class="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center text-sm font-bold text-slate-600" aria-hidden="true" x-text="q.initial"></div>
-                        <div class="text-left">
-                            <div class="text-sm font-semibold text-slate-900" x-text="q.name"></div>
-                            <div class="text-xs text-slate-500">Early Access member · <span x-text="q.location"></span></div>
+            <div aria-live="polite" aria-atomic="true">
+                <template x-for="(q, i) in quotes" :key="i">
+                    <div x-show="active === i"
+                         x-transition:enter="transition ease-out duration-700"
+                         x-transition:enter-start="opacity-0 translate-y-4"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-400"
+                         x-transition:leave-start="opacity-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 -translate-y-4"
+                         class="text-center">
+                        <blockquote class="text-2xl md:text-3xl font-bold font-heading text-slate-950 leading-snug mb-8 text-balance" x-text="'&ldquo;' + q.text + '&rdquo;'"></blockquote>
+                        <div class="flex items-center justify-center gap-3">
+                            <div class="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center text-sm font-bold text-slate-600" aria-hidden="true" x-text="q.initial"></div>
+                            <div class="text-left">
+                                <div class="text-sm font-semibold text-slate-900" x-text="q.name"></div>
+                                <div class="text-xs text-slate-500">Early Access member · <span x-text="q.location"></span></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </template>
-            <div class="flex justify-center gap-1.5 mt-8" aria-hidden="true">
+                </template>
+            </div>
+            <div class="flex justify-center gap-1.5 mt-8" role="group" :aria-label="'Testimonials — ' + (active + 1) + ' of ' + quotes.length">
                 <template x-for="(q, i) in quotes" :key="'dot-'+i">
-                    <button @click="setActive(i)" :class="active === i ? 'bg-teal-500 w-4' : 'bg-slate-300 w-1.5'" class="h-1.5 rounded-full transition-all duration-300"></button>
+                    <button @click="setActive(i)"
+                            :class="active === i ? 'bg-teal-500 w-4' : 'bg-slate-300 w-1.5'"
+                            class="h-1.5 rounded-full transition-all duration-300"
+                            :aria-label="'Show testimonial ' + (i + 1) + ' from ' + q.name"
+                            :aria-pressed="active === i"></button>
                 </template>
             </div>
         </div>

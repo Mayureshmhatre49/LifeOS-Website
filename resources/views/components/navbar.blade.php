@@ -59,7 +59,7 @@
                         :aria-expanded="open.toString()"
                         :aria-busy="loading"
                         aria-label="Select language"
-                        class="flex items-center gap-1.5 h-9 px-3 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors duration-200 notranslate"
+                        class="flex items-center gap-1.5 min-h-[44px] px-3 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors duration-200 notranslate"
                         :class="loading ? 'opacity-60 cursor-wait' : ''">
                         <template x-if="loading">
                             <svg class="w-4 h-4 animate-spin text-teal-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" aria-hidden="true">
@@ -88,7 +88,7 @@
                         x-transition:leave="transition ease-in duration-150"
                         x-transition:leave-start="opacity-100 scale-100 translate-y-0"
                         x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
-                        class="lang-dropdown absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden overflow-y-auto z-50 py-1.5"
+                        class="lang-dropdown absolute right-0 rtl:right-auto rtl:left-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden overflow-y-auto z-50 py-1.5"
                         style="max-height: 340px"
                         role="listbox"
                         aria-label="Choose language">

@@ -1,7 +1,7 @@
 @props(['title' => null, 'description' => null, 'keywords' => null, 'robots' => null, 'image' => null])
 
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth" dir="ltr">
+<html lang="en" class="scroll-smooth" dir="ltr" id="html-root">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
@@ -266,9 +266,12 @@
                     languages: _LANGS,
                     current: _LANGS.find(function(l) { return l.code === savedCode; }) || _LANGS[0],
                     init() {
+                        // Always sync lang + dir so screen readers and browsers get the right locale
+                        if (this.current.code !== 'en') {
+                            document.documentElement.setAttribute('lang', this.current.code);
+                        }
                         if (this.current.dir === 'rtl') {
                             document.documentElement.setAttribute('dir', 'rtl');
-                            document.documentElement.setAttribute('lang', this.current.code);
                         }
                         // Only the first instance (desktop or mobile) triggers translation
                         if (this.current.code !== 'en' && !_initDone) {
@@ -447,7 +450,7 @@
 
     {{-- Skip-to-content link for keyboard / screen-reader users (WCAG 2.1 AA) --}}
     <a href="#main-content"
-       class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-slate-950 focus:text-white focus:rounded-lg focus:shadow-lg focus:font-semibold focus:text-sm">
+       class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 rtl:focus:left-auto rtl:focus:right-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-slate-950 focus:text-white focus:rounded-lg focus:shadow-lg focus:font-semibold focus:text-sm">
         Skip to main content
     </a>
 

@@ -76,7 +76,7 @@
                 prose-headings:font-heading prose-headings:font-black prose-headings:tracking-tight prose-headings:text-slate-950
                 prose-p:text-slate-600 prose-p:leading-relaxed
                 prose-strong:text-slate-900 prose-strong:font-black
-                prose-a:text-teal-600 prose-a:no-underline hover:prose-a:underline
+                prose-a:text-teal-700 prose-a:no-underline hover:prose-a:underline
                 selection:bg-teal-500/20">
                 {{-- Content is HTML-sanitised before render: strips <script>, on* handlers,
                      javascript: URIs, dangerous CSS. Even if an authoring path is ever

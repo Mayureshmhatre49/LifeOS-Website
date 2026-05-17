@@ -11,7 +11,8 @@
     {{-- Success / error flash --}}
     @if(session('success'))
         <div class="fixed top-24 inset-x-0 z-50 flex justify-center px-4" x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
-             x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" role="status">
+             x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2"
+             role="status" aria-live="polite" aria-atomic="true">
             <div class="bg-emerald-600 text-white px-6 py-3 rounded-2xl shadow-premium text-sm font-semibold flex items-center gap-3">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                 {{ session('success') }}

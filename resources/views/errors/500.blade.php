@@ -1,21 +1,13 @@
-<x-app-layout title="Page not found" description="The page you are looking for could not be found. Return to HandleLife OS — AI for everyday life." robots="noindex, nofollow">
-    <x-slot name="title">Page not found</x-slot>
-
-    @push('schema')
-        <x-schema type="webpage" :data="[
-            'name'        => '404 — Page not found',
-            'description' => 'The page you are looking for could not be found.',
-        ]" />
-    @endpush
+<x-app-layout title="Server error" description="Something went wrong on our end. Please try again shortly." robots="noindex, nofollow">
 
     <section class="min-h-[100svh] bg-white flex items-center justify-center pt-32 pb-20 px-6">
         <div class="max-w-xl mx-auto text-center">
-            <p class="eyebrow mb-5 text-teal-600">404</p>
+            <p class="eyebrow mb-5 text-rose-500">500</p>
             <h1 class="text-5xl md:text-7xl font-black font-heading tracking-tight text-slate-950 mb-6 leading-[1.02]">
-                We couldn't find that page.
+                Something went wrong.
             </h1>
             <p class="text-lg text-slate-500 font-medium mb-10 leading-relaxed">
-                The page may have moved, been renamed, or never existed. Let's get you back on track.
+                Our team has been notified. Please try again in a moment, or contact us if the problem persists.
             </p>
             <div class="flex flex-col sm:flex-row gap-3 justify-center">
                 <a href="/" class="inline-flex items-center justify-center px-6 py-4 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-2xl transition-colors">
@@ -27,4 +19,5 @@
             </div>
         </div>
     </section>
+
 </x-app-layout>

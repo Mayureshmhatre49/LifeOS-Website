@@ -107,10 +107,46 @@
                     <p class="text-slate-500 text-sm font-medium">Google Fonts is loaded from <code class="text-xs bg-slate-100 px-1.5 py-0.5 rounded">fonts.googleapis.com</code> but does not set cookies (changed by Google in 2022). No other third-party cookies are set.</p>
                 </div>
 
-                <div>
-                    <h2 class="text-3xl font-black font-heading text-slate-950 mb-6 uppercase tracking-tight">7. Contact Privacy Team</h2>
+                <div class="mb-16">
+                    <h2 class="text-3xl font-black font-heading text-slate-950 mb-6 uppercase tracking-tight">7. Children's Privacy (COPPA)</h2>
                     <p class="text-slate-600 font-medium leading-relaxed">
-                        Questions about your data? Reach out via our <a href="/contact" class="text-teal-600 font-bold hover:underline">contact form</a> and select <em>General inquiry</em> — our privacy team responds within one business day.
+                        HandleLife OS is not directed to children under the age of 13. We do not knowingly collect personal information from children under 13. If you believe a child under 13 has provided us with personal data, please <a href="/contact" class="text-teal-700 font-bold hover:underline">contact us</a> and we will delete it promptly. Users between 13 and 18 may only use the service with parental consent.
+                    </p>
+                </div>
+
+                <div class="mb-16">
+                    <h2 class="text-3xl font-black font-heading text-slate-950 mb-6 uppercase tracking-tight">8. California Residents (CCPA)</h2>
+                    <p class="text-slate-600 font-medium leading-relaxed mb-4">
+                        If you are a California resident, you have additional rights under the California Consumer Privacy Act (CCPA):
+                    </p>
+                    <div class="flex flex-wrap gap-3 mb-4">
+                        @foreach(['Know what data we collect', 'Request deletion', 'Opt out of data sale', 'Non-discrimination'] as $right)
+                            <span class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-700">{{ $right }}</span>
+                        @endforeach
+                    </div>
+                    <p class="text-slate-600 font-medium leading-relaxed">
+                        <strong class="text-slate-900">We do not sell your personal information</strong> — to anyone, ever. To exercise any California privacy rights, contact us via our <a href="/contact" class="text-teal-700 font-bold hover:underline">contact form</a>.
+                    </p>
+                </div>
+
+                <div class="mb-16">
+                    <h2 class="text-3xl font-black font-heading text-slate-950 mb-6 uppercase tracking-tight">9. Data Controller</h2>
+                    <p class="text-slate-600 font-medium leading-relaxed">
+                        The data controller responsible for your personal information is <strong class="text-slate-900">HandleLife OS (Life Strategy Technology)</strong>, headquartered in Bangalore, Karnataka, India. For all privacy inquiries, including requests to exercise your rights under GDPR, CCPA, or DPDPA, contact us via our <a href="/contact" class="text-teal-700 font-bold hover:underline">contact form</a>. We respond within one business day.
+                    </p>
+                </div>
+
+                <div class="mb-16">
+                    <h2 class="text-3xl font-black font-heading text-slate-950 mb-6 uppercase tracking-tight">10. Accessibility</h2>
+                    <p class="text-slate-600 font-medium leading-relaxed">
+                        We are committed to making HandleLife OS accessible to everyone. This website is designed to conform to <strong class="text-slate-900">WCAG 2.1 Level AA</strong> standards. If you encounter any accessibility barrier, please <a href="/contact" class="text-teal-700 font-bold hover:underline">contact us</a> — we will make reasonable accommodations and respond within two business days.
+                    </p>
+                </div>
+
+                <div>
+                    <h2 class="text-3xl font-black font-heading text-slate-950 mb-6 uppercase tracking-tight">11. Contact Privacy Team</h2>
+                    <p class="text-slate-600 font-medium leading-relaxed">
+                        Questions about your data? Reach out via our <a href="/contact" class="text-teal-700 font-bold hover:underline">contact form</a> and select <em>General inquiry</em> — our privacy team responds within one business day.
                     </p>
                 </div>
             </div>
