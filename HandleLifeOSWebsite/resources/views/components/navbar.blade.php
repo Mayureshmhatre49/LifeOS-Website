@@ -114,6 +114,13 @@
                     </div>
                 </div>
 
+                <!-- Log in -->
+                <a href="https://os.handlelifeos.com/login"
+                   class="h-9 px-4 inline-flex items-center text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-slate-100 rounded-xl transition-colors duration-200"
+                   aria-label="Log in to HandleLife OS">
+                    Log in
+                </a>
+
                 <!-- CTA -->
                 <x-button href="/waitlist" variant="teal" size="md" ariaLabel="Join the HandleLife OS waitlist">
                     Get early access
@@ -191,6 +198,11 @@
                 <x-button href="/waitlist" variant="teal" size="lg" class="w-full text-center justify-center" ariaLabel="Join the waitlist">
                     Get early access
                 </x-button>
+                <a href="https://os.handlelifeos.com/login"
+                   class="w-full flex items-center justify-center h-11 px-6 rounded-2xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-colors duration-200"
+                   aria-label="Log in to HandleLife OS">
+                    Log in
+                </a>
                 <x-button href="/contact" variant="outline" size="lg" class="w-full text-center justify-center" ariaLabel="Contact us">
                     Talk to us
                 </x-button>
