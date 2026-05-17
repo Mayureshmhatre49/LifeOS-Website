@@ -33,6 +33,9 @@ HandleLifeOS.7z
 **/.cache/
 **/coverage/
 
+# Vite dev-server marker — NEVER commit, causes all assets to load from localhost:5173
+**/public/hot
+
 # PHP / Laravel (HandleLifeOSWebsite)
 **/vendor/
 **/storage/framework/cache/data/
@@ -74,4 +77,3 @@ pnpm-debug.log*
 # Build outputs occasionally captured during runs
 **/build-output.txt
 **/tsc-output.txt
-public/hot

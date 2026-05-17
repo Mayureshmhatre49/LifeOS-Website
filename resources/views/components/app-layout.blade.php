@@ -23,10 +23,9 @@
     <meta name="application-name" content="HandleLife OS">
     <meta name="apple-mobile-web-app-title" content="HandleLife OS">
 
-    {{-- DNS prefetch / preconnect for third-party origins --}}
-    <link rel="dns-prefetch" href="//fonts.googleapis.com">
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link rel="dns-prefetch" href="https://translate.googleapis.com">
+    {{-- Preconnect for third-party origins (preconnect = DNS + TCP + TLS, supersedes dns-prefetch) --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://translate.googleapis.com" crossorigin>
 
     {{-- i18n: hreflang alternate links — point to *current* path, not homepage (Google requirement) --}}
@@ -56,9 +55,7 @@
     {{-- SEO, OG, Twitter, JSON-LD --}}
     <x-seo :title="$title" :description="$description" :keywords="$keywords" :robots="$robots" :image="$image" />
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Fonts (connections established earlier via preconnect above) -->
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript>
@@ -298,6 +295,7 @@
             // ── testimonials ───────────────────────────────────────────────────
             Alpine.data('testimonials', () => ({
                 active: 0,
+                _t: null,
                 quotes: [
                     { text: 'Before HandleLife, I had three apps and still forgot everything. Now I just open one screen and my whole day makes sense.', name: 'Amara K.', location: 'Lagos, Nigeria', initial: 'A' },
                     { text: 'I manage my mother\'s health, my children\'s school, and my own work. HandleLife OS is the first thing that actually understands how much I carry.', name: 'Priya S.', location: 'Mumbai, India', initial: 'P' },
@@ -306,8 +304,13 @@
                     { text: 'I live across four countries \u2014 currencies, time zones, visa deadlines. HandleLife handles the admin so I can actually focus on the work.', name: 'Saskia V.', location: 'Amsterdam \u2192 Bali', initial: 'S' },
                 ],
                 init() {
-                    setInterval(() => this.next(), 7000);
+                    this._start();
+                    document.addEventListener('visibilitychange', () => {
+                        document.hidden ? this._stop() : this._start();
+                    });
                 },
+                _start() { if (!this._t) this._t = setInterval(() => this.next(), 7000); },
+                _stop()  { clearInterval(this._t); this._t = null; },
                 next() { this.active = (this.active + 1) % this.quotes.length; },
                 setActive(i) { this.active = i; }
             }));
@@ -336,8 +339,13 @@
                 total: total,
                 _t: null,
                 init() {
-                    this._t = setInterval(() => this.next(), 4500);
+                    this._start();
+                    document.addEventListener('visibilitychange', () => {
+                        document.hidden ? this._stop() : this._start();
+                    });
                 },
+                _start() { if (!this._t) this._t = setInterval(() => this.next(), 4500); },
+                _stop()  { clearInterval(this._t); this._t = null; },
                 next() { this.active = (this.active + 1) % this.total; },
                 setActive(i) { this.active = i; }
             }));
@@ -345,9 +353,14 @@
             // ── stickyCTA ───────────────────────────────────────────────────
             Alpine.data('stickyCTA', () => ({
                 show: false,
+                _raf: null,
                 init() {
                     window.addEventListener('scroll', () => {
-                        this.show = window.scrollY > 500;
+                        if (this._raf) return;
+                        this._raf = requestAnimationFrame(() => {
+                            this._raf = null;
+                            this.show = window.scrollY > 500;
+                        });
                     }, { passive: true });
                 }
             }));

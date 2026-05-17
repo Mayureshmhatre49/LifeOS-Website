@@ -24,4 +24,17 @@ class Post extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    // Reject non-http(s) URLs to prevent javascript: or data: URIs in img src
+    public function setFeaturedImageAttribute(?string $value): void
+    {
+        if ($value === null || $value === '') {
+            $this->attributes['featured_image'] = null;
+            return;
+        }
+        $parsed = parse_url($value);
+        $this->attributes['featured_image'] = (isset($parsed['scheme']) && in_array(strtolower($parsed['scheme']), ['http', 'https'], true))
+            ? $value
+            : null;
+    }
 }

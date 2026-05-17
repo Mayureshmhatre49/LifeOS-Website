@@ -124,8 +124,13 @@ class SecurityHeaders
         $csp = implode('; ', $cspDirectives);
         $response->headers->set('Content-Security-Policy', $csp);
 
+        // ── Cache: fingerprinted Vite assets — immutable (1 year) ────
+        if (str_starts_with($request->path(), 'build/')) {
+            $response->headers->set('Cache-Control', 'public, max-age=31536000, immutable');
+            $response->headers->set('Vary', 'Accept-Encoding');
+        }
         // ── Cache: never cache sensitive pages ────────────────────────
-        if ($this->isSensitivePage($request)) {
+        elseif ($this->isSensitivePage($request)) {
             $response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
             $response->headers->set('Pragma', 'no-cache');
             $response->headers->set('Expires', '0');
@@ -137,6 +142,6 @@ class SecurityHeaders
     private function isSensitivePage(Request $request): bool
     {
         $sensitive = ['/lead', '/waitlist', '/contact'];
-        return in_array('/' . $request->path(), $sensitive, true);
+        return \in_array('/' . $request->path(), $sensitive, true);
     }
 }

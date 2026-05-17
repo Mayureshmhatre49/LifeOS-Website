@@ -463,6 +463,25 @@ export const LIFEOS_PHASES: Phase[] = [
     status: 'in-progress',
     route: '/settings/personalisation',
   },
+  {
+    id: 29,
+    title: 'Property Management',
+    description: 'Unified property portfolio OS — multi-property profiles, maintenance tracking, financial intelligence, tenant management, and AI property brain.',
+    functionalities: [
+      'Phase 1 — Foundation: multi-property CRUD with full profiles (type, address, area, ownership, financials)',
+      'Portfolio dashboard: total value, appreciation %, active rentals, overdue alerts',
+      'Property detail with Overview / Maintenance / Bills / Assets tabs',
+      'Link existing home assets, maintenance tasks, and utility bills to properties',
+      'Phase 2 — Maintenance & Repairs OS (planned)',
+      'Phase 3 — Property Document Vault (planned)',
+      'Phase 4 — Financial Intelligence: P&L, ROI, yield analytics (planned)',
+      'Phase 5 — Tenant & Occupancy Management (planned)',
+      'Phase 6 — AI Property Brain + Health Score (planned)',
+    ],
+    progress: 15,
+    status: 'in-progress',
+    route: '/property',
+  },
 ]
 
 export function getOverallProgress(): number {

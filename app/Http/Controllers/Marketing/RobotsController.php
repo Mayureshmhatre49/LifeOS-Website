@@ -85,7 +85,7 @@ class RobotsController extends Controller
 
         return response(implode("\n", $lines), 200, [
             'Content-Type'  => 'text/plain; charset=UTF-8',
-            'Cache-Control' => 'public, max-age=3600',
+            'Cache-Control' => 'public, max-age=86400, stale-while-revalidate=604800',
         ]);
     }
 }

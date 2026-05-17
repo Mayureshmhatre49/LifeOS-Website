@@ -36,7 +36,7 @@ class LeadController extends Controller
         Waitlist::create([
             'email'       => $data['email'],
             'page_source' => $this->safeReferer($request),
-            'ip_address'  => $this->hashIp($request->ip()),  // hashed — GDPR-friendly
+            'ip_address'  => $request->ip(),  // model mutator hashes before storage — GDPR-friendly
         ]);
 
         $this->logEvent($request, 'waitlist_joined');

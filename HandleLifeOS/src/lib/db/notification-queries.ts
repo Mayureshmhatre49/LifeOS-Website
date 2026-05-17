@@ -1,6 +1,6 @@
 import { getSupabaseAdmin, isSupabaseConfigured } from './client'
 
-export type NotificationModule = 'planner' | 'aura' | 'mind' | 'money' | 'family' | 'protection' | 'system'
+export type NotificationModule = 'planner' | 'aura' | 'mind' | 'money' | 'family' | 'protection' | 'system' | 'renewals'
 export type NotificationSeverity = 'info' | 'success' | 'warning' | 'urgent'
 
 export interface Notification {

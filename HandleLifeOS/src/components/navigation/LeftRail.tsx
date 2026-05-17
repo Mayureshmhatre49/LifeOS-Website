@@ -8,7 +8,7 @@ import {
   Shield, TrendingUp, Settings, LogOut,
   Bookmark, Brain, Sun, Heart, BarChart3, Crown, Map,
   Sparkles, Repeat, FolderLock, Contact, Briefcase, Plane,
-  Building, Apple, Scale, Baby, GraduationCap, LineChart, Target, Wand2, Trophy,
+  Building, Building2, Apple, Scale, Baby, GraduationCap, LineChart, Target, Wand2, Trophy, RefreshCw,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -38,10 +38,12 @@ const NAV_GROUPS: { title: string | null; items: NavItem[] }[] = [
       { href: '/network',              icon: Contact,       label: 'Network' },
       { href: '/career',               icon: GraduationCap, label: 'Career' },
       { href: '/business',             icon: Briefcase,     label: 'Business' },
-      { href: '/home',                 icon: Building,      label: 'Home & property' },
+      { href: '/property',              icon: Building2,     label: 'Properties' },
+      { href: '/home',                 icon: Building,      label: 'Home & assets' },
       { href: '/travel',               icon: Plane,         label: 'Travel' },
       { href: '/protection',           icon: Shield,        label: 'Protection' },
       { href: '/legal',                icon: Scale,         label: 'Legal' },
+      { href: '/renewals',             icon: RefreshCw,     label: 'Renewals' },
       { href: '/insights',             icon: BarChart3,     label: 'Insights' },
     ],
   },

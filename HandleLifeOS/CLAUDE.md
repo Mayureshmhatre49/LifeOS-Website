@@ -3,6 +3,8 @@
 ## Project
 AI-powered personal assistant platform. Built with Next.js 16, TypeScript, Tailwind v4, AI SDK v6, NextAuth v5, Supabase. **Phases 1–7, 11–13, 15, 18 are fully complete.** Phases 16–17, 19–28 are actively in progress (most at 90–95%).
 
+> QA Personas 1–41 cover global cross-section users. Personas 42–56 (edge-case / adversarial) are documented in `tests/e2e-personas/NEW_PERSONAS.md`.
+
 ## Quick Start
 ```bash
 # 1. Copy and fill env vars
@@ -61,7 +63,8 @@ src/
 │   │   ├── habits/          # Habit Builder
 │   │   ├── travel/          # Travel & Trip Planner
 │   │   ├── career/          # Career & Growth Hub
-│   │   ├── home/            # Home & Property
+│   │   ├── home/            # Home & Assets (appliances, maintenance, bills)
+│   │   ├── property/        # Property Management OS (multi-property portfolio)
 │   │   ├── network/         # Network & Relationships (CRM)
 │   │   ├── nutrition/       # Food & Nutrition
 │   │   ├── investments/     # Investment Tracker
@@ -141,9 +144,63 @@ src/
 | 26 | Offline & PWA | 🔄 In Progress | 95% |
 | 27 | Social & Community | 🔄 In Progress | 90% |
 | 28 | AI Personalisation Engine | 🔄 In Progress | 90% |
+| 29 | Property Management | 🔄 In Progress | 15% |
 
 > Full phase data lives in `src/data/phases.ts` — update `progress` values there to reflect latest status.
 > View the live dashboard at `/implementation` (linked as "Roadmap" in the Left Rail sidebar).
+
+## QA Personas
+
+Seed scripts live in `tests/e2e-personas/`. All accounts use password `E2eTest123!` and the domain `@e2e-test.handlelifeos.app`.
+
+### Personas 1–41 (global cross-section)
+Cover demographics across 30+ countries. See existing seed scripts in `tests/e2e-personas/`.
+
+### Personas 42–56 (edge-case & adversarial)
+Full profiles in [`tests/e2e-personas/NEW_PERSONAS.md`](tests/e2e-personas/NEW_PERSONAS.md). Quick reference:
+
+| # | ID | Name | Age | Country | Currency | Occupation | Key Modules | Notes |
+|---|----|----|-----|---------|----------|-----------|------------|-------|
+| 42 | daniel | Daniel Reyes | 34 | USA | USD | Accessibility Engineer | Vault, Career, Briefing | Blind, screen-reader-only |
+| 43 | lea | Léa Bernard | 28 | France (Lyon) | EUR | Graphic Designer | Voice, Notifications, Career | Deaf since birth, LSF native |
+| 44 | marcus | Marcus Bell | 31 | USA (Portland) | USD | Bartender (in recovery) | Mind, Habits, Money | Bipolar I, post-hospitalization |
+| 45 | jennifer | Jennifer Park | 52 | USA (Cleveland) | USD | RN + caregiver | Family, AURA, Home, Mind | Sandwich gen, parent w/ dementia + teen |
+| 46 | anna | Anna K. | 36 | Canada (undisclosed) | CAD | Bookkeeper | Vault, Protection, Money | DV survivor, account lockdown critical |
+| 47 | tomas | Tomás Herrera | 29 | Egypt (Cairo) | EGP | Translator | Vault, Mind, Travel | LGBTQ+ in restrictive jurisdiction |
+| 48 | bisi | Bisi Adeyinka | 33 | Nigeria (Abuja) | NGN | On mat leave / lawyer | AURA, Mind, Habits | Postpartum month 3, PPD risk |
+| 49 | margaret | Margaret Sutherland | 67 | Scotland (Edinburgh) | GBP | Retired (stage IV cancer) | Vault, Legal, Mind, Network | Hospice planning, advance directive |
+| 50 | connor | Connor McGrath | 39 | Ireland (Cork) | EUR | Construction PM | Mind, Habits, Community | 14 mo sober, AA member |
+| 51 | reggie | Reggie Thompson | 27 | USA (Houston) | USD | Uber + DoorDash + Instacart | Money, Focus, Career | Gig-stack, hourly cashflow |
+| 52 | saskia | Saskia van Doorn | 31 | Nomad (Lisbon now) | EUR/USD/THB | Remote SaaS contractor | Money, Travel, Vault, Career | Digital nomad, 3 currencies live |
+| 53 | kenji_a | Kenji Allen | 24 | UK (Manchester) | GBP | QA tester | Habits, Focus, Notifications | Autistic, sensory needs, literal UI |
+| 54 | aanya | Aanya Verma | 16 | India (Pune) | INR | Class 11 student | Habits, Mind, AURA-child-view | Minor — consent + parental visibility |
+| 55 | viktor | Viktor Reiss | 33 | Germany (Hamburg) | EUR | "Security researcher" | All (adversarial) | Red-team persona, tries injections |
+| 56 | devika | Devika Goldberg-Iyer | 41 | India (Mumbai) | INR | Architect | Family, Nutrition, Habits | Hindu-Jewish interfaith, kosher-veg, Shabbat |
+
+### Test-Matrix Summary (Personas → Phases)
+
+| Phase / Update | Primary personas | What gets tested |
+|---|---|---|
+| Phase 2 — Personal Memory | Viktor (55), Anna (46), Tomás (47) | `sanitizeMemoryValue`, "forget" pattern, no PII leakage |
+| Phase 5 — Protection Layer | Anna (46), Viktor (55) | Scam checker, account lockdown, 2FA enforcement |
+| Phase 7 — Family Mode / AURA | Jennifer (45), Bisi (48), Aanya (54), Devika (56) | Non-child dependents, infant milestones, child-side privacy, interfaith |
+| Phase 8 — Voice & WhatsApp | Léa (43), Daniel (42) | Text fallback for deaf, screen-reader compatibility |
+| Phase 11 — Mental Health | Marcus (44), Connor (50), Margaret (49), Bisi (48) | Crisis language, no toxic positivity, alcohol scrub, PPD detection |
+| Phase 12 — Smart Notifications | Léa (43), Kenji (53), Devika (56) | Visual-only, predictable, sunset-relative quiet hours |
+| Phase 15 — Document Vault | Anna (46), Margaret (49), Tomás (47), Saskia (52) | Privacy-critical, end-of-life, multi-jurisdiction, hostile-actor-resistant |
+| Phase 16 — Travel | Tomás (47), Saskia (52) | LGBTQ+ safety overlay, 183-day counter, visa runs |
+| Phase 18 — Habit Builder | Connor (50), Kenji (53), Bisi (48), Devika (56) | Sober counter, rigid routine, postpartum reset, religious rest days |
+| Phase 19 — Home & Property | Jennifer (45), Margaret (49) | Concurrent recurring + emergency, aging-in-place mods |
+| Phase 21 — Food & Nutrition | Devika (56), Connor (50), Bisi (48), Marcus (44) | Compound dietary filters, alcohol scrub, lactation flags |
+| Phase 22 — Investments | Saskia (52), Reggie (51) | Multi-currency, gig-worker SEP-IRA |
+| Phase 23 — Legal & Compliance | Margaret (49), Saskia (52), Devika (56), Anna (46) | Scottish POA, multi-jurisdiction, interfaith inheritance, protective orders |
+| Phase 25 — AI Proactive Coach | Jennifer (45), Marcus (44), Bisi (48), Margaret (49) | Burnout detection, mania-safe, PPD-safe, short-horizon mode |
+| Phase 26 — Offline & PWA | Reggie (51), Léa (43) | Low-signal areas, mobile-only install |
+| Phase 28 — AI Personalisation | Marcus (44), Kenji (53), Tomás (47), Aanya (54), Viktor (55) | No harmful copy, literal-tone mode, opt-out integrity, child-safe, injection-proof |
+| Security Hardening (May 2026) | Viktor (55) | Every bullet in the security audit section |
+| Storage RLS | Viktor (55), Anna (46) | Folder-level access, cross-user attempt |
+| Webhook Idempotency | Viktor (55) | Razorpay replay, dedup table |
+| Edge Proxy Rate Limit | Viktor (55), Reggie (51) | 200/60, 10/hour billing, 30/min chat |
 
 ## Engineering Rules
 - All API inputs validated with Zod
@@ -158,3 +215,29 @@ src/
 - **Phase Data**: All 28 phase definitions live in `src/data/phases.ts`. Edit progress values or functionalities there — never hardcode in UI components.
 - **Windows Dev**: Use `cmd /c` for terminal scripts due to PowerShell execution policies.
 - **Demo Account**: `demo@lifeos.app` / `Demo1234!` — only active when `DEMO_MODE=true`. Seeding real users: set `email_verified: true` in the `users` table directly via Supabase admin.
+
+### Sensitivity & Safety Rules (surfaced by QA Personas 42–56)
+- **No alcohol/celebration prompts**: No string containing "celebrate with a drink", "wine", "toast", "cheers" in any default AI template, travel suggestion, food recipe, or community challenge. Enforce an `alcohol-free mode` user preference flag that filters all such content. (Connor #50, Marcus #44)
+- **No mania-hype copy**: AI Personalisation (Phase 28) must never generate "go-getter", "you're on fire", "channel that energy" copy for a user whose profile includes a mood-stabiliser or bipolar context. (Marcus #44)
+- **Postpartum & weight-loss**: Nutrition module must NEVER suggest weight loss to a user within 6 months of a birth event. (Bisi #48)
+- **Terminal / short-horizon mode**: Briefing and Proactive Coach must support a `short_horizon: true` flag — disables year-ahead planning prompts, long-term goal nudges. (Margaret #49)
+- **Toxic positivity guard**: Mind module copy must not contain "stay strong", "every day is a gift", "you've got this" when user context includes terminal illness or severe grief. (Margaret #49)
+- **Crisis resource — no assessment questions**: When `guardPrompt()` or Mind journaling detects suicidal ideation language, surface the country-appropriate crisis line (US: 988, IE: 116 123, IN: iCall) *without* asking assessment questions. (Marcus #44)
+- **Sober streak is sacred**: Habit streak resets must be user-reversible (accidental tap undo). Streak-reset UI must require two-tap confirmation. (Connor #50)
+
+### Accessibility Rules (surfaced by QA Personas 42–56)
+- **All icon-only buttons must have `aria-label`**: No `<button>` with SVG-only content anywhere in the codebase. (Daniel #42)
+- **`prefers-reduced-motion` must be respected globally**: All CSS `transition` and `animation` declarations must be wrapped in `@media (prefers-reduced-motion: no-preference)` or equivalent. (Kenji #53)
+- **Voice module requires text fallback**: Every voice-triggered feature must expose a text input equivalent. Do not assume audio availability. (Léa #43)
+- **Notification visual analogue**: Every notification that plays a sound must also have a visible badge/indicator. Notification preferences must expose a `vibration/visual only` mode. (Léa #43)
+- **Focus order & modal traps**: Modals must trap focus on open and restore to trigger element on close. Charts and data-viz must have text alternatives (`aria-label` or adjacent table). (Daniel #42)
+- **Literal UI copy**: All CTAs must accurately describe their action — no idioms, no motivational jargon in default copy. (Kenji #53)
+
+### Privacy & Legal Rules (surfaced by QA Personas 42–56)
+- **Age gate (DPDP / COPPA)**: If a user self-reports age < 18, trigger a consent flow. Do not surface financial product, credit, or investment prompts to minors. AI personalities must enforce child-safety content policy for minor profiles. (Aanya #54)
+- **AURA child-side privacy**: A child with their own session must be able to control which habits/journal/mood data are visible to their linked parent. Default is NOT visible. (Aanya #54)
+- **DV/safety account lockdown**: The settings module must expose: force-logout all sessions, wipe device cache, change recovery contact without revealing old value, mandatory 2FA, hide profile photo, disable all social/sharing features. (Anna #46)
+- **Memory "forget" reliability**: `POST /api/memory/forget` must reliably delete the vector embedding AND the raw DB row. Verify with Viktor (#55) and Anna (#46) scenarios — a missed delete is a safety defect, not a UX bug.
+- **Opt-out personalisation integrity**: When a user disables AI pattern signals (Phase 28), all downstream systems (Briefing, Proactive Coach, AI chat system prompt) must receive a context-free version — not merely hide the UI toggle. (Tomás #47, Viktor #55)
+- **No implicit location inference**: If a user refuses to enter their city, the system must NOT infer it from IP, timezone, or language. (Anna #46)
+- **Multi-jurisdiction legal module**: Legal module must not force a single-country selection for users with ambiguous tax residency. Surface a "multiple / unsure" option. (Saskia #52)

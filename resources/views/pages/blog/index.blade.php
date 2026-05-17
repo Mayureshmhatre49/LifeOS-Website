@@ -20,9 +20,10 @@
     <x-section bg="bg-white" padding="pb-32">
         <!-- Categories -->
         <div class="flex flex-wrap justify-center gap-4 mb-20">
-            <a href="/blog" class="px-6 py-2 rounded-full bg-slate-950 text-white text-sm font-bold">All Topics</a>
+            <a href="/blog" class="px-6 py-2 rounded-full text-sm font-bold transition-colors {{ is_null($activeCategory) ? 'bg-slate-950 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">All Topics</a>
             @foreach($categories as $category)
-                <a href="/blog?category={{ $category->slug }}" class="px-6 py-2 rounded-full bg-slate-100 text-slate-600 text-sm font-bold hover:bg-slate-200 transition-colors">{{ $category->name }}</a>
+                <a href="/blog?category={{ $category->slug }}"
+                   class="px-6 py-2 rounded-full text-sm font-bold transition-colors {{ ($activeCategory && $activeCategory->id === $category->id) ? 'bg-slate-950 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">{{ $category->name }}</a>
             @endforeach
         </div>
 

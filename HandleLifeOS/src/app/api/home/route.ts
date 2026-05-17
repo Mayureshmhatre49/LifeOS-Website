@@ -40,6 +40,16 @@ export async function POST(req: NextRequest) {
     if (!asset) return NextResponse.json({ error: 'Asset not found' }, { status: 404 })
   }
 
+  if (payload.property_id) {
+    const { data: prop } = await db
+      .from('properties')
+      .select('id')
+      .eq('id', payload.property_id)
+      .eq('user_id', session.user.id)
+      .maybeSingle()
+    if (!prop) return NextResponse.json({ error: 'Property not found' }, { status: 404 })
+  }
+
   const { data, error } = await db
     .from(table)
     .insert({ ...stripServerFields(payload), user_id: session.user.id })
@@ -70,6 +80,16 @@ export async function PATCH(req: NextRequest) {
       .eq('user_id', session.user.id)
       .maybeSingle()
     if (!asset) return NextResponse.json({ error: 'Asset not found' }, { status: 404 })
+  }
+
+  if (patch.property_id) {
+    const { data: prop } = await db
+      .from('properties')
+      .select('id')
+      .eq('id', patch.property_id)
+      .eq('user_id', session.user.id)
+      .maybeSingle()
+    if (!prop) return NextResponse.json({ error: 'Property not found' }, { status: 404 })
   }
 
   const { data, error } = await db

@@ -17,7 +17,7 @@ const SEVERITY_CONFIG: Record<NotificationSeverity, { icon: typeof Info; color: 
 
 const MODULE_LABELS: Record<NotificationModule, string> = {
   planner: 'Planner', aura: 'AURA', mind: 'Mind', money: 'Money',
-  family: 'Family', protection: 'Protection', system: 'System',
+  family: 'Family', protection: 'Protection', system: 'System', renewals: 'Renewals',
 }
 
 export function NotificationBell() {
